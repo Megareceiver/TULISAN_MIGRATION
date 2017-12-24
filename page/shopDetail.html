@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Standard Meta -->
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+		<link rel="icon" type="image/x-icon" href="../assets/PICS/TL_Favicon.png">
+		<!-- Site Properities -->
+		<title>Tulisan</title>
+
+		<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../assets/css/font-awesome.min.css" rel="stylesheet">
+		<link href="../assets/css/syncard-inject.css" rel="stylesheet">
+	</head>
+	<body>
+
+		<div class="container">
+			<header class="parent"></header>
+
+			<main class="parent clear"></main>
+
+			<footer class="parent"></footer>
+		</div>
+
+		<!-- Script collection -->
+		<script type="text/javascript" src="../assets/js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" src="../assets/js/jquery-ui-1.10.0.custom.min.js"></script>
+		<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../assets/js/imagesloaded.pkgd.min.js"></script>
+		<script type="text/javascript" src="../assets/js/partial.js"></script>
+		<script type="text/javascript" src="../assets/js/public.js"></script>
+
+		<script type="text/javascript" src="../assets/plugins/elevatezoom/jquery.elevatezoom.min.js"></script>
+
+		<!-- page script -->
+		<script type="text/javascript">
+			var count = 1;
+			var max_count = 1;
+
+			loadShop();
+
+			function loadShop(){
+				var html 		= '';
+				var data 		= [];
+				var story 	= [];
+				var color 	= [];
+				var filter  = [];
+
+				// data.description = data.description.replace(/(?:\r\n|\r|\n)/g, '<br />');
+				// data.story = data.story.replace(/(?:\r\n|\r|\n)/g, '<br />');
+				var productId = "";
+
+				if(getParam('q') != "" && getParam('q') != null){
+					productId = getParam('q');
+					data = p_getData('operation', 'productDetail', '1', 'p.idData = "' + productId + '" AND v.qty > 0');
+					data = data.feedData;
+				}else{
+					window.location.href = base_url + "/page/shop.html";
+				}
+
+				html = '<div class="col-md-10 col-md-offset-1 div-normalize">';
+				html = html + '<div class="col-md-6" id="productViewer"></div>';
+
+				temp = normalFormatChanger(data.price);
+				price = currencyFormat(String(temp));
+
+				html = html +
+				'<div class="col-md-6">'+
+						'<form id="ItemForm">' +
+							'<input type="hidden" name="variantId" value="" />' +
+							'<div class="product-desc">'+
+								'<h1 class="fontserif"><b>' + data.name + '</b> <small id="productPrice">' + price + '</small></h1>'+
+								'<hr/>' +
+								'<p>' + data.description + '</p>'+
+								'<div class="row margin-top">'+
+									'<div class="col-xs-6">'+
+										'<p>PATTERN</p>'+
+										'<div class="select-box">' +
+											'<select name="artworkId" class="form-control">' +
+											'</select>' +
+										'</div>' +
+									'</div>' +
+									'<div class="col-xs-6">'+
+										'<p>COLOR</p>'+
+										'<div class="select-box">' +
+											'<select name="colorId" class="form-control">' +
+											'</select>' +
+										'</div>' +
+									'</div>' +
+								'</div>' +
+								'<p class="margin-top">'+
+									'MATERIAL<br>'+
+									data.material +
+								'</p>'+
+								'<p>'+
+									'DIMENSION<br>'+
+									data.dimension +
+								'</p>'+
+							'</div>'+
+							'<hr/>' +
+							'<div class="row">' +
+								'<div class="col-xs-6">' +
+									'<p>SIZE</p>' +
+									'<div class="select-box">' +
+								    '<select name="size" class="form-control">' +
+								    '</select>' +
+									'</div>' +
+									'<p class="margin-top">Remaining : <span id="qty">0</span></p>' +
+									'<div class="input-group">' +
+								    '<span class="input-group-addon" onclick="minus()"><i class="glyphicon glyphicon-minus"></i></span>' +
+								    '<input type="text" name="qty" class="form-control text-center" id="count" value="1">' +
+										'<span class="input-group-addon" onclick="plus()"><i class="glyphicon glyphicon-plus"></i></span>' +
+								  '</div>' +
+							  '</div>' +
+						  '</div>' +
+							'<div class="clearfix"></div>' +
+							'<button type="button" class="add-to-cart btn btn-warning margin-top form-control">Add to cart</button>' +
+						'</div>'+
+					'</form>' +
+				"</div><div class='clearfix'></div>";
+				html = html +
+				'<hr/>' +
+				'<div class="col-md-10 col-md-offset-1 product-story center-div margin-top div-normalize">'+
+					'<h4>' + data.title + '</h4>' +
+					'<p class="margin-top">' + data.subtitle + '</p>' +
+				'</div>';
+
+				html = html + "</div><div class='clearfix'></div>";
+
+				html = html +
+				'<div class="row margin-top">' +
+					'<div class="col-md-12">' +
+						"<div class='blog-box'>"+
+							"<div class='blog-pic'>" +
+								"<img src='../assets/products/large/" + data.lookBook1 + "' />" +
+							"</div>"+
+							"<div class='blog-pic'>" +
+								"<img src='../assets/products/large/" + data.lookBook2 + "' />" +
+							"</div>"+
+						"</div>" +
+					"</div>" +
+				"</div>";
+
+				html = html +
+				'<div class="col-md-4 col-md-offset-4 margin-top">' +
+					'<p class="text-center">Are you interested ?</p>' +
+					'<button type="button" class="add-to-cart btn btn-warning margin-top form-control">Add to cart</button>' +
+				'</div>';
+
+				html = html + "</div><div class='clearfix'></div>";
+
+				$("main").html(html);
+				product_htmlGenerate(data);
+				$("#custom-bread-detail").html(toTitleCase(data.name));
+
+				var oData = p_getData('operation', 'productArtworkOption', '', "v.productId='" + productId + "' AND v.qty > 0");
+				$("[name=artworkId]").append(dataToOptionHtml(oData.feedData));
+
+				oData = p_getData('operation', 'productColorOption', '', "v.productId='" + productId + "' AND v.artworkId = '" + data.artworkId + "' AND v.qty > 0");
+				$("[name=colorId]").append(dataToOptionHtml(oData.feedData));
+
+				oData = p_getData('operation', 'productSizeOption', '', "v.productId='" + productId + "' AND v.artworkId = '" + data.artworkId + "' AND v.qty > 0");
+				$("[name=size]").append(dataToOptionHtml(oData.feedData));
+
+				zoomActivator();
+
+				$('[name=artworkId]').on("change", function(){ custom_artwork($(this).val()); });
+				$('[name=colorId]').on("change", function(){ custom_color($(this).val()); });
+				$('[name=size]').on("change", function(){ custom_size($(this).val()); });
+				$('.add-to-cart').on("click", function(){ add_to_cart(); });
+			}
+
+			var elem  = document.getElementById("count");
+			function plus(){
+				if(count < max_count){
+					count++;
+					elem.value = count;
+				}
+			}
+
+			function minus(){
+				if (count > 1) {
+					count--;
+					elem.value = count;
+				}
+			}
+
+			function zoomActivator(){
+				$('#product_detail').elevateZoom({
+			    zoomType: "inner",
+					// zoomType				: "lens",
+				  // lensShape : "round",
+				  // lensSize    : 200,
+					cursor: "crosshair",
+					zoomWindowFadeIn: 100,
+					zoomWindowFadeOut: 150,
+					gallery:'detail_list',
+					galleryActiveClass: 'active',
+					imageCrossfade: true,
+			   });
+
+			 $("#product_detail").bind("click", function(e) {
+				  var ez =   $('#product_detail').data('elevateZoom');
+					$.fancybox(ez.getGalleryList());
+				  return false;
+				});
+			}
+
+			function custom_artwork(artworkId){
+				$("[name=colorId], [name=size]").html("");
+
+				var productId = getParam('q');
+				var oData = p_getData('operation', 'productColorOption', '', "v.productId='" + productId + "' AND v.artworkId = '" + artworkId + "' AND v.qty > 0");
+				$("[name=colorId]").append(dataToOptionHtml(oData.feedData));
+
+				var colorId = $('[name=colorId]').val();
+
+				oData = p_getData('operation', 'productSizeOption', '', "v.productId='" + productId + "' AND v.artworkId = '" + artworkId + "' AND v.colorId = '" + colorId + "' AND v.qty > 0");
+				$("[name=size]").append(dataToOptionHtml(oData.feedData));
+
+				data = p_getData('operation', 'productDetail', '1', 'p.idData = "' + productId + '" AND v.artWorkId ="' + artworkId + '" AND v.colorId = "' + colorId + '" AND v.qty > 0');
+				data = data.feedData;
+				product_htmlGenerate(data);
+			}
+
+			function custom_color(colorId){
+				$("[name=size]").html("");
+
+				var productId = getParam('q');
+				var artworkId = $('[name=artworkId]').val();
+
+				oData = p_getData('operation', 'productSizeOption', '', "v.productId='" + productId + "' AND v.artworkId = '" + artworkId + "' AND v.colorId = '" + colorId + "' AND v.qty > 0");
+				$("[name=size]").append(dataToOptionHtml(oData.feedData));
+
+				data = p_getData('operation', 'productDetail', '1', 'p.idData = "' + productId + '" AND v.artWorkId ="' + artworkId + '" AND v.colorId = "' + colorId + '" AND v.qty > 0');
+				data = data.feedData;
+				product_htmlGenerate(data);
+			}
+
+			function custom_size(size){
+				var productId = getParam('q');
+				var artworkId = $('[name=artworkId]').val();
+				var colorId = $('[name=colorId]').val();
+
+				data = p_getData('operation', 'productDetail', '1', 'p.idData = "' + productId + '" AND v.artWorkId ="' + artworkId + '" AND v.colorId = "' + colorId + '" AND v.size = "' + size + '" AND v.qty > 0');
+				data = data.feedData;
+				product_htmlGenerate(data);
+			}
+
+			function product_htmlGenerate(data){
+				html =
+				'<div class="col-md-12 margin-top">' +
+					'<img id="product_detail" src="../assets/products/small/' + data.frontPicture + '" data-zoom-image="../assets/products/large/' + data.frontPicture + '" />' +
+				'</div>'+
+				'<div class="clearfix"></div>' +
+				'<div class="color-choice margin-top">'+
+					'<ul id="detail_list">' +
+						'<li>' +
+							'<a href="#" data-image="../assets/products/small/' + data.frontPicture + '" data-zoom-image="../assets/products/large/' + data.frontPicture + '">' +
+								'<img id="product_detail" class="big-image" src="../assets/products/small/' + data.frontPicture + '" />' +
+							'</a>' +
+						'</li>' +
+						'<li>' +
+							'<a href="#" data-image="../assets/products/small/' + data.backPicture + '" data-zoom-image="../assets/products/large/' + data.topPicture + '">' +
+								'<img id="product_detail" class="big-image" src="../assets/products/small/' + data.backPicture + '" />' +
+							'</a>' +
+						'</li>' +
+						'<li>' +
+							'<a href="#" data-image="../assets/products/small/' + data.topPicture + '" data-zoom-image="../assets/products/large/' + data.topPicture + '">' +
+								'<img id="product_detail" class="big-image" src="../assets/products/small/' + data.topPicture + '" />' +
+							'</a>' +
+						'</li>' +
+						'<li>' +
+							'<a href="#" data-image="../assets/products/small/' + data.bottomPicture + '" data-zoom-image="../assets/products/large/' + data.bottomPicture + '">' +
+						    '<img id="product_detail" class="big-image" src="../assets/products/small/' + data.bottomPicture + '" />' +
+						  '</a>' +
+						'</li>' +
+						'<li>' +
+							'<a href="#" data-image="../assets/products/small/' + data.leftPicture + '" data-zoom-image="../assets/products/large/' + data.leftPicture + '">' +
+						    '<img id="product_detail" class="big-image" src="../assets/products/small/' + data.leftPicture + '" />' +
+						  '</a>' +
+						'</li>' +
+						'<li>' +
+							'<a href="#" data-image="../assets/products/small/' + data.rightPicture + '" data-zoom-image="../assets/products/large/' + data.rightPicture + '">' +
+						    '<img id="product_detail" class="big-image" src="../assets/products/small/' + data.rightPicture + '" />' +
+						  '</a>' +
+						'</li>' +
+					'</ul>'+
+				'</div>';
+
+				$("#productViewer").html(html);
+				$("[name=variantId]").val(data.idData);
+				$("#productPrice").html(currencyFormat(String(data.price)));
+				$("#qty").html(data.qty);
+				$("#count").val(1);
+				count = 1;
+				max_count = parseInt(data.qty);
+				zoomActivator();
+			}
+
+			function add_to_cart(){
+
+				var arr = [];
+				var dum = [];
+				var variantId = $('#ItemForm [name=variantId]').val();
+				var qty = parseInt($('#ItemForm [name=qty]').val());
+
+				//call
+				if(r_getCookie('TULISAN_USER_CART_STATUS') == ''){
+					r_setCookie('TULISAN_USER_CART_STATUS', 'active');
+					arr = [{ variantId : variantId, qty : qty }];
+					arr = JSON.stringify(arr);
+				}else{
+					arr = r_getCookie('TULISAN_USER_CART_ARRAY');
+					arr = JSON.parse(arr);
+
+					index = arr.map(function(o) { return o.variantId; }).indexOf(variantId);
+					if(index < 0){
+						arr.push({ variantId : variantId, qty : qty });
+					}else{
+						qty_dumb = parseInt(arr[index].qty);
+						qty = qty + qty_dumb;
+
+						arr[index].qty = qty;
+					}
+
+					arr = JSON.stringify(arr);
+				}
+
+				r_setCookie('TULISAN_USER_CART_ARRAY', arr);
+				window.location.href = base_url + "/page/cart.html";
+			}
+		</script>
+	</body>
+</html>

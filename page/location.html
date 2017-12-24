@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Standard Meta -->
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+		<link rel="icon" type="image/x-icon" href="../assets/PICS/TL_Favicon.png">
+		<!-- Site Properities -->
+		<title>Tulisan</title>
+
+		<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../assets/css/font-awesome.min.css" rel="stylesheet">
+		<link href="../assets/css/syncard-inject.css" rel="stylesheet">
+
+	</head>
+	<body>
+
+		<div class="container">
+			<header class="parent"></header>
+
+			<main class="parent clear dark-flex"></main>
+
+			<footer class="parent clear"></footer>
+		</div>
+
+		<!-- Script collection -->
+		<script type="text/javascript" src="../assets/js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" src="../assets/js/jquery-ui-1.10.0.custom.min.js"></script>
+		<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../assets/js/imagesloaded.pkgd.min.js"></script>
+		<script type="text/javascript" src="../assets/js/partial.js"></script>
+
+		<!-- page script -->
+		<script type="text/javascript">
+			maps();
+			// nah();
+
+			function maps(){
+				var html = '';
+				var mapMarker = [
+					// {'location': 'location 1', 'x': 200 , 'y' : 175, 'lat': '', 'long': '', 'place': ''},
+					// {'location': 'location 2', 'x': 240 , 'y' : 225, 'lat': '', 'long': '', 'place': ''},
+					// {'location': 'location 3', 'x': 170 , 'y' : 280, 'lat': '', 'long': '', 'place': ''},
+				];
+
+				var mapMarkerMin = [
+					{'location': 'Singapore', 'x': 280 , 'y' : 265, 'lat': '1.2916439', 'long': '103.8202578,12.1z', 'place': 'Tulisan'},
+					{'location': 'Jakarta', 'x': 332 , 'y' : 205, 'lat': '-6.2554062', 'long': '106.8081536,15z', 'place': 'Tulisan'},
+					{'location': 'Hongkong', 'x': 215 , 'y' : 240, 'lat': '22.3582235', 'long': '114.1194768,17z', 'place': 'Metro+Loft,+38+Kwai+Hei+St,+Kwai+Chung,+Hong+Kong'},
+				];
+
+				html = '<div class="col-md-12 div-normalize">';
+				html = html +
+				// '<object data="../assets/PICS/maps.svg" type="image/svg+xml">'+
+				//   // <img src="/path-to/your-fallback-image.png" />
+				// '</object>';
+				'<div class=" col-md-12 maps">'+
+					'<!--embed src="../assets/PICS/maps.svg"'+
+					'type="image/svg+xml" /--> '+
+					'<img src="../assets/PICS/maps.png" />' +
+				'</div>';
+
+				for(var loop=0; loop<mapMarker.length; loop++){
+					//map marker
+					html = html +
+					'<div class="map-marker go-maps" m-place="' + mapMarker[loop].place + '" m-lng="' + mapMarker[loop].long + '" m-lat="' + mapMarker[loop].lat + '" style="top: ' + mapMarker[loop].x + 'px; left: ' + mapMarker[loop].y + 'px">' +
+						'<div class="marker">' +
+							'<div class="caption">' + mapMarker[loop].location + '</div>' +
+							'<div class="pin"></div>' +
+							'<div class="pulse"></div>' +
+						'</div>' +
+					'</div>';
+				}
+
+				for(var loop=0; loop<mapMarkerMin.length; loop++){
+					//map marker
+					html = html +
+					'<div class="map-marker go-maps" m-place="' + mapMarkerMin[loop].place + '" m-lng="' + mapMarkerMin[loop].long + '" m-lat="' + mapMarkerMin[loop].lat + '" style="top: ' + mapMarkerMin[loop].x + 'px; right: ' + mapMarkerMin[loop].y + 'px">' +
+						'<div class="marker">' +
+							'<div class="caption">' + mapMarkerMin[loop].location + '</div>' +
+							'<div class="pin"></div>' +
+							'<div class="pulse"></div>' +
+						'</div>' +
+					'</div>';
+				}
+
+				html = html +
+							'<div class="col-md-6">'+
+								'<div class="col-md-6">'+
+									'<div class="img-place" style="background-image : url(../assets/PICS/location1.jpg)">'+
+									'</div>'+
+								'</div>'+
+								'<div class="col-md-6">'+
+									'<div class="address syn-divider">'+
+										'<p><b>HONG KONG</b></p>'+
+										'Arketype Limited (HK Distributor)<br/>'+
+										'7F Metro Loft,<br/>'+
+										'38 Kwai Hei Street,<br/>'+
+										'Kwai Chung<br/>'+
+										'852 21109400</p>'+
+									'</div>'+
+								'</div>'+
+							'</div>'+
+							'<div class="col-md-6">'+
+								'<div class="col-md-6">'+
+									'<div class="img-place" style="background-image : url(../assets/PICS/location2.jpg)">'+
+									'</div>'+
+								'</div>'+
+								'<div class="col-md-6">'+
+									'<div class="address syn-divider">'+
+										'<p>Fang Fong Projects<br/>'+
+										'G/F, B3, 160 Electric Road,<br/>'+
+										'North Point<br/>'+
+										'+852 28572057<br/>'+
+										'Kiosk 1D, Level 1 The ONE<br/>'+
+										'100 Nathan Road, Tsim Sha Tsui,<br/>'+
+										'Kowloon, HK</p>'+
+									'</div>'+
+								'</div>'+
+							'</div>';
+
+
+				html = html +
+						"</div><div class='clearfix'></div>";
+
+				$("main").html(html);
+
+				$(".go-maps").unbind().on("click", function(){
+					openMaps($(this).attr('m-place'), $(this).attr('m-lng'),$(this).attr('m-lat'));
+				});
+			}
+		</script>
+	</body>
+</html>

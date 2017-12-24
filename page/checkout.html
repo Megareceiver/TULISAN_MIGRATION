@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Standard Meta -->
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+		<link rel="icon" type="image/x-icon" href="../assets/PICS/TL_Favicon.png">
+		<!-- Site Properities -->
+		<title>Tulisan</title>
+
+		<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../assets/css/font-awesome.min.css" rel="stylesheet">
+		<link href="../assets/css/syncard-inject.css" rel="stylesheet">
+	</head>
+	<body>
+
+		<div class="container">
+			<header class="parent"></header>
+
+			<main class="parent clear">
+				<div id="about-page" class="col-md-8 col-md-offset-2 div-normalize">
+					<div class="tab-header in-style">
+						<ul>
+							<li class="fontserif"><span class="tab-button active" t-target="#1" id="shippingTab">Shipping</span></li>
+							<li class="fontserif"><span class="tab-button" t-target="#2" id="paymentTab">Payment</span></li>
+							<li class="fontserif"><span class="tab-button" t-target-disabled="#0">Place order</span></li>
+							<li style="display:none"><span class="tab-button" t-target="#3" id="placeTab">Place order</span></li>
+						</ul>
+					</div>
+					<div class="tab-container active" id="1">
+						<div class='blog-container'>
+							<div class='blog-box text-left norm'>
+								<h1 class='fontserif'><b>Select a shipping address</b></h1>
+								<div id="recentShipping" class='blog-description'>
+									<p class="fontserif">Is the address you'd like to use displayed below? If so, click the "Ship to this address" button. Or you can enter a new shipping address.</p>
+									<h5 class="syn-plus"><b class="sessionName">&nbsp;</b></h5>
+									<h5><b class="sessionAddress">&nbsp;</b></h4>
+									<h5><b class="sessionCity">&nbsp;</b></h5>
+									<h5><b class="sessionPhone">&nbsp;</b></h5>
+									<button type="button" class="btn btn-warning syn-plus" t-target="#2">Ship to this address</button>
+								</div>
+								<hr/>
+								<div class="col-md-8 syn-clear">
+									<h5><b>Add a new address</b></h5>
+									<p>Be sure to click "Ship to this address" when done.</p>
+									<form class="syn-plus" id="alternativeShippingForm">
+										<div class="form-group">
+										    <label for="fullName">Full Name</label>
+										    <input type="text" class="form-control" id="fullName">
+										</div>
+										<div class="form-group">
+										  	<label for="address">Address</label>
+										  	<textarea class="form-control" rows="5" id="address"></textarea>
+										</div>
+										<div class="form-group">
+											<div class="col-xs-8 syn-clear">
+											    <label for="city">City</label>
+											    <input type="text" class="form-control" id="city">
+											</div>
+										    <div class="col-xs-4 syn-clear">
+										    	<label for="zipCode">Zip Code</label>
+										    	<input type="text" class="form-control" id="zipCode">
+											</div>
+											<div class="clearfix"></div>
+										</div>
+										<div class="form-group select-box">
+										    <label for="country">Country</label>
+										    <select class="form-control" id="country"></select>
+										</div>
+										<div class="form-group">
+										    <label for="mobilePhone">Mobile Phone</label>
+										    <input type="text" class="form-control" id="mobilePhone">
+										</div>
+										<div class="form-group">
+										    <label for="email">Email</label>
+										    <input type="email" class="form-control" id="email">
+										</div>
+										<button type="button" class="btn btn-warning" id="alternativeShipping">Ship to this address</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-container" id="2">
+						<div class='blog-container'>
+							<div class='blog-box text-left norm'>
+								<h1 class='fontserif'><b>Select payment method</b></h1>
+								<div class='blog-description'>
+									<div class="col-md-8 syn-clear">
+										<form class="syn-plus" id="paymentForm">
+											<input type="hidden" id="grandTotalAmount" />
+											<div class="form-group select-box">
+												<select class="form-control" id="paymentMethod">
+													<option value="BANK TRANSFER">BANK TRANSFER</option>
+													<option value="DOKU WALLET">DOKU WALLET</option>
+												</select>
+											</div>
+											<div id="bankTransfer" class="col-md-12 syn-clear">
+												<h5 class="syn-plus">Please transfer your order payment to:</h5>
+												<h5>PT. Tulisan Susunan Tinta</h5>
+												<h5>Bank Mandiri</h5>
+												<h5><b>Acc. No. 126-00-0618835-2</b></h5>
+												<h5>(Rupiah account)</h5>
+												<div class="radio syn-plus">
+												  <label><input type="radio" name="bank" checked="checked" value="0">Payment from Bank Mandiri</label>
+												</div>
+												<div class="form-group">
+													<div class="col-sm-6 syn-clear">
+													    <div class="radio">
+														  <label><input type="radio" name="bank" value="1">Payment from other bank</label>
+														</div>
+													</div>
+											    <div class="col-sm-6 syn-clear">
+														<div class="form-group">
+												    	<!-- <select class="form-control" id="payment">
+																<option value="">BANK NAME</option>
+															</select> -->
+															<input type="text" class="form-control uppercase" id="otherBank" disabled="disabled">
+														</div>
+													</div>
+													<div class="clearfix"></div>
+												</div>
+												<div class="checkbox">
+													<label><input type="checkbox" value="">Make the above payment information my default for future orders.</label>
+												</div>
+												<h5 class="text-warning">Please include your Order ID as a reference when making your transfer.</h5>
+												<h5 class="syn-plus"><b><i>Your order will automatically be cancelled if the payment is not confirmed within 24 hours after the order is made.</i></b></h5>
+											</div>
+											<div id="dokeWallet" class="col-md-12 syn-clear">
+											</div>
+											<div class="col-md-6 syn-clear"><button type="button" class="btn btn-warning syn-plus form-control" id="placeButton">Next</button></div>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-container" id="3">
+						<div class='blog-container'>
+							<div class='blog-box text-left norm'>
+								<h1 class='fontserif'><b>Thank you for your order!</b></h1>
+								<div class='blog-description'>
+									<h5 class="text-warning"><b>Your Order ID is <span id="orderNumber">#</span></b></h5>
+									<h5><i>Please put this Order ID in the message reference when making your transfer.</i></h5>
+									<div class="col-md-6 syn-clear">
+										<h3>SHIPPING ADDRESS</h3>
+										<h5 class="syn-plus"><b class="sessionName" >&nbsp;</b></h5>
+										<h5><i class="sessionAddress">&nbsp;</i></h4>
+										<h5><i class="sessionCity">&nbsp;</i></h5>
+										<h5><i class="sessionCountry">&nbsp;</i></h5>
+										<h5><i class="sessionPhone">&nbsp;</i></h5>
+									</div>
+									<div class="col-md-6 syn-clear">
+										<h3>BILLING ADDRESS</h3>
+										<h5 class="syn-plus"><b class="sessionName" >&nbsp;</b></h5>
+										<h5><i class="sessionAddress">&nbsp;</i></h4>
+										<h5><i class="sessionCity">&nbsp;</i></h5>
+										<h5><i class="sessionCountry">&nbsp;</i></h5>
+										<h5><i class="sessionPhone">&nbsp;</i></h5>
+									</div>
+								</div>
+								<div class='blog-description table-frame'>
+									<div id="orderItems" class="col-md-12 basic-table italic syn-clear syn-plus clear">
+										<ul class="header">
+											<li class="col-md-3">Product</li>
+											<li class="col-md-3">SKU</li>
+											<li class="col-md-2 text-center">Price</li>
+											<li class="col-md-2 text-center">Quantity</li>
+											<li class="col-md-2 text-center">Total</li>
+										</ul>
+									</div>
+								</div>
+								<div class='blog-description syn-plus'>
+									<div class="table-box thin">
+										<ul class="clear">
+											<li class="col-md-12 text-right"><b>Cart Total</b> &nbsp; <span id="cartTotal"></span></li>
+										</ul>
+										<ul class="clear">
+											<li class="col-md-12 text-right"><b>Grand Total</b> &nbsp; <span id="grandTotal"></span></li>
+										</ul>
+									</div>
+									<div id="transferInfo">
+										<h5 class="syn-plus">Please transfer your order payment to:</h5>
+										<h5>PT. Tulisan Susunan Tinta</h5>
+										<h5>Bank Mandiri</h5>
+										<h5><b>Acc. No. 126-00-0618835-2</b></h5>
+										<h5>(Rupiah account)</h5>
+										<hr/>
+										<h5><i>After making your transfer, click this button to confirm.</i></h5>
+									</div>
+									<a href="#" class="btn btn-warning syn-plus" id="confirmButton">Confirm Payment</a>
+									<a href="#" class="btn btn-warning syn-plus" id="cancelButton">Cancel Order</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class='clearfix'></div>
+			</main>
+
+			<footer class="parent"></footer>
+		</div>
+
+		<!-- Script collection -->
+		<script type="text/javascript" src="../assets/js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" src="../assets/js/jquery-ui-1.10.0.custom.min.js"></script>
+		<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../assets/js/imagesloaded.pkgd.min.js"></script>
+		<script type="text/javascript" src="../assets/js/partial.js"></script>
+		<script type="text/javascript" src="../assets/js/public.js"></script>
+
+		<!-- page script -->
+		<script type="text/javascript">
+			$("#recentShipping").hide();
+			loadFunction();
+
+			function loadFunction(){
+				//tab position
+				if(r_getCookie('checkOutTab') != "" && r_getCookie('checkOutTab') != null && r_getCookie('checkOutTab') != undefined){
+					tabWizardChange($("#" + r_getCookie('checkOutTab')));
+				}
+
+				var html = "";
+				var data = null;
+
+				if(r_getCookie('user_username') != "" && r_getCookie('user_username') != null && r_getCookie('user_username') != undefined){
+					data = {
+						"tulisan_customerName" 		: r_getCookie('user_name') ,
+						"tulisan_customerAddress" : r_getCookie('user_address'),
+						"tulisan_customerCity" 		: r_getCookie('user_city'),
+						"tulisan_customerZipCode" : r_getCookie('user_zipCode'),
+						"tulisan_customerPhone" 	: r_getCookie('user_phone'),
+						"tulisan_customerCountry" : r_getCookie('user_country'),
+					};
+				} else if (r_getCookie('user_name_alternative') != "" && r_getCookie('user_name_alternative') != null && r_getCookie('user_name_alternative') != undefined) {
+					data = {
+						"tulisan_customerName" 		: r_getCookie('user_name_alternative') ,
+						"tulisan_customerAddress" : r_getCookie('user_address_alternative'),
+						"tulisan_customerCity" 		: r_getCookie('user_city_alternative'),
+						"tulisan_customerZipCode" : r_getCookie('user_zipCode_alternative'),
+						"tulisan_customerPhone" 	: r_getCookie('user_phone_alternative'),
+						"tulisan_customerCountry" : r_getCookie('user_country_alternative'),
+					};
+				}
+
+				if(data != null && data.tulisan_customerName != "" && data.tulisan_customerName != null && data.tulisan_customerName != undefined){
+					data.tulisan_customerAddress = data.tulisan_customerAddress.replace(/(?:\r\n|\r|\n)/g, '<br />');
+					$(".sessionName").html(data.tulisan_customerName);
+					$(".sessionAddress").html(data.tulisan_customerAddress);
+					$(".sessionCity").html(data.tulisan_customerCity + " " + data.tulisan_customerZipCode);
+					$(".sessionCountry").html(data.tulisan_customerCountry);
+					$(".sessionPhone").html("phone: " + data.tulisan_customerPhone);
+
+					$("#recentShipping").show();
+				}
+
+				var countries = p_getData('operation', 'countryOption');
+						countries = countries.feedData;
+				$("#country").html(listOption(countries));
+				$("#alternativeShipping").unbind().on("click", function(){ keepAlternative(); });
+
+				if(r_getCookie('checkOutTab') == "placeTab") {
+					$("[t-target]").unbind();
+				}else {
+					$("[t-target]").on("click", function(){
+						if($(this).attr('t-target')){
+							keepTabPosition($(this).attr('t-target'));
+							tabWizardChange($(this));
+						}
+					});
+				}
+
+				$("[name=bank]").on("click", function(){
+					if($(this).val() == '1'){
+						$('#otherBank').removeAttr('disabled');
+					}else{
+						$('#otherBank').attr('disabled','disabled').val('');
+					}
+				});
+
+				//===========================================================================================
+				var items = [];
+				var arr 	= [];
+				var oid 	= "";
+				if(getParam('oid') != undefined && getParam('oid') != ""){
+					oid = getParam('oid');
+
+					//get shipping info
+					var dumb = [];
+					dumb = p_getData('order', 'orderInfo', '1', 'o.idData = "' + oid + '"');
+					dumb = dumb.feedData;
+
+					if(dumb == undefined || dumb.length == 0 || dumb == false){
+						window.location.href = "shop.html";
+						return false;
+					}
+
+					$(".sessionName").html(dumb.name);
+					$(".sessionAddress").html(dumb.address);
+					$(".sessionCity").html(dumb.city + " " + dumb.zipCode);
+					$(".sessionCountry").html(dumb.country);
+					$(".sessionPhone").html("phone: " + dumb.phone);
+
+					if(dumb.paymentMethod == "DOKU WALLET"){
+							$("#transferInfo").attr("style", "display:none");
+							$("#confirmButton").html("DOKU Payment");
+							$("#confirmButton").attr("href", "#");
+					}else{
+						$("#transferInfo").attr("style", "display:block");
+						$("#confirmButton").html("Confirm Payment");
+						$("#confirmButton").attr("href", "paymentConfirm.html?oid=" + oid);
+					}
+
+					$("#cancelButton").attr("href", "cancelConfirm.html?oid=" + oid);
+
+					//get item list
+					$('#orderNumber').html("#" + oid);
+					items = p_getData('order', 'itemsCart', '1', 'i.orderId = "' + oid + '"');
+					items = items.feedData;
+				}else{
+					if(r_getCookie('TULISAN_USER_CART_STATUS') == 'active'){
+						arr = r_getCookie('TULISAN_USER_CART_ARRAY');
+						arr = JSON.parse(arr);
+						dumb_arr = (arraySplit(arr)).sort();
+						variantId = dumb_arr.join();
+						items = p_getData('operation', 'productCart', '1', 'v.idData IN (' + variantId + ')');
+						items = items.feedData;
+					}
+				}
+
+				var grandTotal = 0;
+				var qty = 0;
+				for(var loop=0; loop<items.length; loop++){
+					if(oid == ""){
+						qty = arr[loop].qty;
+					}else{
+						qty = items[loop].qty;
+					}
+
+					total = parseInt(items[loop].price) * parseInt(qty);
+					grandTotal = grandTotal + total;
+
+					html = html +
+					'<ul>' +
+						'<li class="col-xs-3">' + items[loop].name + '</li>' +
+						'<li class="col-xs-3">' + items[loop].sku + '</li>' +
+						'<li class="col-xs-2 text-right">' + currencyFormat(items[loop].price) + '</li>' +
+						'<li class="col-xs-2 text-center">' + qty + '</li>' +
+						'<li class="col-xs-2 text-right">' + currencyFormat(String(total)) + '</li>' +
+					'</ul>';
+				}
+
+				$("#orderItems").append(html);
+				$("#cartTotal").html(currencyFormat(String(grandTotal)));
+				$("#grandTotal").html(currencyFormat(String(grandTotal)));
+				$("#grandTotalAmount").val(grandTotal);
+
+				$("#paymentMethod").on('change', function(){
+					$("#bankTransfer, #dokeWallet").hide();
+					if($(this).val() == "DOKU WALLET") $("#dokeWallet").show();
+					else $("#bankTransfer").show();
+				});
+
+				$("#placeButton").on('click', function(){ placeOrder(); });
+			}
+
+			function keepAlternative(){
+				var fullName = $('#alternativeShippingForm #fullName').val();
+				var address  = $('#alternativeShippingForm #address').val();
+				var city 		 = $('#alternativeShippingForm #city').val();
+				var zipCode  = $('#alternativeShippingForm #zipCode').val();
+				var country_code  = $('#alternativeShippingForm #country').val();
+				var phone 	 = $('#alternativeShippingForm #mobilePhone').val();
+				var email 	 = $('#alternativeShippingForm #email').val();
+
+				var country  = $('#alternativeShippingForm #country option:selected').text();
+
+				if(fullName != "" && address != "" && city != "" && zipCode != "" && country != "" && phone != "" && email != ""){
+					r_setCookie('user_name_alternative', 		fullName);
+					r_setCookie('user_address_alternative', address);
+					r_setCookie('user_city_alternative', 		city);
+					r_setCookie('user_country_alternative', country);
+					r_setCookie('user_zipCode_alternative', zipCode);
+					r_setCookie('user_phone_alternative', 	phone);
+					r_setCookie('user_email_alternative', 	email);
+					r_setCookie('user_country_code_alternative', 	country_code);
+
+					$(".sessionName").html(fullName);
+					$(".sessionAddress").html(address);
+					$(".sessionCity").html(city + " " + zipCode);
+					$(".sessionCountry").html(country);
+					$(".sessionPhone").html("phone: " + phone);
+
+					keepTabPosition("#2");
+					tabWizardChange($("#paymentTab"));
+				}else{
+					alert('Please complete your shipping information!');
+				}
+			}
+
+			function placeOrder(){
+
+				if(sendOrder()){
+					var oid = getParam('oid');
+
+					if($("#paymentForm #paymentMethod").val() == "DOKU WALLET"){
+							$("#transferInfo").attr("style", "display:none");
+							$("#confirmButton").html("DOKU Payment");
+							$("#confirmButton").attr("href", "#");
+					}else{
+						$("#transferInfo").attr("style", "display:block");
+						$("#confirmButton").html("Confirm Payment");
+						$("#confirmButton").attr("href", "paymentConfirm.html?oid=" + oid);
+					}
+
+					$("#cancelButton").attr("href", "cancelConfirm.html?oid=" + oid);
+
+					keepTabPosition("#3");
+					tabWizardChange($("#placeTab"));
+				}
+			}
+
+			function sendOrder(){
+				 var res 		= false;
+				 var param 	= [];
+				 var cookieData = [];
+				 var localData = [];
+
+				 //check login
+				 if (r_getCookie('user_name_alternative') != "" && r_getCookie('user_name_alternative') != null && r_getCookie('user_name_alternative') != undefined) {
+					cookieData['name'] 		= r_getCookie('user_name_alternative') ;
+					cookieData['address'] = r_getCookie('user_address_alternative');
+					cookieData['city'] 		= r_getCookie('user_city_alternative');
+					cookieData['zipCode'] = r_getCookie('user_zipCode_alternative');
+					cookieData['country'] = r_getCookie('user_country_code_alternative');
+					cookieData['phone'] 	= r_getCookie('user_phone_alternative');
+					cookieData['email'] 	= r_getCookie('user_email_alternative');
+ 				}else if(r_getCookie('user_username') != "" && r_getCookie('user_username') != null && r_getCookie('user_username') != undefined){
+					cookieData['name'] 		= r_getCookie('user_name');
+					cookieData['address'] = r_getCookie('user_address');
+					cookieData['city'] 		= r_getCookie('user_city');
+					cookieData['zipCode'] = r_getCookie('user_zipCode');
+					cookieData['country'] = r_getCookie('user_country_code');
+					cookieData['phone'] 	= r_getCookie('user_phone');
+					cookieData['email'] 	= r_getCookie('user_email');
+ 				}
+
+				cookieData['items'] = r_getCookie('TULISAN_USER_CART_ARRAY');
+				cookieData['items'] = JSON.parse(cookieData['items']);
+
+				localData['total'] 				 = $("#grandTotalAmount").val();
+				localData['paymentMethod'] = $("#paymentMethod").val();
+				localData['bank']					 = "";
+
+				if(localData['paymentMethod'] == "BANK TRANSFER"){
+					localData['bank']	= ($("[name=bank]").val() == '0') ? "MANDIRI" : $("#otherBank").val();
+				}
+
+				param = {
+					"name" 					: cookieData['name'],
+					"address" 			: cookieData['address'],
+					"city" 					: cookieData['city'],
+					"zipCode" 			: cookieData['zipCode'],
+					"country" 			: cookieData['country'],
+					"phone" 				: cookieData['phone'],
+					"email" 				: cookieData['email'],
+					"total"					: localData['total'],
+					"paymentMethod" : localData['paymentMethod'],
+					"bank"					: localData['bank'],
+					"items"					: cookieData['items']
+				};
+
+				$.ajax({
+					url: base_url + "/data/router.php?session=addData&group=order&target=order",
+					type: 'post',
+					dataType: 'json',
+					async: false,
+					data: param,
+					success: function(result){
+						console.log(result);
+
+						if(result.feedStatus == "success") {
+							res = true;
+							$("[t-target]").unbind();
+							$("#cart_icon").removeClass('active');
+							r_setCookie('TULISAN_USER_CART_STATUS', '');
+							r_setCookie('TULISAN_USER_CART_ARRAY', '');
+
+							if(r_getCookie('user_username') == "" || r_getCookie('user_username') == null || r_getCookie('user_username') == undefined){
+								r_setCookie('user_name_alternative', 		'', 0.1);
+								r_setCookie('user_address_alternative', '', 0.1);
+								r_setCookie('user_city_alternative', 		'', 0.1);
+								r_setCookie('user_country_alternative', '', 0.1);
+								r_setCookie('user_zipCode_alternative', '', 0.1);
+								r_setCookie('user_phone_alternative', 	'', 0.1);
+								r_setCookie('user_email_alternative', 	'', 0.1);
+								r_setCookie('user_country_name_alternative', 	'', 0.1);
+							}
+
+							$("#orderNumber").html("#" + result.feedId);
+							window.history.pushState("", "Tulisan", "checkout.html?oid=" + result.feedId);
+						}
+					},
+					complete: function(xhr,status) {  },
+					error: function(xhr,status,error) { console.log(xhr); }
+				});
+
+				return res;
+			}
+
+			function arraySplit(definition) {
+				return definition.map(function(o) { return o.variantId; })
+			}
+
+			function keepTabPosition(target){
+				var tab = "shippingTab";
+				switch(target){
+					case "#2" : tab = "paymentTab"; break;
+					case "#3" : tab = "placeTab"; break;
+				}
+
+				r_setCookie('checkOutTab', tab);
+			}
+		</script>
+	</body>
+</html>

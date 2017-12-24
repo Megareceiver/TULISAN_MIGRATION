@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Standard Meta -->
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+		<link rel="icon" type="image/x-icon" href="assets/PICS/TL_Favicon.png">
+		<!-- Site Properities -->
+		<title>Tulisan</title>
+
+		<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+		<link href="assets/css/font-awesome.min.css" rel="stylesheet">
+		<link href="assets/css/syncard-inject.css" rel="stylesheet">
+	</head>
+	<body>
+		<div class="container">
+			<header class="parent"></header>
+
+			<main class="parent">
+				<div class="row">
+					<div class="col-md-12 jumbo-tron">
+						<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="6000">
+							  <!-- Indicators -->
+							  <ol class="carousel-indicators">
+							    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+							    <li data-target="#myCarousel" data-slide-to="1"></li>
+							    <li data-target="#myCarousel" data-slide-to="2"></li>
+							  </ol>
+
+							  <!-- Wrapper for slides -->
+							  <div class="carousel-inner">
+							    <!-- <div class="item active">
+							      <img src="assets/PICS/SAM_0731.jpg" alt="Tulisan">
+							      <div class="carousel-caption">
+							        <h3>EMPROWERING OTHERS</h3>
+							        <p>We are dedicated to enriching our community by investing our time in training and employing local artisansand talents, with an aim to provide them a fair living with benefits that exceed market standards. </p>
+							      </div>
+							    </div> -->
+
+							     <!-- <div class="item">
+							      <img src="assets/PICS/820abdfb_18f8.jpg" alt="Tulisan">
+							      <div class="carousel-caption">
+							        <h3>CELEBRATING INDIVIDUALITY</h3>
+							        <p>We design our products to be simple and pure, then layer them with artist-illustrated editions to celebrate individuality. Each creation is constructed by hand in small batches, with artisanal craftsmanship. </p>
+							      </div>
+							    </div>
+
+							    <div class="item">
+							      <img src="assets/PICS/61446540_81af.jpg" alt="Tulisan">
+							      <div class="carousel-caption">
+							        <h3>CARING FOR OUR WORLD</h3>
+							        <p>We strive to improve the quality of our work by being responsive of our surroundings and by using sustainable design principles to foster a healthier environment. </p>
+							      </div>
+							    </div> -->
+							</div>
+
+							<!-- Left and right controls -->
+						  <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+						    <span class="glyphicon glyphicon-chevron-left"></span>
+						    <span class="sr-only">Previous</span>
+						  </a>
+						  <a class="right carousel-control" href="#myCarousel" data-slide="next">
+						    <span class="glyphicon glyphicon-chevron-right"></span>
+						    <span class="sr-only">Next</span>
+						  </a>
+					</div>
+				</div>
+				<div class="col-md-12 div-normalize">
+					<div id="articles-section">&nbsp;</div>
+					<div class="clearfix"></div>
+				</div>
+			</main>
+
+			<footer class="parent"></footer>
+		</div>
+		<!-- Script collection -->
+		<script type="text/javascript" src="assets/js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" src="assets/js/jquery-ui-1.10.0.custom.min.js"></script>
+		<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="assets/js/imagesloaded.pkgd.min.js"></script>
+		<script type="text/javascript" src="assets/js/partial.js"></script>
+		<script type="text/javascript" src="assets/js/public.js"></script>
+
+		<!-- page script -->
+		<script type="text/javascript">
+			var articlesRest = [];
+			// $(function(){
+				articles();
+			// });
+
+			function articles(){
+				var articles = [];
+
+				articles = p_getData('operation', 'cms_home_gallery');
+				articles = articles.feedData;
+
+				// var articles = p_getData('operation', 'cms_home');
+				// articles = articles.feedData;
+
+				var html = '<h4 class="sync-center">data not found</h4>';
+
+				if(articles != null && articles.length > 0){
+					html = "";
+					for(var loop=0; loop<articles.length; loop++){
+						if(articles[loop].link != ""){ html = html + '<a href="' + articles[loop].link + '">'; }
+						html = html +
+						'<div class="col-md-3 article-box">' +
+							'<div class="picture-box" style="background-image: url(assets/homeGallery/' + articles[loop].thumbnail + ');"></div>' +
+							'<div class="article">' +
+								'<p>' + articles[loop].description + '</p>' +
+							'</div>' +
+						'</div>';
+						if(articles[loop].link != ""){ html = html + '</a>'; }
+						if(loop == 3) break;
+					}
+
+					if(articles.length > 4) {
+						html = html + '<div class="col-md-12 more" id="moreButton"><button type="button" class="btn btn-link" onclick="showMore()">MORE</button></div>';
+						articlesRest = articles.slice(4, articles.length);
+					}
+					html = html + '<div class="clearfix"></div>';
+				}
+
+				$("#articles-section").html(html);
+
+				var home = "";
+				var homeData = p_getData('operation', 'cms_home');
+				homeData = homeData.feedData;
+
+				for(var loop=0; loop<homeData.length; loop++){
+					home = home +
+					'<div class="item ' + ((loop == 0) ? 'active' : '') + '">' +
+				      '<img src="assets/home/' + homeData[loop].picture + '" alt="Tulisan">' +
+				      '<div class="carousel-caption">' +
+				        '<h3>' + homeData[loop].title + '</h3>' +
+				        '<p>' + homeData[loop].description + '</p>' +
+				      '</div>' +
+				    '</div>';
+			    }
+
+			  $("#myCarousel .carousel-inner").html(home);
+				$(".jumbo-tron img").css({'height':'600px', 'object-fit':'cover', 'width': '100%'});
+			}
+
+			function showMore(){
+				var html = "<hr/>";
+				html = html + '<div class="col-md-12"><h4 class="margin-top">Older post</h4></div>';
+				html = html + '<div class="clearfix"></div>';
+				html = html + '<div class="clearfix margin-top"></div>';
+
+				for(var loop=0; loop<articlesRest.length; loop++){
+					if(articlesRest[loop].link != ""){ html = html + '<a href="' + articlesRest[loop].link + '">'; }
+					html = html +
+					'<div class="col-md-3 article-box">' +
+						'<div class="picture-box" style="background-image: url(assets/homeGallery/' + articlesRest[loop].thumbnail + ');"></div>' +
+						'<div class="article">' +
+							'<p>' + articlesRest[loop].description + '</p>' +
+						'</div>' +
+					'</div>';
+					if(articlesRest[loop].link != ""){ html = html + '</a>'; }
+				}
+				$("#articles-section").append(html);
+				$("#moreButton").remove();
+			}
+		</script>
+	</body>
+</html>

@@ -937,9 +937,14 @@ footer.parent .license {
   display: block;
 }
 
-.left-menu ul li a {
+.left-menu ul li a,
+.left-menu ul li h5 {
   display: block;
   padding: 10px 0;
+}
+
+.left-menu ul li h5 {
+  color: #ED1C24;
 }
 
 .left-menu-toggle { cursor: pointer; }
@@ -1079,6 +1084,7 @@ footer.parent .license {
 .content h1 { font-size: 40px; font-weight: bold; margin-bottom: 30px }
 
 .story-box { margin-bottom: 45px }
+.story-box .limit-box { max-height: 245px; overflow: hidden; margin-bottom: 15px; }
 
 .media span:first-child {
 	min-width: 200px;

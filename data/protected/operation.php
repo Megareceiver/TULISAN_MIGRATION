@@ -13,6 +13,12 @@
 				case "summary" 			: $resultList = $this->summary(); break;
 
 				case "product" 				: $resultList = $this->fetchAllRequest('products p LEFT JOIN products_variant v ON p.idData = v.productId LEFT JOIN categories c ON p.categoryId = c.idData', array("DISTINCT p.idData", "(SELECT x.frontPicture FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as frontPicture", "p.name", "p.description", "status", "c.name as category"), $post['keyword'], "ORDER BY p.name ASC", $post['page']); break;
+				case "productGroup" 	: $resultList = $this->fetchAllRecord('products p LEFT JOIN products_variant v ON p.idData = v.productId LEFT JOIN categories c ON p.categoryId = c.idData',
+																array("DISTINCT p.idData",
+																"(SELECT x.frontPicture FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as frontPicture",
+																"p.name",
+																"c.name as category",
+																"(SELECT x.price FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as price"), $post['keyword'], "ORDER BY c.idData ASC, p.name ASC"); break;
 				case "productFetch" 	: $resultList = $this->fetchSingleRequest('products', array("idData", "name", "description", "material", "storyId", "categoryId", "status", "lookBook1", "lookBook2"), $post['keyword']); break;
 				// case "productDetail" 	: $resultList = $this->fetchSingleRequest('products', array("lookBook1", "lookBook2", "idData", "sku", "name", "description", "price", "material", "dimension", "storyId"), $post['keyword']); break;
 				case "productDetail" 	: $resultList = $this->fetchSingleRequest(
@@ -26,11 +32,13 @@
 																"substring_index(group_concat(v.bottomPicture SEPARATOR ','), ',', 1) as bottomPicture",
 																"substring_index(group_concat(v.artworkId SEPARATOR ','), ',', 1) as artworkId",
 																"substring_index(group_concat(v.price SEPARATOR ','), ',', 1) as price",
-																"p.sku", "p.name", "p.description", "p.material", "p.dimension", "p.lookBook1", "p.lookBook2", "s.title", "s.subtitle"), $post['keyword']); break;
+																"substring_index(group_concat(v.dimension SEPARATOR ','), ',', 1) as dimension",
+																"substring_index(group_concat(v.sku SEPARATOR ','), ',', 1) as sku",
+																"p.name", "p.description", "p.material", "p.lookBook1", "p.lookBook2", "s.title", "s.subtitle"), $post['keyword']); break;
 
 				case "productCart" 	: $resultList = $this->fetchAllRequest('products p JOIN products_variant v ON p.idData = v.productId',array("DISTINCT v.idData", "v.qty", "v.frontPicture","p.name", "v.price", "p.sku"), $post['keyword'], "ORDER BY v.idData", $post['page']); break;
 
-				case "productVariant" 				: $resultList = $this->fetchAllRequest('products p JOIN products_variant v ON p.idData = v.productId LEFT JOIN cms_story_artwork a ON v.artworkId = a.idData LEFT JOIN colors c ON v.colorId = c.idData', array("v.idData", "p.name", "v.qty", "v.size", "v.frontPicture", "a.name as artwork", "c.name as color", "v.price"), $post['keyword'], "ORDER BY v.artWorkId ASC", $post['page']); break;
+				case "productVariant" 				: $resultList = $this->fetchAllRequest('products p JOIN products_variant v ON p.idData = v.productId LEFT JOIN cms_story_artwork a ON v.artworkId = a.idData LEFT JOIN colors c ON v.colorId = c.idData', array("v.idData", "p.name", "v.qty", "v.size", "v.frontPicture", "a.name as artwork", "c.name as color", "v.price", "v.sku"), $post['keyword'], "ORDER BY v.artWorkId ASC", $post['page']); break;
 				case "productVariantFetch" 		: $resultList = $this->fetchSingleRequest('products_variant', array("frontPicture", "backPicture", "topPicture", "rightPicture", "bottomPicture", "leftPicture", "idData", "qty", "size", "colorId", "artworkId", "price", "dimension", "sku"), $post['keyword']); break;
 				case "productArtworkOption" 	: $resultList = $this->fetchAllRecord('products_variant v JOIN cms_story_artwork a ON v.artworkId = a.idData', array("DISTINCT a.name as caption", "a.idData as value"), $post['keyword'], "ORDER BY v.idData ASC"); break;
 				case "productColorOption" 	: $resultList = $this->fetchAllRecord('products_variant v JOIN colors a ON v.colorId = a.idData', array("DISTINCT a.name as caption", "a.idData as value"), $post['keyword'], "ORDER BY v.idData ASC"); break;

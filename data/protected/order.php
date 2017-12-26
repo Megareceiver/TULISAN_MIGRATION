@@ -17,6 +17,7 @@
 				case "recentOrders" : $resultList = $this->fetchAllRecord('orders o',array("o.idData as number", 'DATE_FORMAT(o.createdDate, "%M, %d %Y") as date', "status"), "o.createdBy = '".$_SESSION['tulisan_user_username']."' AND o.status <> 'Waiting for payment'", "ORDER BY o.idData"); break;
 				case "unpaidOrders" : $resultList = $this->fetchAllRecord('orders o',array("o.idData as number", 'DATE_FORMAT(o.createdDate, "%M, %d %Y") as date', "status"), "o.createdBy = '".$_SESSION['tulisan_user_username']."' AND o.status = 'Waiting for payment'", "ORDER BY o.idData"); break;
 				case "test"					: $resultList = $this->fetchSingleRequest('products p JOIN products_variant v ON p.idData = v.productId',array('p.name', 'p.sku', 'v.price'),'v.variantId="'.$item['variantId'].'"'); break;
+				case "cancelOrders" : $resultList = $this->fetchAllRequest('cancelation', array("orderId", "reason", "createdDate"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
 				default	   					: $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
 			}
 

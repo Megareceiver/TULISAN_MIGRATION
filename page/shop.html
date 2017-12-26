@@ -130,10 +130,12 @@
 				}
 
 				if(keyword != "") { keyword = keyword + " AND "; }
-				keyword = keyword + "qty > 0";
+				keyword = keyword + "qty > 0 AND status != 0";
 
-				data = p_getData('operation', 'product', "1", keyword);
+				console.log('-==-');
+				data = p_getData('operation', 'productGroup', "1", keyword);
 				product = data.feedData;
+				console.log('-==-');
 
 				data = p_getData('operation', 'color');
 				color = data.feedData;
@@ -146,25 +148,60 @@
 				html = html +
 				'<div class="shop row">'+
 					'<div class="col-md-3 left-menu">'+
-						'<h5 class="fontserif title">SHOP BY PRODUCT <span toggle-target="#productList" class="left-menu-toggle fa fa-chevron-up syn-fixed-right "></span></h3>' +
-						'<ul id="productList" class="active">';
+						'<h5 class="fontserif title">SHOP BY PRODUCT <span toggle-target="#productList" class="left-menu-toggle fa fa-chevron-up syn-fixed-right "></span></h5>';
 
-				for(var loop = 0; loop < product.length; loop++){
-					html = html + '<li><a href="shopDetail.html?q=' + product[loop].idData + '">' + product[loop].name + '</a></li>';
+				html = html + '<div id="productList" class="active">';
+				html = html + '<ul>';
+
+				if(product.length > 0){
+
+					var caption    = [];
+					var checker    = [];
+					var group   	 = [];
+					var dumbCaption= "";
+					var dumbCount  = -1;
+					var category   = "";
+					for(var loop   = 0; loop < product.length; loop++){
+						dumbString = "";
+						dumbCaption= "";
+
+						category 	 = (product[loop].category) != null ? product[loop].category : "Not Categorized";
+						dumbCaption= category;
+						category 	 = category.replace(' ', '');
+
+						dumbString = dumbString + '<p class="action-list"><a href="shopDetail.html?q=' + product[loop].idData + '">' + product[loop].name + '</a></p>';
+
+						if (checker[category] == undefined) { checker[category] = ""; dumbCount++; }
+						if (group[dumbCount] == undefined) { group[dumbCount] = ""; caption[dumbCount] = dumbCaption; }
+						group[dumbCount] = group[dumbCount] + dumbString;
+
+					}
+
+					console.log("GROUP ::");
+					console.log(group);
+
+					for(var loop = 0; loop < group.length; loop++){
+						html = html +
+						'<li>' +
+							'<h5>' + caption[loop] + ' <span toggle-target="#productList' + loop + '" class="left-menu-toggle fa fa-chevron-up syn-fixed-right "></span></h5>' +
+							'<div id="productList' + loop + '" style="display:none">' + group[loop] + '</div>' +
+						'</li>';
+					}
 				}
 
 				html = html + '</ul>';
+				html = html + '</div><hr/>';
 				html = html +
-				'<h5 class="fontserif title">SHOP BY COLOR <span toggle-target="#colorList" class="left-menu-toggle fa fa-chevron-up syn-fixed-right "></span></h3>' +
+				'<h5 class="fontserif title">SHOP BY COLOR <span toggle-target="#colorList" class="left-menu-toggle fa fa-chevron-up syn-fixed-right "></span></h5>' +
 				'<ul id="colorList" class="active">';
 
 				for(var loop = 0; loop < color.length; loop++){
 					html = html + '<li><a href="shop.html?color=' + color[loop].idData + '">' + color[loop].name + '</a></li>';
 				}
 
-				html = html + '</ul>';
+				html = html + '</ul><hr/>';
 				html = html +
-				'<h5 class="fontserif title">SHOP BY STORY <span toggle-target="#storyList" class="left-menu-toggle fa fa-chevron-up syn-fixed-right "></span></h3>' +
+				'<h5 class="fontserif title">SHOP BY STORY <span toggle-target="#storyList" class="left-menu-toggle fa fa-chevron-up syn-fixed-right "></span></h5>' +
 				'<ul id="storyList" class="active">';
 				// '<ul id="storyList" style="display: none">'; if wanna initial hide
 
@@ -181,7 +218,6 @@
 				if(filter.title != undefined) { html = html + '<h6>' + filter.subtitle + '</h6>'; }
 				if(filter.title != undefined) { html = html + '<p>' + Base64.decode(filter.description).substring(0, 500) + '... <a href="storydetail.html?q=' + filter.idData + '" class="btn-link">view story</a>' + '</p><hr/>'; }
 
-				console.log(product);
 				if(product.length > 0){
 					for(var loop = 0; loop < product.length; loop++)
 					{

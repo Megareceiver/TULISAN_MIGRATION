@@ -70,6 +70,8 @@ function pageAdmin(){
 						'<li class="customer-route"><a href="customer.html">CUSTOMERS</a></li>'+
 						'<li class="vendor-route"><a href="vendor.html">VENDORS</a></li>'+
 						'<li class="order-route"><a href="orders.html">ORDERS</a></li>'+
+						'<li class="cancel-route"><a href="cancelOrders.html">CANCEL ORDERS</a></li>'+
+						'<li class="feedback-route"><a href="feedback.html">FEEDBACK</a></li>'+
 						'<li class="hidden-md hidden-lg"><hr style="border-color: #000;"/></li>' +
 						'<li class="hidden-md hidden-lg"><form id="syncrom_viewstore_min" f-group="auth"><button type="submit" class="btn btn-custom">VIEW STORE</button></form></li>' +
 						'<li class="hidden-md hidden-lg"><form id="syncrom_logout_min" f-group="auth"><button type="submit" class="btn btn-custom">LOGOUT</button></form></li>' +
@@ -151,8 +153,12 @@ function pageAdmin(){
 			case "orders.html": $(".order-route").addClass('active'); break;
 			case "shippingOption.html":
 			case "formShippingOption.html": $(".shipping-route").addClass('active'); break;
+			case "cancelOrders.html": $(".cancel-route").addClass('active'); break;
+			case "feedback.html": $(".feedback-route").addClass('active'); break;
 			default: $(".dashboard-route").addClass('active'); break;
 		}
+	}else{
+		$(".dashboard-route").addClass('active');
 	}
 }
 

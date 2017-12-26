@@ -221,6 +221,7 @@
 	    			'<input type="checkbox" name="customerSelect" value="'+data[loop].idData+'" id="selectRecord' + loop + '"><label for="selectRecord' + loop + '"></label>'+
 	    			'<img class="big-image" src="'+ data[loop].frontPicture +'">'+
 						'<hr/>' +
+	    			'<p class="text-center">'+ ((data[loop].sku!=null && data[loop].sku!="") ? data[loop].sku : '<b>- NO SKU -</b>') +'</p>'+
 	    			'<p class="text-center">'+ ((data[loop].artwork!=null) ? data[loop].artwork : '<b>- NO ARTWORK -</b>') +'</p>'+
 	    			'<p class="text-center">'+ ((data[loop].color!=null) ? data[loop].color : '<b>- NO COLOR -</b>') +'</p>'+
 						'<p class="text-center">'+ ((data[loop].size!='NULL') ? data[loop].size : '<b>- NO SIZE -</b>') +'</p>'+

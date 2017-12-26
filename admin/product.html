@@ -162,7 +162,7 @@
 				//filter
 				$('.alpha a').on("click", function(){
 					var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
-					var data = p_getData('operation', 'product', page, '(name LIKE "' + $(this).html() + '%")');
+					var data = p_getData('operation', 'product', page, '(p.name LIKE "' + $(this).html() + '%")');
 					data = data.feedData;
 					dataGenerator(data);
 
@@ -172,7 +172,7 @@
 
 				$('button.search').on("click", function(){
 					var keyword = $("[placeholder='Search']").val();
-					var data = p_getData('operation', 'product', '1', '(name LIKE "%' + keyword + '%" OR sku LIKE "%' + keyword + '%")');
+					var data = p_getData('operation', 'product', '1', '(p.name LIKE "%' + keyword + '%" OR v.sku LIKE "%' + keyword + '%")');
 					data = data.feedData;
 					dataGenerator(data);
 				});
@@ -185,9 +185,9 @@
 					page = parseInt(page) + 1;
 
 					var keyword = $("[placeholder='Search']").val();
-					var alpha = (r_getCookie('adminAlphaFilter') != "" ? '(name LIKE "' + r_getCookie('adminAlphaFilter') + '%") AND ': "");
+					var alpha = (r_getCookie('adminAlphaFilter') != "" ? '(p.name LIKE "' + r_getCookie('adminAlphaFilter') + '%") AND ': "");
 
-					var data = p_getData('operation', 'product', page, alpha + '(name LIKE "%' + keyword + '%" OR sku LIKE "%' + keyword + '%")');
+					var data = p_getData('operation', 'product', page, alpha + '(p.name LIKE "%' + keyword + '%" OR v.sku LIKE "%' + keyword + '%")');
 					data = data.feedData;
 
 					if(data.length > 0){ dataGenerator(data); } else { page = parseInt(page) - 1; }
@@ -201,7 +201,7 @@
 						page = parseInt(page) - 1;
 
 						var keyword = $("[placeholder='Search']").val();
-						var data = p_getData('operation', 'product', page, '(name LIKE "%' + keyword + '%" OR sku LIKE "%' + keyword + '%")');
+						var data = p_getData('operation', 'product', page, '(p.name LIKE "%' + keyword + '%" OR v.sku LIKE "%' + keyword + '%")');
 						data = data.feedData;
 						dataGenerator(data);
 

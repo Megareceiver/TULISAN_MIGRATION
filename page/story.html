@@ -80,17 +80,27 @@
 
 				for(var loop=0; loop<data.length; loop++){
 					desc = Base64.decode(data[loop].description);
-					desc = desc.substring(0, 500) + "...";
+					// desc = desc.substring(0, 500) + "...";
+					align = "";
 					html = html +
-						"<div class='col-md-6 story-box'>"+
-							"<div class='picture-box story' style='background-image: url(../assets/stories/"+data[loop].picture+");'></div>"+
-							"<div class='title-story'>"+
-								"<h3>"+data[loop].title+"</h3>"+
-							"</div>"+
-							"<div class='content-story'>"+
-								"<p>" + desc + "<br/><br/><a href='storydetail.html?q="+data[loop].idData+"''><b>MORE</b></a></p>"+
-							"</div>"+
-						"</div>";
+					"<div class='col-md-6 story-box'>";
+
+						if(data[loop].picture != null && data[loop].picture != ""){
+							html  = html + "<div class='picture-box story' style='background-image: url(../assets/stories/"+data[loop].picture+");'></div>";
+						}else{
+							align = "text-left";
+						}
+
+						html = html +
+						"<div class='title-story " + align + "'>"+
+							"<h3>"+data[loop].title+"</h3>"+
+						"</div>"+
+						"<div class='content-story'>"+
+							"<p class='limit-box'>" + desc + "</p>"+
+							"<p>...</p>"+
+							"<p><a href='storydetail.html?q="+data[loop].idData+"''><b>MORE</b></a></p>" +
+						"</div>"+
+					"</div>";
 
 						if((loop+1)%2 == 0) html = html + "<div class='clearfix'></div>";
 				}

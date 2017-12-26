@@ -38,8 +38,7 @@ function p_getData(group, target, page="1", keyword=""){
 		async: false,
 		data: { page : page, keyword: keyword },
 		success: function(result){
-			console.log(result);
-			console.log(keyword);
+			// console.log(result);
 			data = result;
 		},
 		complete: function(xhr,status) {  },
@@ -58,7 +57,7 @@ function p_removeData(group, target, id){
 		async: false,
 		data: { id : id },
 		success: function(result){
-			console.log(result);
+			// console.log(result);
 			data = result;
 		},
 		complete: function(xhr,status) {  },
@@ -77,7 +76,7 @@ function p_cloneData(group, target, id){
 		async: false,
 		data: { id : id[0] },
 		success: function(result){
-			console.log(result);
+			// console.log(result);
 			data = result;
 		},
 		complete: function(xhr,status) {  },
@@ -96,7 +95,7 @@ function p_changeData(group, target, pId, refferenceId, dataFetch){
 		async: false,
 		data: { pId : pId, refferenceId: refferenceId, dataFetch: dataFetch },
 		success: function(result){
-			console.log(result);
+			// console.log(result);
 			data = result;
 		},
 		complete: function(xhr,status) {  },
@@ -117,13 +116,13 @@ function p_formHandler(formId, type, back, custom = "no"){
 			cache: false,             // To unable request pages to be cached
 			processData:false,        // To send DOMDocument or non processed data file it is set to false
 			success: function(result){
-				console.log(result);
+				// console.log(result);
 				if(result.feedStatus == "success"){
 					if(back != "") r_callBack(back, custom, result.feedData);
 				}
 			},
 			complete: function(xhr,status) { },
-			error: function(xhr,status,error) { console.log(xhr); console.log(status); console.log(error);  }
+			error: function(xhr,status,error) { console.log(xhr); }
 		});
 	});
 }
@@ -236,7 +235,6 @@ function checkboxActivator(){
 	    });
 
 	    checkedArray = chkArray;
-	    console.log(checkedArray);
     });
 }
 

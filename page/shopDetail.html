@@ -95,7 +95,7 @@
 								'</p>'+
 								'<p>'+
 									'DIMENSION<br>'+
-									data.dimension +
+									'<span id="productDimension">' + data.dimension + '</span>' +
 								'</p>'+
 							'</div>'+
 							'<hr/>' +
@@ -130,14 +130,23 @@
 
 				html = html +
 				'<div class="row margin-top">' +
-					'<div class="col-md-12">' +
-						"<div class='blog-box'>"+
+					'<div class="col-md-10 col-md-offset-1">' +
+						"<div class='blog-box'>";
+						if(data.lookBook1 != null && data.lookBook1 != ""){
+							html = html +
 							"<div class='blog-pic'>" +
 								"<img src='../assets/products/large/" + data.lookBook1 + "' />" +
-							"</div>"+
+							"</div>";
+						}
+
+						if(data.lookBook2 != null && data.lookBook2 != ""){
+							html = html +
 							"<div class='blog-pic'>" +
 								"<img src='../assets/products/large/" + data.lookBook2 + "' />" +
-							"</div>"+
+							"</div>";
+						 }
+
+						html = html +
 						"</div>" +
 					"</div>" +
 				"</div>";
@@ -260,38 +269,62 @@
 							'<a href="#" data-image="../assets/products/small/' + data.frontPicture + '" data-zoom-image="../assets/products/large/' + data.frontPicture + '">' +
 								'<img id="product_detail" class="big-image" src="../assets/products/small/' + data.frontPicture + '" />' +
 							'</a>' +
-						'</li>' +
-						'<li>' +
-							'<a href="#" data-image="../assets/products/small/' + data.backPicture + '" data-zoom-image="../assets/products/large/' + data.topPicture + '">' +
-								'<img id="product_detail" class="big-image" src="../assets/products/small/' + data.backPicture + '" />' +
-							'</a>' +
-						'</li>' +
-						'<li>' +
-							'<a href="#" data-image="../assets/products/small/' + data.topPicture + '" data-zoom-image="../assets/products/large/' + data.topPicture + '">' +
-								'<img id="product_detail" class="big-image" src="../assets/products/small/' + data.topPicture + '" />' +
-							'</a>' +
-						'</li>' +
-						'<li>' +
-							'<a href="#" data-image="../assets/products/small/' + data.bottomPicture + '" data-zoom-image="../assets/products/large/' + data.bottomPicture + '">' +
-						    '<img id="product_detail" class="big-image" src="../assets/products/small/' + data.bottomPicture + '" />' +
-						  '</a>' +
-						'</li>' +
-						'<li>' +
-							'<a href="#" data-image="../assets/products/small/' + data.leftPicture + '" data-zoom-image="../assets/products/large/' + data.leftPicture + '">' +
-						    '<img id="product_detail" class="big-image" src="../assets/products/small/' + data.leftPicture + '" />' +
-						  '</a>' +
-						'</li>' +
-						'<li>' +
-							'<a href="#" data-image="../assets/products/small/' + data.rightPicture + '" data-zoom-image="../assets/products/large/' + data.rightPicture + '">' +
-						    '<img id="product_detail" class="big-image" src="../assets/products/small/' + data.rightPicture + '" />' +
-						  '</a>' +
-						'</li>' +
+						'</li>';
+
+						if(data.backPicture != null && data.backPicture != "") {
+							html = html +
+							'<li>' +
+								'<a href="#" data-image="../assets/products/small/' + data.backPicture + '" data-zoom-image="../assets/products/large/' + data.backPicture + '">' +
+									'<img id="product_detail" class="big-image" src="../assets/products/small/' + data.backPicture + '" />' +
+								'</a>' +
+							'</li>';
+
+						}
+
+						if(data.topPicture != null && data.topPicture != "") {
+							html = html +
+							'<li>' +
+								'<a href="#" data-image="../assets/products/small/' + data.topPicture + '" data-zoom-image="../assets/products/large/' + data.topPicture + '">' +
+									'<img id="product_detail" class="big-image" src="../assets/products/small/' + data.topPicture + '" />' +
+								'</a>' +
+							'</li>';
+						}
+
+						if(data.bottomPicture != null && data.bottomPicture != "") {
+							html = html +
+							'<li>' +
+								'<a href="#" data-image="../assets/products/small/' + data.bottomPicture + '" data-zoom-image="../assets/products/large/' + data.bottomPicture + '">' +
+							    '<img id="product_detail" class="big-image" src="../assets/products/small/' + data.bottomPicture + '" />' +
+							  '</a>' +
+							'</li>';
+						}
+
+						if(data.leftPicture != null && data.leftPicture != "") {
+							html = html +
+							'<li>' +
+								'<a href="#" data-image="../assets/products/small/' + data.leftPicture + '" data-zoom-image="../assets/products/large/' + data.leftPicture + '">' +
+							    '<img id="product_detail" class="big-image" src="../assets/products/small/' + data.leftPicture + '" />' +
+							  '</a>' +
+							'</li>';
+						}
+
+						if(data.rightPicture != null && data.rightPicture != "") {
+							html = html +
+							'<li>' +
+								'<a href="#" data-image="../assets/products/small/' + data.rightPicture + '" data-zoom-image="../assets/products/large/' + data.rightPicture + '">' +
+							    '<img id="product_detail" class="big-image" src="../assets/products/small/' + data.rightPicture + '" />' +
+							  '</a>' +
+							'</li>';
+						}
+
+					html = html +
 					'</ul>'+
 				'</div>';
 
 				$("#productViewer").html(html);
 				$("[name=variantId]").val(data.idData);
 				$("#productPrice").html(currencyFormat(String(data.price)));
+				$("#productDimension").html(data.dimension);
 				$("#qty").html(data.qty);
 				$("#count").val(1);
 				count = 1;

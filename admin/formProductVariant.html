@@ -216,7 +216,7 @@
 
 				/* data generator */
 				if(getParam('q') != "" && getParam('q') != null) dataGenerator(getParam('q'));
-				else p_formHandler('syncrom', 'addData', 'ProductsVariant.html' + link);
+				else p_formHandler('syncrom', 'addData', 'productsVariant.html' + link);
 			}
 
 			function dataGenerator(idData){
@@ -234,7 +234,7 @@
 				var link = "";
 				if(getParam('s') != "" && getParam('s') != null) link = '?q=' + getParam('s');
 				currencyFormatChanger('[name="price"]');
-				p_formHandler('syncrom', 'updateData', 'ProductsVariant.html' + link);
+				p_formHandler('syncrom', 'updateData', 'productsVariant.html' + link);
 			}
 		</script>
 	</body>

@@ -35,6 +35,10 @@
 					$json = $route->updateData($_POST, $_GET['target']);
 				break;
 
+				case 'duplicateData':
+					$json = $route->cloneData($_POST, $_GET['target']);
+				break;
+
 				case 'removeData':
 					$json = $route->removeData($_POST, $_GET['target']);
 				break;

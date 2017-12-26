@@ -51,6 +51,9 @@
 							'<a href="#" id="manageButton"><i class="fa fa-bars text-warning">&nbsp;</i> Manage Product</a>'+
 						'</div>' +
 						'<div class="input-group operation-button">' +
+							'<a href="#" id="duplicateButton"><i class="fa fa-copy text-warning">&nbsp;</i> Duplicate Product</a>'+
+						'</div>' +
+						'<div class="input-group operation-button">' +
 							'<a href="#" id="manageVariant"><i class="fa fa-tags text-warning">&nbsp;</i> Manage Variant</a>'+
 						'</div>' +
 						'<div class="input-group operation-button">' +
@@ -213,22 +216,23 @@
 				for(var loop =0; loop<data.length; loop++){
 
 					data[loop].frontPicture = (data[loop].frontPicture != "" && data[loop].frontPicture != null) ? "../assets/products/large/" + data[loop].frontPicture : "../assets/default/no.gif";
-					// data[loop].price  = (data[loop].price != "") ? normalFormatChanger(data[loop].price) : "0";
 
-		    		html = html +
-		    		'<div class="col-md-3 border-all">'+
-							'<br/>' +
-		    			'<input type="checkbox" name="customerSelect" value="'+data[loop].idData+'" id="selectRecord' + loop + '"><label for="selectRecord' + loop + '"></label>'+
-		    			'<img class="big-image" src="'+ data[loop].frontPicture +'">'+
-							'<hr/>' +
-		    			'<p class="text-center">'+ data[loop].sku +'</p>'+
-		    			'<p class="text-center">'+ data[loop].name +'</p>'+
-		    			// '<p class="text-center">'+ data[loop].qty +'</p>'+
-		    			// '<p class="text-center">'+ currencyFormat(String(data[loop].price)) +'</p>'+
-		    		'</div>';
+					status = (data[loop].status == 1) ? "Show in store" : "<b>- DRAFT -</b>";
 
-						if((loop+1) %4 == 0) html = html + '<div class="clearfix"></div>';
-		    	}
+					category = (data[loop].category == "" || data[loop].category == null) ? "<b>- NO CATEGORY -</b>" : data[loop].category;
+	    		html = html +
+	    		'<div class="col-md-3 border-all">'+
+						'<br/>' +
+	    			'<input type="checkbox" name="customerSelect" value="'+data[loop].idData+'" id="selectRecord' + loop + '"><label for="selectRecord' + loop + '"></label>'+
+	    			'<img class="big-image" src="'+ data[loop].frontPicture +'">'+
+						'<hr/>' +
+	    			'<p class="text-center">'+ data[loop].name +'</p>'+
+	    			'<p class="text-center">'+ status +'</p>'+
+	    			'<p class="text-center">'+ category +'</p>'+
+	    		'</div>';
+
+					if((loop+1) %4 == 0) html = html + '<div class="clearfix"></div>';
+		    }
 
 				html = html + '<div class="clearfix"></div>';
 
@@ -263,6 +267,25 @@
 				$('#manageButton').unbind().on("click", function(){
 					if(checkedArray.length == 1 && checkedArray[0] != "0"){
 						window.location.href = base_url + "/admin/formProduct.html?q=" + checkedArray[0];
+					}else{
+						alert("Please choose only one record!");
+					}
+				});
+
+				$('#duplicateButton').unbind().on("click", function(){
+					if(checkedArray.length == 1 && checkedArray[0] != "0"){
+						var confirmation = confirm("Are you sure you want to duplicate the selected data?");
+						if (confirmation == true) {
+							p_cloneData('operation', 'product', checkedArray);
+
+							r_setCookie('adminPageFilter', '1');
+							r_setCookie('adminAlphaFilter', '');
+							var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
+							var data = p_getData('operation', 'product', page);
+								  data = data.feedData;
+
+							dataGenerator(data);
+						}
 					}else{
 						alert("Please choose only one record!");
 					}

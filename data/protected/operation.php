@@ -12,8 +12,8 @@
 			switch($target){
 				case "summary" 			: $resultList = $this->summary(); break;
 
-				case "product" 				: $resultList = $this->fetchAllRequest('products p LEFT JOIN products_variant v ON p.idData = v.productId', array("DISTINCT p.idData", "(SELECT x.frontPicture FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as frontPicture", "(SELECT x.price FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as price", "p.sku", "p.name", "p.description"), $post['keyword'], "ORDER BY p.name ASC", $post['page']); break;
-				case "productFetch" 	: $resultList = $this->fetchSingleRequest('products', array("idData", "sku", "name", "description", "material", "dimension", "storyId", "lookBook1", "lookBook2"), $post['keyword']); break;
+				case "product" 				: $resultList = $this->fetchAllRequest('products p LEFT JOIN products_variant v ON p.idData = v.productId LEFT JOIN categories c ON p.categoryId = c.idData', array("DISTINCT p.idData", "(SELECT x.frontPicture FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as frontPicture", "p.name", "p.description", "status", "c.name as category"), $post['keyword'], "ORDER BY p.name ASC", $post['page']); break;
+				case "productFetch" 	: $resultList = $this->fetchSingleRequest('products', array("idData", "name", "description", "material", "storyId", "categoryId", "status", "lookBook1", "lookBook2"), $post['keyword']); break;
 				// case "productDetail" 	: $resultList = $this->fetchSingleRequest('products', array("lookBook1", "lookBook2", "idData", "sku", "name", "description", "price", "material", "dimension", "storyId"), $post['keyword']); break;
 				case "productDetail" 	: $resultList = $this->fetchSingleRequest(
 																'products p JOIN products_variant v ON p.idData = v.productId JOIN cms_story s ON p.storyId = s.idData',
@@ -31,7 +31,7 @@
 				case "productCart" 	: $resultList = $this->fetchAllRequest('products p JOIN products_variant v ON p.idData = v.productId',array("DISTINCT v.idData", "v.qty", "v.frontPicture","p.name", "v.price", "p.sku"), $post['keyword'], "ORDER BY v.idData", $post['page']); break;
 
 				case "productVariant" 				: $resultList = $this->fetchAllRequest('products p JOIN products_variant v ON p.idData = v.productId LEFT JOIN cms_story_artwork a ON v.artworkId = a.idData LEFT JOIN colors c ON v.colorId = c.idData', array("v.idData", "p.name", "v.qty", "v.size", "v.frontPicture", "a.name as artwork", "c.name as color", "v.price"), $post['keyword'], "ORDER BY v.artWorkId ASC", $post['page']); break;
-				case "productVariantFetch" 		: $resultList = $this->fetchSingleRequest('products_variant', array("frontPicture", "backPicture", "topPicture", "rightPicture", "bottomPicture", "leftPicture", "idData", "qty", "size", "colorId", "artworkId", "price"), $post['keyword']); break;
+				case "productVariantFetch" 		: $resultList = $this->fetchSingleRequest('products_variant', array("frontPicture", "backPicture", "topPicture", "rightPicture", "bottomPicture", "leftPicture", "idData", "qty", "size", "colorId", "artworkId", "price", "dimension", "sku"), $post['keyword']); break;
 				case "productArtworkOption" 	: $resultList = $this->fetchAllRecord('products_variant v JOIN cms_story_artwork a ON v.artworkId = a.idData', array("DISTINCT a.name as caption", "a.idData as value"), $post['keyword'], "ORDER BY v.idData ASC"); break;
 				case "productColorOption" 	: $resultList = $this->fetchAllRecord('products_variant v JOIN colors a ON v.colorId = a.idData', array("DISTINCT a.name as caption", "a.idData as value"), $post['keyword'], "ORDER BY v.idData ASC"); break;
 				case "productSizeOption" 		: $resultList = $this->fetchAllRecord('products_variant v', array("DISTINCT v.size as caption", "v.size as value"), $post['keyword'], "ORDER BY v.idData ASC"); break;
@@ -147,7 +147,7 @@
 		public function addData($post, $target){
 			switch($target){
 				case "product"  :
-					$fields = array("name", "sku", "description", "material", "dimension", "storyId");
+					$fields = array("name", "sku", "description", "material", "storyId", "categoryId", "status");
 					$values = array();
 					foreach ($fields as $key) {
 						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
@@ -171,7 +171,7 @@
 				break;
 
 				case "productVariant"  :
-					$fields = array("qty", "size", "artworkId", "colorId", "productId", "price");
+					$fields = array("sku", "qty", "size", "dimension", "artworkId", "colorId", "productId", "price");
 					$values = array();
 					foreach ($fields as $key) {
 						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
@@ -477,7 +477,7 @@
 		public function updateData($post, $target){
 			switch($target){
 				case "product"  :
-					$fields = array("name", "sku", "description", "material", "dimension", "storyId");
+					$fields = array("name", "sku", "description", "material", "storyId", "categoryId", "status");
 					$values = array();
 					foreach ($fields as $key) {
 						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
@@ -501,7 +501,7 @@
 				break;
 
 				case "productVariant"  :
-					$fields = array("qty", "size", "artworkId", "colorId", "price");
+					$fields = array("sku", "qty", "size", "dimension", "artworkId", "colorId", "price");
 					$values = array();
 					foreach ($fields as $key) {
 						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
@@ -810,6 +810,19 @@
 			$json = $resultList;
 
 	        return $json;
+		}
+
+		public function cloneData($post, $target){
+			switch($target){
+				case "product" 	: $resultList = $this->duplicateById($post['id']); break;
+
+				default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
+			}
+
+			/* result fetch */
+			$json = $resultList;
+
+					return $json;
 		}
 
 		public function fetchAllRecord($table, $fields, $conditions = "", $orderBy = ""){
@@ -1183,6 +1196,63 @@
 
 			return $json;
 
+		}
+
+		// CLONE DATA
+		public function duplicateById($idData){
+			/* initial condition */
+			$resultList = array();
+			$feedStatus	= "failed";
+			$feedType   = "danger";
+			$feedMessage= "Something went wrong, failed to duplicate data!";
+			$feedDetail	= "failed";
+
+			$temp		= "";
+
+			/* open connection */
+			$gate = $this->db;
+			if($gate){
+
+				//product
+				$sql  = "CREATE TEMPORARY TABLE tmp SELECT CONCAT('Copy of ', `name`), `sku`, `description`, `material`, `dimension`, `price`, `storyId`, `categoryId`, `lookBook1`, `lookBook2`, `status`, '".$_SESSION['tulisan_user_username']."' as `createdBy`, NOW() as `createdDate` FROM products WHERE idData = '".$idData."';";
+				$sql .= "INSERT INTO products (`name`, `sku`, `description`, `material`, `dimension`, `price`, `storyId`, `categoryId`, `lookBook1`, `lookBook2`, `status`, `createdBy`, `createdDate`) SELECT * FROM tmp t;";
+				$sql .= "DROP TABLE tmp;";
+
+				$result = $this->db->query($sql);
+				if($result){
+
+					closeGate();
+					$this->db = openGate();
+					$resultId = $this->fetchSingleRequest('products', array("idData"), "1=1 ORDER BY idData DESC LIMIT 1");
+					$resultId = $resultId['feedData'];
+					$resultId= $resultId['idData'];
+
+					$feedStatus	= "success";
+					$feedType   = "success";
+					$feedMessage= "The process has been successful";
+
+					//product variant
+					$sql  = "CREATE TEMPORARY TABLE tmp SELECT '".$resultId."' as `productId`, `sku`, `artworkId`, `colorId`, `qty`, `price`, `size`, `dimension`, `frontPicture`, `backPicture`, `topPicture`, `rightPicture`, `bottomPicture`, `leftPicture`, '".$_SESSION['tulisan_user_username']."' as `createdBy`, NOW() as `createdDate` FROM products_variant WHERE productId = '".$idData."';";
+					$sql .= "INSERT INTO products_variant (`productId`, `sku`, `artworkId`, `colorId`, `qty`, `price`, `size`, `dimension`, `frontPicture`, `backPicture`, `topPicture`, `rightPicture`, `bottomPicture`, `leftPicture`, `createdBy`, `createdDate`) SELECT * FROM tmp t;";
+					$sql .= "DROP TABLE tmp;";
+
+					$result = $this->db->query($sql);
+					if($result){
+						$feedStatus	= "success";
+						$feedType   = "success";
+						$feedMessage= "The process has been successful";
+					}
+				}
+
+				$feedType = $sql;
+			}
+
+			$resultList = array( "feedStatus" => $feedStatus, "feedType" => $feedType, "feedMessage" => $feedMessage, "feedDetail" => $feedDetail);
+
+			/* result fetch */
+			$json = $resultList;
+
+			return $json;
 		}
 
 		//UPLOAD IMAGE

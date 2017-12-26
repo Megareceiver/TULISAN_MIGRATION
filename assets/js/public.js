@@ -68,6 +68,25 @@ function p_removeData(group, target, id){
 	return data;
 }
 
+function p_cloneData(group, target, id){
+	var data = null;
+	$.ajax({
+		url: base_url + '/data/router.php?session=duplicateData&group=' + group + '&target=' + target,
+		type: 'post',
+		dataType: 'json',
+		async: false,
+		data: { id : id[0] },
+		success: function(result){
+			console.log(result);
+			data = result;
+		},
+		complete: function(xhr,status) {  },
+		error: function(xhr,status,error) { console.log(xhr); }
+	});
+
+	return data;
+}
+
 function p_changeData(group, target, pId, refferenceId, dataFetch){
 	var data = null;
 	$.ajax({

@@ -74,14 +74,22 @@
 								'<hr/>' +
 								'<p>' + data.description + '</p>'+
 								'<div class="row margin-top">'+
-									'<div class="col-xs-6">'+
+									'<div class="col-xs-12">'+
+										'<p>STORY</p>'+
+										'<div class="select-box">' +
+											'<select name="storyId" class="form-control">' +
+											'</select>' +
+										'</div>' +
+									'</div>' +
+									"<div class='clearfix'></div>" +
+									'<div class="col-xs-6 margin-top">'+
 										'<p>PATTERN</p>'+
 										'<div class="select-box">' +
 											'<select name="artworkId" class="form-control">' +
 											'</select>' +
 										'</div>' +
 									'</div>' +
-									'<div class="col-xs-6">'+
+									'<div class="col-xs-6 margin-top">'+
 										'<p>COLOR</p>'+
 										'<div class="select-box">' +
 											'<select name="colorId" class="form-control">' +
@@ -163,17 +171,21 @@
 				product_htmlGenerate(data);
 				$("#custom-bread-detail").html(toTitleCase(data.name));
 
-				var oData = p_getData('operation', 'productArtworkOption', '', "v.productId='" + productId + "' AND v.qty > 0");
+				var oData = p_getData('operation', 'productStoryOption', '', "v.productId='" + productId + "' AND v.qty > 0");
+				$("[name=storyId]").append(dataToOptionHtml(oData.feedData));
+
+				oData = p_getData('operation', 'productArtworkOption', '', "v.productId='" + productId + "' AND v.storyId = '" + data.storyId + "' AND v.qty > 0");
 				$("[name=artworkId]").append(dataToOptionHtml(oData.feedData));
 
-				oData = p_getData('operation', 'productColorOption', '', "v.productId='" + productId + "' AND v.artworkId = '" + data.artworkId + "' AND v.qty > 0");
+				oData = p_getData('operation', 'productColorOption', '', "v.productId='" + productId + "' AND v.storyId = '" + data.storyId + "' AND v.artworkId = '" + data.artworkId + "' AND v.qty > 0");
 				$("[name=colorId]").append(dataToOptionHtml(oData.feedData));
 
-				oData = p_getData('operation', 'productSizeOption', '', "v.productId='" + productId + "' AND v.artworkId = '" + data.artworkId + "' AND v.qty > 0");
+				oData = p_getData('operation', 'productSizeOption', '', "v.productId='" + productId + "' AND v.storyId = '" + data.storyId + "' AND v.artworkId = '" + data.artworkId + "' AND v.qty > 0");
 				$("[name=size]").append(dataToOptionHtml(oData.feedData));
 
 				zoomActivator();
 
+				$('[name=storyId]').on("change", function(){ custom_story($(this).val()); });
 				$('[name=artworkId]').on("change", function(){ custom_artwork($(this).val()); });
 				$('[name=colorId]').on("change", function(){ custom_color($(this).val()); });
 				$('[name=size]').on("change", function(){ custom_size($(this).val()); });
@@ -214,6 +226,28 @@
 					$.fancybox(ez.getGalleryList());
 				  return false;
 				});
+			}
+
+			function custom_story(storyId){
+				$("[name=colorId], [name=size]").html("");
+
+				var productId = getParam('q');
+				oData = p_getData('operation', 'productArtworkOption', '', "v.productId='" + productId + "' AND v.storyId = '" + storyId + "' AND v.qty > 0");
+				$("[name=artworkId]").append(dataToOptionHtml(oData.feedData));
+
+				var artworkId = $('[name=artworkId]').val();
+
+				oData = p_getData('operation', 'productColorOption', '', "v.productId='" + productId + "' AND v.artworkId = '" + artworkId + "' AND v.qty > 0");
+				$("[name=colorId]").append(dataToOptionHtml(oData.feedData));
+
+				var colorId = $('[name=colorId]').val();
+
+				oData = p_getData('operation', 'productSizeOption', '', "v.productId='" + productId + "' AND v.artworkId = '" + artworkId + "' AND v.colorId = '" + colorId + "' AND v.qty > 0");
+				$("[name=size]").append(dataToOptionHtml(oData.feedData));
+
+				data = p_getData('operation', 'productDetail', '1', 'p.idData = "' + productId + '" AND v.artWorkId ="' + artworkId + '" AND v.colorId = "' + colorId + '" AND v.qty > 0');
+				data = data.feedData;
+				product_htmlGenerate(data);
 			}
 
 			function custom_artwork(artworkId){

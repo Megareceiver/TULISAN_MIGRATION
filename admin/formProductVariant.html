@@ -114,6 +114,14 @@
 						'<label>Price</label>'+
 						'<input name="price" type="text" class="form-control">'+
 					'</div>'+
+				'</div>' +
+				'<div class="input-frame col-md-6">'+
+					'<div class="form-group select-box">' +
+						'<label>Story</label>' +
+						'<select name="storyId" class="form-control">' +
+							'<option value="NULL">Choose story</option>' +
+						'</select>' +
+					'</div>'+
 				'</div>';
 
 			html = html +
@@ -211,8 +219,11 @@
 				var oData = p_getData('operation', 'colorOption');
 				$("[name=colorId]").append(dataToOptionHtml(oData.feedData));
 
-				var oData = p_getData('operation', 'artWorkOption');
+				oData = p_getData('operation', 'artWorkOption');
 				$("[name=artworkId]").append(dataToOptionHtml(oData.feedData));
+
+				oData = p_getData('operation', 'cms_storyOption');
+				$("[name=storyId]").append(dataToOptionHtml(oData.feedData));
 
 				/* data generator */
 				if(getParam('q') != "" && getParam('q') != null) dataGenerator(getParam('q'));

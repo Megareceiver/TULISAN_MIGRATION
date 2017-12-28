@@ -2,7 +2,7 @@
 	define('db_host', "localhost");
 	define('db_user', "root");
 	define('db_pass', "root");
-	define('db_name', "tulisan_migration_3");
+	define('db_name', "tulisan_migration_4");
 
 	function openGate(){
 		$gate = new PDO("mysql:host=".db_host.";dbname=".db_name, db_user, db_pass);

@@ -123,8 +123,10 @@ function pageAdmin(){
 		$(".list-nav li, .top-nav li").removeClass('active');
 		switch(page){
 			case "product.html":
+			case "productVariant.html":
 			case "color.html":
 			case "formColor.html":
+			case "formProductVariant.html":
 			case "formProduct.html": $(".product-route").addClass('active'); break;
 			case "customer.html":
 			case "formCustomer.html": $(".customer-route").addClass('active'); break;

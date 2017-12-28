@@ -38,7 +38,7 @@ function p_getData(group, target, page="1", keyword=""){
 		async: false,
 		data: { page : page, keyword: keyword },
 		success: function(result){
-			// console.log(result);
+			console.log(result);
 			data = result;
 		},
 		complete: function(xhr,status) {  },

@@ -113,7 +113,7 @@
 				keyword = "";
 				keywordSearch = "";
 				if(getParam('story') != "" && getParam('story') != null){
-					keyword = "storyId =" + getParam('story');
+					keyword = "v.storyId =" + getParam('story');
 					data = p_getData('operation', 'cms_storyFetch', "1", " idData = '" + getParam('story') + "'");
 					filter = data.feedData;
 				}
@@ -132,10 +132,8 @@
 				if(keyword != "") { keyword = keyword + " AND "; }
 				keyword = keyword + "qty > 0 AND status != 0";
 
-				console.log('-==-');
 				data = p_getData('operation', 'productGroup', "1", keyword);
 				product = data.feedData;
-				console.log('-==-');
 
 				data = p_getData('operation', 'color');
 				color = data.feedData;
@@ -176,9 +174,6 @@
 						group[dumbCount] = group[dumbCount] + dumbString;
 
 					}
-
-					console.log("GROUP ::");
-					console.log(group);
 
 					for(var loop = 0; loop < group.length; loop++){
 						html = html +

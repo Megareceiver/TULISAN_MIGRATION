@@ -116,7 +116,7 @@ function p_formHandler(formId, type, back, custom = "no"){
 			cache: false,             // To unable request pages to be cached
 			processData:false,        // To send DOMDocument or non processed data file it is set to false
 			success: function(result){
-				// console.log(result);
+				console.log(result);
 				if(result.feedStatus == "success"){
 					if(back != "") r_callBack(back, custom, result.feedData);
 				}

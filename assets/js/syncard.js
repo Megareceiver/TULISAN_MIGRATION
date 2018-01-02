@@ -85,9 +85,9 @@ function pageAdmin(){
 						'<li class="product-route"><a href="product.html">Item</a></li>'+
 						'<li class="customer-route"><a href="customer.html">Customer</a></li>'+
 						'<li class="shipping-route"><a href="shippingOption.html">Shipping Option</a></li>'+
-						'<li><a href="#" style="color: #555">Payment Method</a></li>'+
-						'<li><a href="#" style="color: #555">Discounts</a></li>'+
-						'<li><a href="#" style="color: #555">Catalog Price Rule</a></li>'+
+						// '<li><a href="#" style="color: #555">Payment Method</a></li>'+
+						// '<li><a href="#" style="color: #555">Discounts</a></li>'+
+						// '<li><a href="#" style="color: #555">Catalog Price Rule</a></li>'+
 					'</ul>' +
 				'</div>'+
 				'<div class="col-md-12 main-content syn-clear">'+

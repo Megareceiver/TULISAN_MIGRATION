@@ -288,25 +288,6 @@
 					}
 				});
 
-				$('#processButton').unbind().on("click", function(){
-					if(checkedArray.length > 0){
-						var confirmation = confirm("Are you sure you want to process the selected data?");
-						if (confirmation == true) {
-							// p_removeData('order', 'orders', checkedArray);
-
-							r_setCookie('adminPageFilter', '1');
-							r_setCookie('adminAlphaFilter', '');
-							var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
-							var data = p_getData('order', 'orders', page);
-								data = data.feedData;
-
-							dataGenerator(data);
-						}
-					}else{
-						alert("Please choose record first!");
-					}
-				});
-
 				$('#detailButton').unbind().on("click", function(){
 					if(checkedArray.length == 1 && checkedArray[0] != "0"){
 						window.location.href = base_url + "/admin/orderItems.html?q=" + checkedArray[0];
@@ -316,23 +297,10 @@
 				});
 
 				$('#processButton').unbind().on("click", function(){
-					if(checkedArray.length > 0){
-						var confirmation = confirm("Are you sure you want to process the selected order?");
-						if (confirmation == true) {
-							var res = p_changeData('order', 'processOrder', checkedArray);
-
-							if(res.feedStatus == "success"){
-								r_setCookie('adminPageFilter', '1');
-								r_setCookie('adminAlphaFilter', '');
-								var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
-								var data = p_getData('order', 'orders', page);
-									  data = data.feedData;
-
-								dataGenerator(data);
-							}
-						}
-					}else{
-						alert("Please choose record first!");
+					if (checkedArray.length == 1 && checkedArray[0] != "0") {
+						window.location.href = base_url + "/admin/formProcessOrder.html?q=" + checkedArray[0];
+					} else {
+						alert("Please choose only one record!");
 					}
 				});
 

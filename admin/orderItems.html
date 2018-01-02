@@ -47,6 +47,25 @@
 					window.location.href = base_url + "/admin/orders.html";
 				}
 
+				var head = p_getData('order', 'orderFetch', '0', 'idData = "' + id + '"');
+				head = head.feedData;
+
+				var total = 0;
+				var temp = normalFormatChanger(head.total);
+				total = currencyFormat(String(temp));
+
+				var transferLink = "#";
+				var transferCaption = "No";
+
+				if(head.transferPicture != null && head.transferPicture != ""){ 
+					transferLink = "../assets/transferPicture/" + head.transferPicture; 
+					transferCaption = "View";
+				}
+
+				if(head.shippingMethod == null || head.shippingMethod == ""){
+					head.shippingMethod = "-";
+				}
+
 				html = html +
 				'<div class="header-option">' +
 					'<div class="operation-group">'+
@@ -54,54 +73,41 @@
 							'<div class="input-group operation-button">' +
 								'<a href="orders.html"><i class="fa fa-arrow-left text-warning">&nbsp;</i> Back to Orders</a>'+
 							'</div>' +
-		        	'<div class="input-group pull-right">' +
-		        		'<input type="text" class="form-control" placeholder="Search">' +
-			        	'<span class="input-group-btn">' +
-			        		'<button type="button" class="search btn btn-default">SEARCH</button>' +
-			        	'</span>' +
-		        	'</div>' +
-			   		'</form>' +
-			   		'<div class="clearfix"></div>' +
+							// '<div class="input-group pull-right">' +
+							// 	'<input type="text" class="form-control" placeholder="Search">' +
+							// 	'<span class="input-group-btn">' +
+							// 		'<button type="button" class="search btn btn-default">SEARCH</button>' +
+							// 	'</span>' +
+							// '</div>' +
+						'</form>' +
+						'<div class="clearfix"></div>' +
 					'</div>' +
-					'<div class="summary-group">'+
-						'<div class="summary-text">'+
-							'<p>Total number of items</p>'+
-							'<p class="number" id="totalRecord">0</p>'+
-						'</div>'+
-						'<div class="alpha">'+
-							'<ul>' +
-								'<li><a href="#">A</a></li>'+
-								'<li><a href="#">B</a></li>'+
-								'<li><a href="#">C</a></li>'+
-								'<li><a href="#">D</a></li>'+
-								'<li><a href="#">E</a></li>'+
-								'<li><a href="#">F</a></li>'+
-								'<li><a href="#">G</a></li>'+
-								'<li><a href="#">H</a></li>'+
-								'<li><a href="#">I</a></li>'+
-								'<li><a href="#">J</a></li>'+
-								'<li><a href="#">K</a></li>'+
-								'<li><a href="#">L</a></li>'+
-								'<li><a href="#">M</a></li>'+
-								'<li><a href="#">N</a></li>'+
-								'<li><a href="#">O</a></li>'+
-								'<li><a href="#">P</a></li>'+
-								'<li><a href="#">Q</a></li>'+
-								'<li><a href="#">R</a></li>'+
-								'<li><a href="#">S</a></li>'+
-								'<li><a href="#">T</a></li>'+
-								'<li><a href="#">U</a></li>'+
-								'<li><a href="#">V</a></li>'+
-								'<li><a href="#">W</a></li>'+
-								'<li><a href="#">X</a></li>'+
-								'<li><a href="#">Z</a></li>'+
-							'</ul>'+
-						'</div>'+
-					'</div>'+
-					'<p class="pagging-text"><a href="#" class="pagging-left">< Previous page</a> | <a href="#" class="pagging-right">Next page ></a></p>' +
+					'<div class="col-md-6 syn-clear">' +
+						'<h3>Detail Order #' + id + '</h3>' +
+						'<h5>' + head.name + '</h5>' +
+						'<h5>' + head.address + '</h5>' +
+						'<h5>' + head.city + ' ' + head.zipCode + '</h5>' +
+						'<h5>' + head.country + '</h5>' +
+						'<h5>Phone: ' + head.phone + '</h5>' +
+					'</div>' +
+					'<div class="col-md-6 syn-clear">' +
+						'<h3>&nbsp;</h3>' +
+						'<h5>Payment method : ' + head.paymentMethod + '</h5>' +
+						'<h5>Bank : ' + head.bank + '</h5>' +
+						'<h5>Payment confirm : <a href="' + transferLink + '">' + transferCaption + '</a></h5>' +
+						'<h5>Doku status : ' + ((head.dokuStatus == null || head.dokuStatus == "") ? "-" : "#" + head.dokuStatus) + '</h5>' +
+						'<h5>Shipping Option : ' + ((head.shippingMethod == null || head.shippingMethod == "") ? "-" : head.shippingMethod) + '</h5>' +
+						'<h5>Receipt Numb. : ' + ((head.receiptNumber == null || head.receiptNumber == "") ? "-" : "#" + head.receiptNumber) + '</h5>' +
+					'</div>' +
+					'<div class="clearfix"></div>' +
+					'<div class="col-md-6 syn-clear">' +
+						'<h5>Status Order : ' + head.status + '</h5>' +
+						'<h5>Total Order : ' + total + '</h5>' +
+					'</div>' +
 				'</div>';
 
 				html = html +
+				'<hr/>' +
 				'<div class="table-frame">'+
 					'<table class="table table-striped table-responsive">'+
 					    '<thead>'+

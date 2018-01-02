@@ -10,15 +10,15 @@
 
 		public function requestData($post, $target){
 			switch($target){
-				case "orders" 			: $resultList = $this->fetchAllRequest('orders', array("idData", "name", "status", "total", "createdDate"), $post['keyword'], "ORDER BY idData DESC, name ASC", $post['page']); break;
+				case "orders" 		: $resultList = $this->fetchAllRequest('orders', array("idData", "name", "status", "total", "createdDate"), $post['keyword'], "ORDER BY idData DESC, name ASC", $post['page']); break;
+				case "orderFetch" 	: $resultList = $this->fetchSingleRequest('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.dokuStatus", "o.dokuMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status"), "o.".$post['keyword']); break;
 				case "orderItems" 	:
-				case "itemsCart" 		: $resultList = $this->fetchAllRecord('orders_item i JOIN products_variant v ON i.variantId = v.idData JOIN products p ON v.productId = p.idData',array("p.name", "p.sku", "i.price", "i.qty"), $post['keyword'], "ORDER BY i.idData"); break;
-				case "orderInfo" 		: $resultList = $this->fetchSingleRequest('orders o JOIN countries c ON o.country = c.country_code',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.paymentMethod"), $post['keyword']); break;
+				case "itemsCart" 	: $resultList = $this->fetchAllRecord('orders_item i JOIN products_variant v ON i.variantId = v.idData JOIN products p ON v.productId = p.idData',array("p.name", "v.sku", "i.price", "i.qty"), $post['keyword'], "ORDER BY i.idData"); break;
+				case "orderInfo" 	: $resultList = $this->fetchSingleRequest('orders o JOIN countries c ON o.country = c.country_code',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.paymentMethod"), $post['keyword']); break;
 				case "recentOrders" : $resultList = $this->fetchAllRecord('orders o',array("o.idData as number", 'DATE_FORMAT(o.createdDate, "%M, %d %Y") as date', "status"), "o.createdBy = '".$_SESSION['tulisan_user_username']."' AND o.status <> 'Waiting for payment'", "ORDER BY o.idData"); break;
 				case "unpaidOrders" : $resultList = $this->fetchAllRecord('orders o',array("o.idData as number", 'DATE_FORMAT(o.createdDate, "%M, %d %Y") as date', "status"), "o.createdBy = '".$_SESSION['tulisan_user_username']."' AND o.status = 'Waiting for payment'", "ORDER BY o.idData"); break;
-				case "test"					: $resultList = $this->fetchSingleRequest('products p JOIN products_variant v ON p.idData = v.productId',array('p.name', 'p.sku', 'v.price'),'v.variantId="'.$item['variantId'].'"'); break;
 				case "cancelOrders" : $resultList = $this->fetchAllRequest('cancelation', array("orderId", "reason", "createdDate"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
-				default	   					: $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
+				default	   			: $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
 			}
 
 			/* result fetch */
@@ -97,7 +97,7 @@
 						//items
 						for($loop=0;$loop<$endLoop;$loop++){
 							$item = $post['items'][$loop];
-							$fetch= $this->fetchSingleRequest('products p JOIN products_variant v ON p.idData = v.productId',array('p.name', 'p.sku', 'v.price'),'v.idData="'.$item['variantId'].'"');
+							$fetch= $this->fetchSingleRequest('products p JOIN products_variant v ON p.idData = v.productId',array('p.name', 'v.sku', 'v.price'),'v.idData="'.$item['variantId'].'"');
 							if($fetch['feedStatus'] == "success"){
 								$fetch = $fetch['feedData'];
 								$emailMessage .= '<tr>';
@@ -140,20 +140,20 @@
 				break;
 
 				case "processOrder"  :
-					$values = array("status = 'Shipping'");
-					$resultList = $this->update('orders', $values, $post['id']);
+					$values = array("status = 'Shipping'", "shippingMethod='".$post['shippingOptionId']."'", "receiptNumber='".$post['receiptNumber']."'");
+					$resultList = $this->update('orders', $values, $post['orderId']);
 
 					if($resultList["feedStatus"] == "success") {
 						$resultList['resultEmail'] = array();
 
 						//--
 						$emailMessage  = "<h1><b>Your order has been delivered!</b></h1>";
-						$emailMessage .= '<h5 class="text-warning"><b>Your Order ID is <span id="orderNumber">#'.$post["id"].'</span></b></h5>';
+						$emailMessage .= '<h5 class="text-warning"><b>Your Order ID is <span id="orderNumber">#'.$post["orderId"].'</span></b></h5>';
 						$emailMessage .= '<h5><i>Confirmation of goods received.</i></h5>';
 						$emailMessage .= '<a href="#">Confirm to complete</a>';
 						$emailMessage .= '<a href="#">Return of goods</a>';
 
-						$emailResult = $this->emailSender($post['email'], 'Order #'.$post["idData"], $emailMessage);
+						$emailResult = $this->emailSender($post['email'], 'Order #'.$post["orderId"], $emailMessage);
 						array_push($resultList['resultEmail'], $emailResult);
 					}
 				break;

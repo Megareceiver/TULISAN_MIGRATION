@@ -41,34 +41,32 @@
 				var html = '';
 
 				html = html +
-				'<form id="syncrom" f-group="order" f-target="processOrder">'+
-					'<div class="input-frame col-md-6">'+
-						'<h3><b>Report</b></h3>' +
-						'<div class="form-group select-box">'+
-							'<label>Data</label>'+
-							'<select name="reportType" class="form-control">' +
-								'<option value="orders">Orders</option>' +
-								'<option value="ordersItem">Orders and Products</option>' +
-							'</select>' +
-						'</div>'+
-						'<div class="form-group">' +
-							'<label>Receipt Number</label>' +
-							'<input name="from" type="text" class="form-control datepicker">' +
-						'</div>' +
-						'<div class="form-group">' +
-							'<label>Receipt Number</label>' +
-							'<input name="to" type="text" class="form-control datepicker">' +
-						'</div>' +
+				'<div class="input-frame col-md-6">'+
+					'<h3><b>Report</b></h3>' +
+					'<div class="form-group select-box">'+
+						'<label>Data</label>'+
+						'<select name="reportType" class="form-control">' +
+							'<option value="orders">Orders</option>' +
+							'<option value="ordersItem">Orders and Products</option>' +
+						'</select>' +
+					'</div>'+
+					'<div class="form-group">' +
+						'<label>Receipt Number</label>' +
+						'<input name="from" type="text" class="form-control datepicker">' +
 					'</div>' +
-					'<div class="clearfix"></div>'+
-					'<hr/>' +
-					'<div class="input-frame col-md-6">' +
-						'<div class="btn-group">'+
-							'<button class="btn btn-warning" type="submit">Export</button>'+
-							'<a href="orders.html" class="btn btn-warning" type="reset">Cancel</a>'+
-						'</div>'+
+					'<div class="form-group">' +
+						'<label>Receipt Number</label>' +
+						'<input name="to" type="text" class="form-control datepicker">' +
 					'</div>' +
-				'</form>';
+				'</div>' +
+				'<div class="clearfix"></div>'+
+				'<hr/>' +
+				'<div class="input-frame col-md-6">' +
+					'<div class="btn-group">'+
+						'<button class="btn btn-warning" type="button" id="export">Export</button>'+
+						'<a href="orders.html" class="btn btn-warning" type="reset">Cancel</a>'+
+					'</div>'+
+				'</div>';
 
 				$('main.parent-admin .main-content').append(html);
 
@@ -80,6 +78,17 @@
 					showButtonPanel: true,
 					dateFormat: 'yy-mm-dd'
 				});
+
+				$("#export").on("click", function(){
+					var type = $("[name=reportType]").val();
+					var from = $("[name=from]").val();
+					var to = $("[name=to]").val();
+					if(type != "" && from != "" && to != ""){
+						window.location.href = "../data/report.php?type=" + type + "&from=" + from + "&to=" + to;
+					}else{
+						alert("Please complete the form first!");
+					}
+				})
 			}
 		</script>
 	</body>

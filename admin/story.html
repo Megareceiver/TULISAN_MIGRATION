@@ -217,13 +217,13 @@
 				var html = "";
 
 				for(var loop =0; loop<data.length; loop++){
-					var desc = (Base64.decode(data[loop].description)).substring(0, 300) + '...';
+					var desc = (Base64.decode(data[loop].description));
 		    		html = html +
 		    		'<tr>'+
 		    			'<td><input type="checkbox" name="customerSelect" value="'+data[loop].idData+'" id="selectRecord' + loop + '"><label for="selectRecord' + loop + '"></label></td>'+
 		    			'<td>'+ data[loop].title +'</td>'+
 		    			'<td>'+ data[loop].subtitle +'</td>'+
-		    			'<td>'+ desc +'</td>'+
+		    			'<td><section style="max-height: 197px; overflow-y: auto">'+ desc +'</section></td>'+
 		    			'<td class="syn-nowrap">'+ data[loop].author +'</td>'+
 		    		'</tr>';
 		    	}

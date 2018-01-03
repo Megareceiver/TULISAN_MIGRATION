@@ -64,7 +64,7 @@
 				}
 
 				if(getParam('keyword') != "" && getParam('keyword') != null){
-					keyword = "(name LIKE '%" + getParam('keyword') + "%' OR sku LIKE '%" + getParam('keyword') + "%')";
+					keyword = "(p.name LIKE '%" + getParam('keyword') + "%' OR v.sku LIKE '%" + getParam('keyword') + "%')";
 					keywordSearch = getParam('keyword');
 				}
 

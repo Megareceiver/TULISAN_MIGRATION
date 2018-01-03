@@ -6,7 +6,7 @@
 	// The function header by sending raw excel
 	header("Content-type: application/vnd-ms-excel");
 	// Defines the name of the export file "codelution-export.xls"
-	header("Content-Disposition: attachment; filename=Report-export.xls");
+	header("Content-Disposition: attachment; filename=Report-export_".date("Y-m-d h:i:sa").".xls");
 	// Add data table
 	ob_clean();
 
@@ -19,22 +19,38 @@
 	/* open connection */
 	$gate = $db;
 	if($gate &&
-		isset($_GET['type']) && $_GET['type'] != "" &&
+		isset($_GET['type']) && ($_GET['type'] == "orders" || $_GET['type'] == "ordersItem") &&
 		isset($_GET['from']) && $_GET['from'] != "" &&
 		isset($_GET['to']) && $_GET['to'] != ""){
 
 		$type = $_GET['type'];
 		$from = $_GET['from'];
 		$to   = $_GET['to'];
+		$sql	= "";
 
-		$sql = "SELECT
-						o.idData,o.total, o.name, o.address, o.city, o.zipCode, c.country_name as country, o.phone, o.email, o.status
-						FROM
-						orders o JOIN countries c ON o.country = c.country_code
-						WHERE
-						DATE(o.createdDate) >= '".$from."' AND DATE(o.createdDate) <='".$to."'
-						ORDER BY o.idData DESC
-						";
+		if($type == "orders"){
+			$sql = "SELECT
+							o.idData,o.total, o.name, o.address, o.city, o.zipCode, c.country_name as country, o.phone, o.email, o.status
+							FROM
+							orders o JOIN countries c ON o.country = c.country_code
+							WHERE
+							DATE(o.createdDate) >= '".$from."' AND DATE(o.createdDate) <='".$to."'
+							ORDER BY o.idData DESC
+							";
+		}elseif ($type == "ordersItem") {
+			$sql = "SELECT
+							o.idData,o.total, o.name, o.address, o.city, o.zipCode, c.country_name as country, o.phone, o.email, o.status,
+	            p.name as productName, v.sku, i.qty, i.price
+							FROM
+							orders o JOIN countries c ON o.country = c.country_code JOIN
+	            orders_item i ON o.idData = i.orderId JOIN
+	            products_variant v ON i.variantId = v.idData JOIN
+							products p ON v.productId = p.idData
+							WHERE
+							DATE(o.createdDate) >= '".$from."' AND DATE(o.createdDate) <='".$to."'
+	            ORDER BY o.idData DESC
+							";
+		}
 
 		$result = $db->query($sql);
 		if($result){
@@ -51,6 +67,15 @@
 				<td></td>
 				<td></td>
 				<td></td>
+
+				<?php if ($type == "ordersItem") { ?>
+					<td>&nbsp; &nbsp;</td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				<?php } ?>
+
 			</tr>
 			<tr>
 				<td>Order Numb.</td>
@@ -63,6 +88,15 @@
 				<td>Country</td>
 				<td>Phone</td>
 				<td>Email</td>
+
+				<?php if ($type == "ordersItem") { ?>
+					<td>&nbsp; &nbsp;</td>
+					<td>Item</td>
+					<td>SKU</td>
+					<td>QTY</td>
+					<td>Price</td>
+				<?php } ?>
+
 			</tr>
 
 <?php
@@ -81,6 +115,15 @@
 				<td><?=$data[$loop]['country']?></td>
 				<td><?=$data[$loop]['phone']?></td>
 				<td><?=$data[$loop]['email']?></td>
+
+				<?php if ($type == "ordersItem") { ?>
+					<td>&nbsp; &nbsp;</td>
+					<td><?=$data[$loop]['productName']?></td>
+					<td><?=$data[$loop]['sku']?></td>
+					<td align="center"><?=$data[$loop]['qty']?></td>
+					<td align="right"><?=number_format($data[$loop]['price'])?></td>
+				<?php } ?>
+
 			</tr>
 
 <?php

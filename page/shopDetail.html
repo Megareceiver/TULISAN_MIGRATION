@@ -183,13 +183,15 @@
 				oData = p_getData('operation', 'productSizeOption', '', "v.productId='" + productId + "' AND v.storyId = '" + data.storyId + "' AND v.artworkId = '" + data.artworkId + "' AND v.qty > 0");
 				$("[name=size]").append(dataToOptionHtml(oData.feedData));
 
-				zoomActivator();
-
 				$('[name=storyId]').on("change", function(){ custom_story($(this).val()); });
 				$('[name=artworkId]').on("change", function(){ custom_artwork($(this).val()); });
 				$('[name=colorId]').on("change", function(){ custom_color($(this).val()); });
 				$('[name=size]').on("change", function(){ custom_size($(this).val()); });
 				$('.add-to-cart').on("click", function(){ add_to_cart(); });
+
+				setTimeout(function(){
+					zoomActivator();
+				}, 2000);
 			}
 
 			var elem  = document.getElementById("count");

@@ -43,69 +43,8 @@
 				var pagingLinkBefore = "";
 				var pagingState = 1;
 
-
-				var data = {
-					"productList": [
-						{ title	: 'Bags & Totes', id: '#'},
-						{ title	: 'Atelier Box', id: '#' },
-						{ title	: 'Beach Bag', id: '#' },
-						{ title	: 'City Tote', id: '#' },
-						{ title	: 'Club Tote', id: '#' },
-						{ title	: 'Coterie Bag', id: '#' },
-						{ title	: 'Cruise Bag', id: '#' },
-						{ title	: 'Gallery Tote', id: '#' },
-						{ title	: 'Hobo Tote', id: '#' },
-						{ title	: 'Journalist Tote', id: '#' },
-						{ title	: 'Librarian Tote', id: '#' },
-						{ title	: 'Lilliput Tote', id: '#' },
-						{ title	: 'Portico Tote', id: '#' },
-						{ title	: 'Siesta Tote', id: '#' },
-						{ title	: 'Toy Box', id: '#' },
-						{ title	: 'Bowler Tote', id: '#' },
-						{ title	: 'Studio Bag', id: '#' },
-						{ title	: 'Concerto Purse', id: '#' },
-						{ title	: 'Panama Bag', id: '#' },
-						{ title	: 'Luna Tote', id: '#' },
-						{ title	: 'Accessories', id: '#' },
-						{ title	: 'For the Home', id: '#' },
-						{ title	: 'Stationery', id: '#' },
-						{ title	: 'Gift Set', id: '#' }
-					],
-					"colorList": [
-						{ title	: 'Bags & Totes', id: '#'},
-						{ title	: 'Atelier Box', id: '#' },
-						{ title	: 'Beach Bag', id: '#' },
-						{ title	: 'City Tote', id: '#' },
-						{ title	: 'Club Tote', id: '#' },
-						{ title	: 'Coterie Bag', id: '#' },
-						{ title	: 'Cruise Bag', id: '#' },
-						{ title	: 'Gallery Tote', id: '#' },
-						{ title	: 'Hobo Tote', id: '#' },
-						{ title	: 'Journalist Tote', id: '#' },
-						{ title	: 'Librarian Tote', id: '#' },
-					],
-					"storyList": [
-						{ title	: 'Bags & Totes', id: '#'},
-						{ title	: 'Atelier Box', id: '#' },
-						{ title	: 'Beach Bag', id: '#' },
-						{ title	: 'City Tote', id: '#' },
-						{ title	: 'Journalist Tote', id: '#' },
-						{ title	: 'Librarian Tote', id: '#' },
-					]
-				};
-
-				var product = {
-					"data" : [
-						{ name	: 'Altier Box', price: '$77.00', img: 'db_file_img_133_350x350.jpg' },
-						{ name	: 'Beach Bag', price: '$87.00', img: 'db_file_img_539_350x350.jpg' },
-						{ name	: 'Cruise Bag', price: '$137.00', img: 'db_file_img_785_350x350.jpg' },
-						{ name	: 'Gallery Tote', price: '$87.00', img: 'db_file_img_944_350x350.jpg' },
-						{ name	: 'Coterie Bag', price: '$127.00', img: 'db_file_img_995_350x350.jpg' },
-						{ name	: 'City Tote', price: '$87.00', img: 'db_file_img_567_350x350.jpg' },
-					],
-
-					"paging": "124"
-				};
+				var data = [];
+				var product = [];
 
 				paging = 0;
 				filter = [];
@@ -227,7 +166,7 @@
 								'<img class="big-image" src="../assets/products/large/'+product[loop].frontPicture+'">'+
 								'<hr/>' +
 								'<h5 class="center-div"><b class="fontserif">' + product[loop].name +'</b></h5>'+
-								'<h4 class="center-div">'+ price + '</h4>'+
+								'<h5 class="center-div">'+ price + '</h5>'+
 								'<button type="button" class="btn btn-warning form-control">Buy</button>' +
 								'<hr/>' +
 							'</a>' +

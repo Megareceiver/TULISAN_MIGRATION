@@ -42,36 +42,7 @@
 				var pagingLink = "";
 				var pagingLinkBefore = "";
 				var pagingState = 1;
-				var data = {
-					"data" : [
-					{
-						video	: "testVids.mp4",
-						title	: "Netflix's 'Abstract: The Art of Design' Will Spotlight the World's Most Creative Minds",
-						comment	: 3,
-						id 		: 0
-					},
-					{
-						video	: "testVids.mp4",
-						title	: "Netflix's 'Abstract: The Art of Design' Will Spotlight the World's Most Creative Minds",
-						comment	: 1,
-						id 		: 0
-					},
-					{
-						video	: "testVids.mp4",
-						title	: "Netflix's 'Abstract: The Art of Design' Will Spotlight the World's Most Creative Minds",
-						comment	: 2,
-						id 		: 0
-					},
-					{
-						video	: "testVids.mp4",
-						title	: "Netflix's 'Abstract: The Art of Design' Will Spotlight the World's Most Creative Minds",
-						comment	: 7,
-						id 		: 0
-					},
-				],
-
-				"paging": "8"
-			};
+				var data = [];
 
 			data = p_getData('operation', 'cms_video');
 			data = data.feedData;
@@ -93,7 +64,7 @@
 								'</iframe>'+
 								'<div class="layer"></div>' +
 								'<div class="caption">' +
-									'<h1 class="fontserif">'+data[loop].title+'</h1>'+
+									'<h3 class="fontserif">'+data[loop].title+'</h3>'+
 									'<button type="button" class="video-detail" video-id='+data[loop].idData+'>WATCH</button>'+
 								'</div>' +
 							'</div>' +

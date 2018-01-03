@@ -944,7 +944,7 @@ footer.parent .license {
 }
 
 .left-menu ul li h5 {
-  color: #ED1C24;
+  /* color: #ED1C24; */
 }
 
 .left-menu-toggle { cursor: pointer; }
@@ -963,6 +963,10 @@ footer.parent .license {
   background-size : cover;
   background-repeat : no-repeat;
 }
+.product-desc h1 {
+    font-size: 29px;
+}
+
 .shop-thumb { padding: 40px; }
 .shop-thumb p{text-align: center;}
 /*shop detail*/
@@ -1018,7 +1022,7 @@ footer.parent .license {
   background-color: rgba(0,0,0,0.4);
 }
 
-.video-box .caption h1 {
+.video-box .caption h3 {
   color:  #fff;
 }
 

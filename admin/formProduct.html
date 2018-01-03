@@ -159,7 +159,7 @@
 				for (var key in xData) {
 					if($("[name='" + key + "']").attr('type') != "file") $("[name=" + key + "]").val(xData[key]);
 					else{
-						if(xData[key]!="") $("[name-tag=" + key + "]").attr('src', '../assets/products/large/' + xData[key]);
+						if(xData[key]!="") $("[name-tag=" + key + "]").attr('src', '../assets/products/' + xData[key]);
 						else $("[name-tag='" + key + "']").attr('src', '../assets/default/lookBook.gif');
 					}
 				}

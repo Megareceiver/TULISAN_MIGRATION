@@ -69,6 +69,7 @@ function pageAdmin(){
 						'<li class="blog-route"><a href="blog.html">USERS BLOG</a></li>'+
 						'<li class="customer-route"><a href="customer.html">CUSTOMERS</a></li>'+
 						'<li class="vendor-route"><a href="vendor.html">VENDORS</a></li>'+
+						'<li class="store-route"><a href="store.html">STORES</a></li>'+
 						'<li class="order-route"><a href="orders.html">ORDERS</a></li>'+
 						'<li class="cancel-route"><a href="cancelOrders.html">CANCEL ORDERS</a></li>'+
 						'<li class="feedback-route"><a href="feedback.html">FEEDBACK</a></li>'+
@@ -132,6 +133,8 @@ function pageAdmin(){
 			case "formCustomer.html": $(".customer-route").addClass('active'); break;
 			case "formDepartment.html":
 			case "department.html": $(".departement-route").addClass('active'); break;
+			case "formStore.html":
+			case "store.html": $(".store-route").addClass('active'); break;
 			case "cms.html":
 			case "home.html":
 			case "formHome.html":

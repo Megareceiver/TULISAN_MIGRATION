@@ -29,6 +29,7 @@
 		<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="../assets/js/imagesloaded.pkgd.min.js"></script>
 		<script type="text/javascript" src="../assets/js/partial.js"></script>
+		<script type="text/javascript" src="../assets/js/public.js"></script>
 
 		<!-- page script -->
 		<script type="text/javascript">
@@ -52,22 +53,7 @@
 											'\r\n\r\n' +
 											'The products are delicately nestled amongst Melissa’s private collection of vintage furniture to allow customers' +
 											'to imagine how Tulisan products can be integrated into their own homes.' +
-											'\r\n\r\n' +
-											'<img class="big-image" src="../assets/PICS/tulisan02.jpg"/>' +
-											'\r\n\r\n' +
-											'<b>Flagship Store & Creative Headquarter</b>\r\n' +
-											'Darmawangsa Square, The City Walk\r\n' +
-											'Ground Floor, Unit #24\r\n' +
-											'Jakarta 12160, Indonesia\r\n' +
-											'+ 62 21 727 80235\r\n' +
-											'Operation hours: 9 a.m. to 9 p.m. (GMT +7)' +
-											'\r\n\r\n' +
-											'<img class="big-image" src="../assets/PICS/0534_01.jpg"/>' +
-											'\r\n\r\n' +
-											'Tulisan Plaza Senayan\r\n' +
-											'Jalan Asia Afrika No. 8, South Jakarta\r\n' +
-											'on Wednesday, 28 October,\r\n' +
-											'10.00am – 10.00pm'
+											'\r\n\r\n'
 										],
 					}},
 				];
@@ -102,7 +88,7 @@
 					for(var loopY=0; loopY<tabContent[loop].content.description.length; loopY++){
 						tabContent[loop].content.description[loopY] = tabContent[loop].content.description[loopY].replace(/(?:\r\n|\r|\n)/g, '<br />');
 						html = html +
-						"<div class='blog-description'>"+
+						"<div class='blog-description' id='descBox'>"+
 							tabContent[loop].content.description[loopY] +
 						"</div>";
 					}
@@ -117,6 +103,21 @@
 				html = html + "<div class='clearfix'></div>";
 
 				$("main").html(html);
+
+				var data = p_getData('operation', 'store');
+					  data = data.feedData;
+				var dumb = "";
+				for(var loop=0;loop<data.length;loop++){
+					dumb = dumb +
+					'<img class="big-image" src="../assets/store/' + data[loop].picture + '"/>' +
+					'<p class="margin-top"><b>' + data[loop].name + '</b></p>' +
+					'<p>' + data[loop].address + '</p>' +
+					'<p>' + data[loop].phone + '</p>' +
+					'<p>Operation hours: ' + data[loop].openHours + '</p>' +
+					'<p class="margin-top">&nbsp;</p>';
+				}
+
+				$("#descBox").append(dumb);
 
 				$(".tab-header .tab-button").unbind().on("click", function(){
 					tabChange($(this));

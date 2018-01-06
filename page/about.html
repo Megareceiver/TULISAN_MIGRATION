@@ -8,7 +8,7 @@
 		<link rel="icon" type="image/x-icon" href="../assets/PICS/TL_Favicon.png">
 		<!-- Site Properities -->
 		<title>Tulisan</title>
-	  
+
 		<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="../assets/css/font-awesome.min.css" rel="stylesheet">
 		<link href="../assets/css/syncard-inject.css" rel="stylesheet">
@@ -19,16 +19,17 @@
 			<header class="parent"></header>
 
 			<main class="parent clear yellow-flex"></main>
-	
+
 			<footer class="parent clear"></footer>
 		</div>
 
 		<!-- Script collection -->
 		<script type="text/javascript" src="../assets/js/jquery-3.2.1.min.js"></script>
 		<script type="text/javascript" src="../assets/js/jquery-ui-1.10.0.custom.min.js"></script>
-		<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>	
-		<script type="text/javascript" src="../assets/js/imagesloaded.pkgd.min.js"></script>	
-		<script type="text/javascript" src="../assets/js/partial.js"></script>	
+		<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../assets/js/imagesloaded.pkgd.min.js"></script>
+		<script type="text/javascript" src="../assets/js/partial.js"></script>
+		<script type="text/javascript" src="../assets/js/public.js"></script>
 
 		<!-- page script -->
 		<script type="text/javascript">
@@ -61,13 +62,13 @@
 											'where you will find many inspiring minds and undiscovered talent. Appearances are often deceiving. This is' +
 											'definitely the case with a chaotic city like Jakarta, but once you delve into its inner beauty you realize that this' +
 											'is a place brimming with vitality and an abundance of untapped creative energy. \r\n\r\n',
-										
+
 											'From start to finish, each <b><i>Tulisan</i></b> product is made by a team of passionate artists in Indonesia. My team' +
 											'consists of determined individuals who honor their intuitions and project the very best of their being. Many of' +
 											'them have crossed over from their academic or professional background to pursue what they do today for' +
 											'Tulisan. Together we empower each other to achieve what we never thought was possible. The resulting experience' +
 											'is often a nerve-racking journey to self-discovery. \r\n\r\n',
-											
+
 											'Through Tulisan, I hope to convey a different perspective on Jakarta and to present honest creations from the' +
 											'heart of its people. \r\n\r\n',
 
@@ -86,12 +87,12 @@
 
 											'We are dedicated to enriching our community by investing our time in training and employing local artisans' +
 											'and talents, with an aim to provide them a fair living with benefits that exceed market standards. \r\n\r\n',
-										
+
 											'<b>Celebrating Individuality</b>\r\n',
 
 											'We design our products to be simple and pure, then layer them with artist-illustrated editions to celebrate indi' +
 											'viduality. Each creation is constructed by hand in small batches, with artisanal craftsmanship. \r\n\r\n',
-											
+
 											'<b>Caring for Our World</b>\r\n',
 
 											'We strive to improve the quality of our work by being responsive of our surroundings and by using sustainable ' +
@@ -102,7 +103,7 @@
 					{ "groupId": "artist", "content" : {
 						"title" : "About the Artist",
 						"picture" : "3.jpg",
-						"description" : [	
+						"description" : [
 											'<div class="col-md-10 col-md-offset-1">' +
 												'<p class="syn-center"><b>' +
 													'Melissa was born and raised in Jakarta. She began her studies in graphic art at Universitas Trisakti' +
@@ -205,28 +206,13 @@
 											'\r\n\r\n' +
 											'The products are delicately nestled amongst Melissa’s private collection of vintage furniture to allow customers' +
 											'to imagine how Tulisan products can be integrated into their own homes.' +
-											'\r\n\r\n' +
-											'<img class="big-image" src="../assets/PICS/tulisan02.jpg"/>' +
-											'\r\n\r\n' +
-											'<b>Flagship Store & Creative Headquarter</b>\r\n' +
-											'Darmawangsa Square, The City Walk\r\n' +
-											'Ground Floor, Unit #24\r\n' +
-											'Jakarta 12160, Indonesia\r\n' +
-											'+ 62 21 727 80235\r\n' +
-											'Operation hours: 9 a.m. to 9 p.m. (GMT +7)' +
-											'\r\n\r\n' +
-											'<img class="big-image" src="../assets/PICS/0534_01.jpg"/>' +
-											'\r\n\r\n' +
-											'Tulisan Plaza Senayan\r\n' +
-											'Jalan Asia Afrika No. 8, South Jakarta\r\n' +
-											'on Wednesday, 28 October,\r\n' +
-											'10.00am – 10.00pm'
+											'\r\n\r\n'
 										],
 					}},
 				];
 
 				html = '<div id="about-page" class="col-md-8 col-md-offset-2">';
-				html = html + 
+				html = html +
 				'<div class="tab-header">' +
 					'<ul>';
 
@@ -234,19 +220,19 @@
 					html = html + '<li class="' + tabHeader[loop].groupStyle + '"><span class="tab-button ' + tabHeader[loop].state + '" t-target="#' + tabHeader[loop].groupId + '">' + tabHeader[loop].group + '</span></li>';
 				}
 
-				html = html + 
+				html = html +
 					'</ul>' +
 				'</div>';
 
 				for(var loop=0; loop<tabContent.length; loop++){
-					html = html + 
+					html = html +
 					'<div class="tab-container ' + tabHeader[loop].state + '" id="' + tabHeader[loop].groupId + '">' +
 						"<div class='blog-container'>" +
 							"<div class='blog-box justify norm fontserif'>"+
 								"<h1 class='fontserif'><b>" + tabContent[loop].content.title + "</b></h1>";
 
 					if(tabContent[loop].content.picture != ""){
-						html = html + 
+						html = html +
 						"<div class='blog-pic margin-top'>" +
 							"<img src='../assets/PICS/" + tabContent[loop].content.picture + "' />" +
 						"</div>";
@@ -254,24 +240,39 @@
 
 					for(var loopY=0; loopY<tabContent[loop].content.description.length; loopY++){
 						tabContent[loop].content.description[loopY] = tabContent[loop].content.description[loopY].replace(/(?:\r\n|\r|\n)/g, '<br />');
-						html = html + 
+						html = html +
 						"<div class='blog-description'>"+
 							tabContent[loop].content.description[loopY] +
 						"</div>";
 					}
 
-					html = html + 
+					html = html +
 							"</div>" +
 						"</div>" +
 					'</div>';
 				}
-				
+
 				html = html + "</div>";
 				html = html + "<div class='clearfix'></div>";
 
 				$("main").html(html);
 
-				$(".tab-header .tab-button").unbind().on("click", function(){ 
+				var data = p_getData('operation', 'store');
+					  data = data.feedData;
+				var dumb = "";
+				for(var loop=0;loop<data.length;loop++){
+					dumb = dumb +
+					'<img class="big-image" src="../assets/store/' + data[loop].picture + '"/>' +
+					'<p class="margin-top"><b>' + data[loop].name + '</b></p>' +
+					'<p>' + data[loop].address + '</p>' +
+					'<p>' + data[loop].phone + '</p>' +
+					'<p>Operation hours: ' + data[loop].openHours + '</p>' +
+					'<p class="margin-top">&nbsp;</p>';
+				}
+
+				$("#store .blog-description").append(dumb);
+
+				$(".tab-header .tab-button").unbind().on("click", function(){
 					tabChange($(this));
 				});
 			}

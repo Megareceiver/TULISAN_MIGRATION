@@ -347,3 +347,15 @@ function dataToOptionHtml(data){
 
 	return html;
 }
+
+//country list option
+function listOption(data){
+	var html  = "";
+	var state = "";
+	for(var loop=0; loop<data.length; loop++){
+		state = (data[loop].value == "ID") ? "selected" : "";
+		html += '<option value="' + data[loop].value + '" ' + state + '>' + data[loop].caption + '</option>';
+	}
+
+	return html;
+}

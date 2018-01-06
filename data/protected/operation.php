@@ -92,6 +92,9 @@
 				case "cms_video" 		: $resultList = $this->fetchAllRequest('cms_video', array("idData","title", "SUBSTRING(description, 1, 300) as description", "fileName", "fileSize", "createdBy as publishedBy", "createdDate as publishedTime"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
 				case "cms_videoFetch" 	: $resultList = $this->fetchSingleRequest('cms_video', array("idData","title", "description", "fileName", "createdDate as publish"), $post['keyword']); break;
 
+				case "store" 			: $resultList = $this->fetchAllRequest('store s LEFT JOIN countries y ON s.country = y.country_code', array("s.idData", "s.name", "s.picture","CONCAT(s.address, '</br>', s.city, ' ', s.zipCode, ', ', country_name) as address", "phone", "openHours"), $post['keyword'], "ORDER BY idData ASC", $post['page']); break;
+				case "storeFetch"			: $resultList = $this->fetchSingleRequest('store', array("idData", "name", "picture","address", "city", "zipCode", "country", "phone", "openHours"), $post['keyword']); break;
+
 				case "user" 			: $resultList = $this->fetchAllRequest('users u LEFT JOIN departments d ON u.departmentId = d.idData', array("u.idData","u.name", "u.username", "u.type", "IFNULL(d.name,'') as department", "u.picture"), "u.idData <> '0'", "ORDER BY u.idData DESC", $post['page']); break;
 				case "userFetch" 		: $resultList = $this->fetchSingleRequest('users', array("idData","name", "username", "type", "departmentId", "picture"), $post['keyword']); break;
 
@@ -144,6 +147,7 @@
 				case "cms_story" 	: $resultList = $this->deleteById('cms_story', $post['id']); break;
 				case "artWork" 		: $resultList = $this->deleteById('cms_story_artwork', $post['id']); break;
 				case "cms_video" 	: $resultList = $this->deleteById('cms_video', $post['id']); break;
+				case "store" 	: $resultList = $this->deleteById('store', $post['id']); break;
 
 				default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
 			}
@@ -383,6 +387,24 @@
 					// 	// 	$resultList["feedMultiUpload"] = $upload['feedMessage'];
 					// 	// }
 					// }
+				break;
+
+				case "store"  :
+					$fields = array("name","address", "city", "country", "zipCode", "phone", "openHours");
+					$values = array();
+					foreach ($fields as $key) {
+						$value = (isset($post[$key]) && $post[$key] != "") ? str_replace("'", "\'", $post[$key]) : "";
+						array_push($values,$value);
+					}
+
+					$resultList = $this->insert('store', $fields, $values);
+
+					if($resultList["feedStatus"] == "success") {
+						if(isset($_FILES["picture"])){
+							$upload = $this->uploadSingleImage($_FILES["picture"], "store", "store", "picture", $resultList["feedId"]);
+							array_push($resultList, array("feedUpload" => $upload['feedMessage']));
+						}
+					}
 				break;
 
 				case "user"  :
@@ -704,6 +726,25 @@
 					// 	}
           //
 					// }
+
+				break;
+
+				case "store"  :
+					$fields = array("name","address", "city", "country", "zipCode", "phone", "openHours");
+					$values = array();
+					foreach ($fields as $key) {
+						$value = (isset($post[$key]) && $post[$key] != "") ? str_replace("'", "\'", $post[$key]) : "";
+						$values[$key] = $key." = '".str_replace(',','',$value)."'";
+					}
+
+					$resultList = $this->update('store', $values, $post['idData']);
+
+					if($resultList["feedStatus"] == "success" && isset($post['idData']) && $post['idData']!="") {
+						if(isset($_FILES["picture"])){
+							$upload = $this->uploadSingleImage($_FILES["picture"], "store", "store", "picture", $post['idData']);
+							$resultList["feedUpload"] = $upload['feedMessage'];
+						}
+					}
 
 				break;
 

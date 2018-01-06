@@ -8,7 +8,7 @@
 		<link rel="icon" type="image/x-icon" href="../assets/PICS/TL_Favicon.png">
 		<!-- Site Properities -->
 		<title>Tulisan</title>
-	  
+
 		<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="../assets/css/font-awesome.min.css" rel="stylesheet">
 		<link href="../assets/css/syncard-inject.css" rel="stylesheet">
@@ -24,9 +24,9 @@
 		<script type="text/javascript" src="../assets/js/jquery-3.2.1.min.js"></script>
 		<script type="text/javascript" src="../assets/js/jquery-ui-1.10.0.custom.min.js"></script>
 		<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="../assets/js/imagesloaded.pkgd.min.js"></script>	
-		<script type="text/javascript" src="../assets/js/partial.js"></script>	
-		<script type="text/javascript" src="../assets/js/public.js"></script>	
+		<script type="text/javascript" src="../assets/js/imagesloaded.pkgd.min.js"></script>
+		<script type="text/javascript" src="../assets/js/partial.js"></script>
+		<script type="text/javascript" src="../assets/js/public.js"></script>
 
 		<script type="text/javascript">
 			blogDetail();
@@ -38,8 +38,8 @@
 				var pagingLink = "";
 				var pagingLinkBefore = "";
 				var pagingState = 1;
-				var data = 
-				{	
+				var data =
+				{
 					"title"		 :  "DOTTY OUTFIT",
 					"date"		 :  "25TH FEBRUARY 2014",
 					"subtitle"	 :  "LOCATION: NEW YORK",
@@ -54,12 +54,12 @@
 
 
 				if(getParam('q') != "" && getParam('q') != null){
-					data = p_getData('operation', 'cms_blogDetail', 'idData = "' + getParam('q') + "'");
+					data = p_getData('operation', 'cms_blogDetail', '1', 'idData = "' + getParam('q') + '"');
 					data = data.feedData;
 				}
 
 				// html = '<div class="row">';
-				html = html + 
+				html = html +
 				"<div class='blog-container'>" +
 					'<div class="col-md-6 col-md-offset-3">' +
 						"<div class='blog-box'>"+
@@ -82,7 +82,7 @@
 
 				// data.description = data.description.replace(/(?:\r\n|\r|\n)/g, '<br />');
 
-				html = html +  
+				html = html +
 							"</div>"+
 						"</div>" +
 					"</div>" +
@@ -103,7 +103,7 @@
 					"</div>" +
 				"</div>";
 
-				
+
 				// html = html + "</div>";
 
 				$("main").html(html);
@@ -111,6 +111,6 @@
 				$("#custom-bread-detail").html(toTitleCase(data.title));
 
 			}
-		</script>		
+		</script>
 	</body>
 </html>

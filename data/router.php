@@ -21,6 +21,10 @@
 					$json = $route->login($_POST);
 				break;
 
+				case 'fbLogin':
+					$json = $route->fbLogin($_POST);
+				break;
+
 				case 'logout':
 					$json = $route->logout();
 				break;

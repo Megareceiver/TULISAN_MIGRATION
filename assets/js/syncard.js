@@ -6,8 +6,17 @@ $(function(){
 	backToTop();
 });
 
-function headerAdmin(){
+var getCookiesAll = function(){
+  var pairs = document.cookie.split(";");
+  var cookies = {};
+  for (var i=0; i<pairs.length; i++){
+    var pair = pairs[i].split("=");
+    cookies[(pair[0]+'').trim()] = unescape(pair[1]);
+  }
+  return cookies;
+}
 
+function headerAdmin(){
 	if(r_getCookie('user_name') == ""){
 		window.location.href = base_url + "/page/login.html";
 		return false;

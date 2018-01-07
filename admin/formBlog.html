@@ -74,9 +74,11 @@
 					'</div>' +
 					'<div class="clearfix"></div><hr/>';
 
+				var col = '8';
 				for(var loop=0; loop<8; loop++){
+
 					html = html +
-					'<div class="input-frame col-md-4">' +
+					'<div class="input-frame col-md-' + col + '">' +
 						'<div class="form-group">'+
 							'<label>Blog Image #' + (loop + 1) + '</label>'+
 						'</div>'+
@@ -88,6 +90,9 @@
 							'<input name="pictures[]" preview-id="preview' + loop + '" accept="image/x-png,image/gif,image/jpeg" id="input-id" type="file" class="file form-control" data-preview-file-type="text">'+
 						'</div>' +
 					'</div>';
+
+					if(loop % 3 == 0) html = html + "<div class='clearfix'></div>";
+					col = '4';
 				}
 
 				html = html +

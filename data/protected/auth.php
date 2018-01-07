@@ -62,6 +62,47 @@
 			return $json;
 		}
 
+		public function fbLogin($post){
+			/* initial condition */
+			$resultList = array();
+			$feedStatus	= "failed";
+			$feedType   = "danger";
+			$feedMessage= "Error facebook auth!";
+			$feedData	= array();
+
+			$temp		= "";
+
+			if(isset($post['username']) && isset($post['name'])){
+				if (session_id() == '') { session_start(); }
+				$_SESSION['tulisan_customer_id'] 			= $post['username'];
+				$_SESSION['tulisan_user_name'] 				= $post['name'];
+				$_SESSION['tulisan_user_username'] 		= $post['username'];
+				$_SESSION['tulisan_user_type'] 				= 'Customer';
+				$_SESSION['tulisan_user_picture'] 		= '';
+				$_SESSION['tulisan_user_departement'] = '';
+
+				$_SESSION['tulisan_user_address'] 		 = '';
+				$_SESSION['tulisan_user_city'] 				 = '';
+				$_SESSION['tulisan_user_country'] 		 = '';
+				$_SESSION['tulisan_user_country_code'] = '';
+				$_SESSION['tulisan_user_zipCode'] 		 = '';
+				$_SESSION['tulisan_user_phone'] 			 = '';
+				$_SESSION['tulisan_user_email']				 = '';
+				$_SESSION['tulisan_user_company']			 = '';
+
+				$feedStatus	= "success";
+				$feedType   = "success";
+				$feedMessage= "success";
+			}
+
+			$resultList = array( "feedStatus" => $feedStatus, "feedType" => $feedType, "feedMessage" => $feedMessage, "feedData" => $post);
+
+			/* result fetch */
+			$json = $resultList;
+
+			return $json;
+		}
+
 		public function logout(){
 			/* initial condition */
 			$resultList = array();

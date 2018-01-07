@@ -244,15 +244,19 @@
 					};
 				}
 
-				if(data != null && data.tulisan_customerName != "" && data.tulisan_customerName != null && data.tulisan_customerName != undefined){
-					data.tulisan_customerAddress = data.tulisan_customerAddress.replace(/(?:\r\n|\r|\n)/g, '<br />');
-					$(".sessionName").html(data.tulisan_customerName);
-					$(".sessionAddress").html(data.tulisan_customerAddress);
-					$(".sessionCity").html(data.tulisan_customerCity + " " + data.tulisan_customerZipCode);
-					$(".sessionCountry").html(data.tulisan_customerCountry);
-					$(".sessionPhone").html("phone: " + data.tulisan_customerPhone);
+				if(data != null && data.tulisan_customerName != "" && data.tulisan_customerName != null && data.tulisan_customerName != undefined
+						&& data.tulisan_customerAddress != null && data.tulisan_customerAddress != 'null' && data.tulisan_customerAddress != ""
+					){
+						data.tulisan_customerAddress = data.tulisan_customerAddress.replace(/(?:\r\n|\r|\n)/g, '<br />');
+						$(".sessionName").html(data.tulisan_customerName);
+						$(".sessionAddress").html(data.tulisan_customerAddress);
+						if(data.tulisan_customerCity != 'null') $(".sessionCity").html(data.tulisan_customerCity + " " + data.tulisan_customerZipCode);
+						if(data.tulisan_customerCountry != 'null') $(".sessionCountry").html(data.tulisan_customerCountry);
+						if(data.tulisan_customerPhone != 'null') $(".sessionPhone").html("phone: " + data.tulisan_customerPhone);
 
-					$("#recentShipping").show();
+						$("#recentShipping").show();
+				}else{
+					$("#recentShipping").hide();
 				}
 
 				var countries = p_getData('operation', 'countryOption');

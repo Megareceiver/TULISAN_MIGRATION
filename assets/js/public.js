@@ -5,10 +5,99 @@ var Base64={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456
 
 /* authentication */
 /* =============================================================================================== */
+
+//facebook
+$(function(){
+	window.fbAsyncInit = function() {
+		FB.init({
+			// appId      : '1913874005353756', new.tulisan.com
+			appId      : '1958541230824445', //tulisan.local
+			cookie     : true,
+			xfbml      : true,
+			version    : 'v2.11'
+		});
+
+		FB.AppEvents.logPageView();
+		// checkLoginState();
+	};
+
+	(function(d, s, id){
+		 var js, fjs = d.getElementsByTagName(s)[0];
+		 if (d.getElementById(id)) {return;}
+		 js = d.createElement(s); js.id = id;
+		 js.src = "https://connect.facebook.net/en_US/sdk.js";
+		 fjs.parentNode.insertBefore(js, fjs);
+	 }(document, 'script', 'facebook-jssdk'));
+});
+
+function checkLoginState() {
+	FB.getLoginStatus(function(response) {
+		FB.api('/me', function(data) {
+				if(response.status == "connected"){
+					var dataFetch = {
+						idData : data.id,
+						name : data.name,
+						username : data.id,
+						type : 'Customer',
+						picture : null,
+						departement : null,
+						address : null,
+						city : null,
+						country : null,
+						country_code : null,
+						zipCode : null,
+						phone : null,
+						email : null,
+						company : null
+					};
+
+					p_login_set_cookie(dataFetch);
+					// $("#logoutButton").remove();
+					if(r_getCookie('user_facebook') != 'checked') {
+						r_setCookie('user_facebook', 'checked');
+						window.location.href = base_url + "/page/shop.html";
+					}
+				}
+		});
+	});
+}
+
+function p_fbLogin(){
+	var	reStatus = "";
+	var username = "";
+	var name = "";
+	FB.getLoginStatus(function(response) {
+		FB.api('/me', function(data) {
+				if(response.status == "connected"){
+					username = data.id;
+					name = data.name;
+
+					$.ajax({
+						url: base_url + '/data/router.php?session=fbLogin&group=auth&target=',
+						type: 'post',
+						dataType: 'json',
+						async: false,
+						data: { username: username, name: name  },
+						success: function(result){
+							console.log('fblogin');
+							console.log(result);
+							r_setCookie('user_facebook', '');
+							checkLoginState();
+						},
+						complete: function(xhr,status) { },
+						error: function(xhr,status,error) { console.log(xhr); showNotification('danger', 'failure', 'Terjadi kesalahan, tidak ada respon dari server! ' + error); }
+					});
+				}
+		});
+	});
+
+	return reStatus;
+}
+
 function p_logout(){
 	var	reStatus = "";
 	$.ajax({
-		url: base_url + 'data/router.php?session=logout&group=fLogin&target=',
+		url: base_url + '/data/router.php?session=logout&group=fLogin&target=',
 		type: 'post',
 		dataType: 'json',
 		async: false,
@@ -18,7 +107,18 @@ function p_logout(){
 			// logoutAgent = 1;
 			// notifChecker = 0;
 			// clearTimeout(notifId);
-			// r_clearCookies();
+
+			//facebook
+			FB.getLoginStatus(function(response) {
+				if(response.status == "connected"){
+					FB.logout(function(responses){
+						console.log('logout');
+						console.log(responses);
+					});
+				}
+			});
+
+			r_clearCookies();
 		},
 		complete: function(xhr,status) { },
 		error: function(xhr,status,error) { console.log(xhr); showNotification('danger', 'failure', 'Terjadi kesalahan, tidak ada respon dari server! ' + error); }
@@ -143,6 +243,17 @@ function r_callBack(back, custom, data=null){
 					}
 			break;
 			case "logout":
+				//facebook
+				FB.getLoginStatus(function(response) {
+					if(response.status == "connected"){
+						FB.logout(function(responses){
+							console.log('logout');
+							console.log(responses);
+						});
+					}
+				});
+
+				//global
 				r_clearCookies();
 				window.location.href = base_url;
 			break;
@@ -225,6 +336,8 @@ function r_clearCookies(){
 	r_setCookie('user_phone', 			'', 0.1);
 	r_setCookie('user_email', 			'', 0.1);
 	r_setCookie('user_company', 		'', 0.1);
+	r_setCookie('user_facebook',    '', 0.1);
+
 }
 
 function checkboxActivator(){

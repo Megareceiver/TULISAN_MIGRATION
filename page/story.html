@@ -78,10 +78,12 @@
 
 				html = '<div class="row"><div class="col-md-8 col-md-offset-2 div-normalize"><div class="row">';
 
+				var clear = 0;
 				for(var loop=0; loop<data.length; loop++){
 					desc = Base64.decode(data[loop].description);
 					// desc = desc.substring(0, 500) + "...";
 					if(desc == "" && (data[loop].picture != null || data[loop].picture != "")) continue;
+					clear++;
 					align = "";
 					html = html +
 					"<div class='col-md-6 story-box'>";
@@ -105,7 +107,7 @@
 						"</div>"+
 					"</div>";
 
-						if((loop+1)%2 == 0) html = html + "<div class='clearfix'></div>";
+						if(clear == 2) { html = html + "<div class='clearfix'></div>"; clear = 0; }
 				}
 
 				for(var loop=pagingState; loop<=paging; loop++){

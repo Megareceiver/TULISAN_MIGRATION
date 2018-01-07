@@ -36,7 +36,13 @@
 						<p>Or sign in using Facebook</p>
 						<div class="form-group">
 							<div class="btn-group">
-							  <button type="button" class="btn facebook">Facebook</button>
+							  <!-- <button type="button" class="btn facebook">Facebook</button> -->
+
+								<!-- <fb:login-button
+								  scope="public_profile,email"
+								  onlogin="checkLoginState();">
+								</fb:login-button> -->
+								<div class="fb-login-button" onlogin="p_fbLogin();" data-max-rows="1" data-size="medium" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="true" data-use-continue-as="true"></div>
 							</div>
 						</div>
 					</form>
@@ -93,5 +99,6 @@
 
 			p_formHandler('syncrom', 'login', 'login', 'yes');
 		</script>
+
 	</body>
 </html>

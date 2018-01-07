@@ -880,7 +880,7 @@ footer.parent .license {
   display: inline-block;
   width: 100%;
   text-align: center;
-  font-weight: bold;
+  /* font-weight: bold; */
 }
 
 .blog-box.norm { font-weight: normal; }

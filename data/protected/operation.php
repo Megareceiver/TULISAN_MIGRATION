@@ -68,9 +68,9 @@
 				case "customer" 		: $resultList = $this->fetchAllRequest('customers c LEFT JOIN countries y ON c.country = y.country_code', array("idData", "name", "company", "phone", "email", "CONCAT(address, '</br>', city, ' ', zipCode, '</br>', country_name) as address", "COALESCE(userId,'guest')"), $post['keyword'], "ORDER BY name ASC", $post['page']); break;
 				case "customerFetch" 	: $resultList = $this->fetchSingleRequest('customers c LEFT JOIN users u ON c.userId = u.idData', array("c.idData", "c.name", "c.company", "c.phone", "c.email", "c.address", "c.city", "c.zipCode", "c.country, u.picture"), $post['keyword']); break;
 
-				case "cms_blog" 		: $resultList = $this->fetchAllRequest('cms_blog', array("idData","title", "date", "subtitle", "SUBSTRING(description, 1, 300) as description", "photoBy", "pictures"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
-				case "cms_blogFetch" 	: $resultList = $this->fetchSingleRequest('cms_blog', array("idData","title", "date", "subtitle", "description", "photoBy", "pictures as `pictures[]`"), $post['keyword']); break;
-				case "cms_blogDetail" 	: $resultList = $this->fetchSingleRequest('cms_blog', array("idData","title", "date", "subtitle", "description", "photoBy", "pictures as pictures"), $post['keyword']); break;
+				case "cms_blog" 		: $resultList = $this->fetchAllRequest('cms_blog', array("idData","title", "date", "subtitle", "SUBSTRING(description, 1, 300) as description", "photoBy", "pictures", "link"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
+				case "cms_blogFetch" 	: $resultList = $this->fetchSingleRequest('cms_blog', array("idData","title", "date", "subtitle", "description", "photoBy", "pictures as `pictures[]`", "link"), $post['keyword']); break;
+				case "cms_blogDetail" 	: $resultList = $this->fetchSingleRequest('cms_blog', array("idData","title", "date", "subtitle", "description", "photoBy", "pictures as pictures", "link"), $post['keyword']); break;
 
 				case "cms_chatter" 		: $resultList = $this->fetchAllRequest('cms_chatter', array("idData","title", "date", "description","picture", "type", "createdBy as publishedBy", "createdDate as publishedTime"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
 				case "cms_chatterFetch" : $resultList = $this->fetchSingleRequest('cms_chatter', array("idData","title", "date", "description","picture", "type"), $post['keyword']); break;
@@ -326,7 +326,7 @@
 				break;
 
 				case "cms_blog"  :
-					$fields = array("title", "date", "subtitle", "photoBy");
+					$fields = array("title", "date", "subtitle", "photoBy", "link");
 					$values = array();
 					foreach ($fields as $key) {
 						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
@@ -663,7 +663,7 @@
 				break;
 
 				case "cms_blog"  :
-					$fields = array("title", "date", "subtitle", "photoBy");
+					$fields = array("title", "date", "subtitle", "photoBy", "link");
 					$values = array();
 					foreach ($fields as $key) {
 						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";

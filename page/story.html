@@ -81,6 +81,7 @@
 				for(var loop=0; loop<data.length; loop++){
 					desc = Base64.decode(data[loop].description);
 					// desc = desc.substring(0, 500) + "...";
+					if(desc == "" && (data[loop].picture != null || data[loop].picture != "")) continue;
 					align = "";
 					html = html +
 					"<div class='col-md-6 story-box'>";

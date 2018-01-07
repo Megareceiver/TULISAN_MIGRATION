@@ -56,6 +56,8 @@
 				if(getParam('q') != "" && getParam('q') != null){
 					data = p_getData('operation', 'cms_blogDetail', '1', 'idData = "' + getParam('q') + '"');
 					data = data.feedData;
+				}else{
+					window.location.href = base_url + "/page/blog.html";
 				}
 
 				// html = '<div class="row">';
@@ -101,7 +103,12 @@
 						"<div class='blog-box'>"+
 							"<div class='blog-description'>"+
 								"<p>"+Base64.decode(data.description)+" </p>"+
-								"<p class='syn-plus'>Photo by "+data.photoBy+" </p>"+
+								"<p class='syn-plus'>Photo by "+data.photoBy+" </p>";
+								if(data.link != "" && data.link != null){
+									html = html + "<hr/>" +
+									"<p class='syn-plus'>Please find the <a href='"+data.link+"' class='text-info'><u>link</u></a> for full catalog.</p>";
+								}
+				html = html +
 							"</div>"+
 						"</div>" +
 					"</div>" +

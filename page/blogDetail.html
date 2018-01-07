@@ -74,10 +74,14 @@
 							"<div class='blog-pic'>";
 
 				var img = data.pictures;
-					img = img.split(',');
+					  img = img.split(',');
 
 				for(var loop=0; loop<img.length; loop++){
+					if(loop==1) html = html +  "<div class='row'>";
+					if(loop!=0) html = html +  "<div class='col-md-4'>";
 					html = html +  "<img src='../assets/blogs/" + img[loop] + "' />";
+					if(loop!=0) html = html +  "</div>";
+					if(loop==img.length) html = html +  "</div>";
 				}
 
 				// data.description = data.description.replace(/(?:\r\n|\r|\n)/g, '<br />');
@@ -93,7 +97,7 @@
 							"</div>"+
 						"</div>" +
 					"</div>" +
-					'<div class="col-md-8 col-md-offset-2 div-normalize">' +
+					'<div class="col-md-10 col-md-offset-1 div-normalize">' +
 						"<div class='blog-box'>"+
 							"<div class='blog-description'>"+
 								"<p>"+Base64.decode(data.description)+" </p>"+

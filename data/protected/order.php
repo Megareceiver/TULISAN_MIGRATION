@@ -233,8 +233,9 @@
 					if($resultList["feedStatus"] == "success") {
 						$resultList['resultEmail'] = array();
 
-						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.dokuStatus", "o.dokuMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status")
-						, "o.idData = ".$post['pId']."", "");
+						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',
+						array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.dokuStatus", "o.dokuMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status"),
+						"o.idData = ".$post['pId']."","");
 						if($data['feedStatus'] == "success"){
 							$data = $data['feedData'];
 						}else{
@@ -1073,6 +1074,7 @@
 				$dumb['name'] = $dataInfo['name'];
 				$dumb['shippingAs'] = $dataInfo['shippingAs'];
 				$dumb['receiptNumber'] = $dataInfo['receiptNumber'];
+				$dumb['link'] = $dataInfo['link'];
 				$dumb['address'] = $dataInfo['address']."<br/>".$dataInfo['city']." ".$dataInfo['zipCode']."<br/>".$dataInfo['country']."<br/>Phone : ".$dataInfo['phone'];
 			}
 
@@ -1169,15 +1171,18 @@
 				$data = array();
 			}
 
+			$dumb = array("name"=>"", "address"=>"");
+			foreach ($info as $dataInfo) {
+				$dumb['name'] = $dataInfo['name'];
+				$dumb['address'] = $dataInfo['address']."<br/>".$dataInfo['city']." ".$dataInfo['zipCode']."<br/>".$dataInfo['country']."<br/>Phone : ".$dataInfo['phone'];
+			}
+
 			$htmlText = '<section style="float:left; width:100%;max-width:700px; font-family: Arial, Helvetica, sans-serif; box-sizing: border-box; font-size: 11px">
 			  <img src="'.e_path.'/PICS/tulisan.png" style="width: 200px" />
 			  <hr style="margin: 20px 0; "/>
 			  <h3>Congratulations, your order has completed!</h3>
 			  <h2>Thank you, we are waiting for your next order.</h2>
 			  <p>Your order number is <b>#'.$orderId.'</b>, Created on <b></b></p>
-			  <p>Subtotal: <b>0</b></p>
-			  <p>Shipping: <b>0</b></p>
-			  <p>Total: <b>0</b></p>
 			  <table width="100%" border="0" style="border-collapse: separate; margin-top: 10px; font-size: 11px" >
 			    <tr style="background-color: #E9E2DB; height: 40px">
 			      <th align="left" style="padding: 0 10px">Item</th>
@@ -1229,13 +1234,13 @@
 			  <h3>Customer details</h3>
 			  <div style="float:left; display: inline-block; width: 49%;">
 			    <h4>Shipping Address</h4>
-			      <p>Customer name</p>
-			      <p>Address</p>
+					<p>'.$dumb['name'].'</p>
+					<p>'.$dumb['address'].'</p>
 			  </div>
 			  <div style="float:left; display: inline-block; width: 49%;">
 			    <h4>Billing Address</h4>
-			      <p>Customer name</p>
-			      <p>Address</p>
+					<p>'.$dumb['name'].'</p>
+					<p>'.$dumb['address'].'</p>
 			  </div>
 			  <div style="clear: both"></div>
 			  <hr style="margin: 20px 0 0 0; "/>

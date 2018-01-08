@@ -57,9 +57,9 @@
 				case "categoryOption" 		: $resultList = $this->fetchAllRecord('categories', array("name as caption", "idData as value"), $post['keyword'], "ORDER BY name ASC"); break;
 				case "categoryFetch" 		: $resultList = $this->fetchSingleRequest('categories', array("name", "idData"), $post['keyword']); break;
 
-				case "shippingOption" 			: $resultList = $this->fetchAllRequest('shipping_options', array("name", "idData"), $post['keyword'], "ORDER BY name ASC", $post['page']); break;
+				case "shippingOption" 			: $resultList = $this->fetchAllRequest('shipping_options', array("name", "link", "idData"), $post['keyword'], "ORDER BY name ASC", $post['page']); break;
 				case "shippingOptionList"		: $resultList = $this->fetchAllRecord('shipping_options', array("name as caption", "idData as value"), $post['keyword'], "ORDER BY name ASC"); break;
-				case "shippingOptionFetch" 	: $resultList = $this->fetchSingleRequest('shipping_options', array("name", "idData"), $post['keyword']); break;
+				case "shippingOptionFetch" 	: $resultList = $this->fetchSingleRequest('shipping_options', array("name", "link", "idData"), $post['keyword']); break;
 
 				case "department" 		: $resultList = $this->fetchAllRequest('departments', array("name", "idData"), $post['keyword'], "ORDER BY name ASC", $post['page']); break;
 				case "departmentOption" : $resultList = $this->fetchAllRecord('departments', array("name as caption", "idData as value"), $post['keyword'], "ORDER BY name ASC"); break;
@@ -242,8 +242,12 @@
 				break;
 
 				case "shippingOption"  :
-					$fields = array("name");
-					$values = array($post["name"]);
+					$fields = array("name", "link");
+					$values = array();
+					foreach ($fields as $key) {
+						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
+						array_push($values, $value);
+					}
 
 					$resultList = $this->insert('shipping_options', $fields, $values);
 				break;
@@ -587,7 +591,7 @@
 				break;
 
 				case "shippingOption"  :
-					$values = array("name = '".$post["name"]."'");
+					$values = array("name = '".$post["name"]."', link = '".$post["link"]."'");
 					$resultList = $this->update('shipping_options', $values, $post['idData']);
 				break;
 

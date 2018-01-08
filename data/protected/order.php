@@ -1,4 +1,12 @@
 <?php
+	error_reporting(-1);
+	ini_set('display_errors', 1);
+	use PHPMailer\PHPMailer\PHPMailer;
+	use PHPMailer\PHPMailer\Exception;
+
+	require 'library/src/Exception.php';
+	require 'library/src/PHPMailer.php';
+	require 'library/src/SMTP.php';
 
 	Class order {
 		public function __construct(){
@@ -75,66 +83,7 @@
 							array_push($resultList['resultUQty'], $resultUQty);
 						}
 
-						//--
-						$emailMessage  = "<h1><b>Thank you for your order!</b></h1>";
-						$emailMessage .='<h5 class="text-warning"><b>Your Order ID is <span id="orderNumber">#'.$resultList["feedId"].'</span></b></h5>';
-						$emailMessage .='<h5><i>Please put this Order ID in the message reference when making your transfer.</i></h5>';
-						$emailMessage .='<h3>SHIPPING ADDRESS</h3>';
-						$emailMessage .='<h5><b>'.$post['name'].'</b></h5>';
-						$emailMessage .='<h5>'.$post['address'].'</h5>';
-						$emailMessage .='<h5>'.$post['city']." ".$post['zipCode'].'</h5>';
-						$emailMessage .='<h5>'.$post['country'].'</h5>';
-						$emailMessage .='<h5>Phone : '.$post['phone'].'</h5>';
-						$emailMessage .= '<table width="100%">';
-						$emailMessage .= '<tr>';
-						$emailMessage .= '<th>Product</th>';
-						$emailMessage .= '<th>SKU</th>';
-						$emailMessage .= '<th>Price</th>';
-						$emailMessage .= '<th>Quantity</th>';
-						$emailMessage .= '<th>Total</th>';
-						$emailMessage .= '</tr>';
-
-						//items
-						for($loop=0;$loop<$endLoop;$loop++){
-							$item = $post['items'][$loop];
-							$fetch= $this->fetchSingleRequest('products p JOIN products_variant v ON p.idData = v.productId',array('p.name', 'v.sku', 'v.price'),'v.idData="'.$item['variantId'].'"');
-							if($fetch['feedStatus'] == "success"){
-								$fetch = $fetch['feedData'];
-								$emailMessage .= '<tr>';
-								$emailMessage .= '<td>'.$fetch['name'].'</td>';
-								$emailMessage .= '<td>'.$fetch['sku'].'</td>';
-								$emailMessage .= '<td>'.$fetch['price'].'</td>';
-								$emailMessage .= '<td>'.$item['qty'].'</td>';
-								$emailMessage .= '<td>'.number_format(($item['qty'] * $fetch['price'])).'</td>';
-								$emailMessage .= '</tr>';
-							}
-						}
-
-						$emailMessage .= '<tr>';
-						$emailMessage .= '<td colspan="4" align="right">Cart Total</td>';
-						$emailMessage .= '<td>'.$total.'</td>';
-						$emailMessage .= '</tr>';
-						$emailMessage .= '<td colspan="4" align="right">Grand Total</td>';
-						$emailMessage .= '<td>'.$total.'</td>';
-						$emailMessage .= '</tr>';
-						$emailMessage .= '</table>';
-
-						if($post['paymentMethod'] == "BANK TRANSFER"){
-							$emailMessage .= '<br/><br/>';
-							$emailMessage .= '<p>Please transfer your order payment to:</p>';
-							$emailMessage .= '<p>PT. Tulisan Susunan Tinta</p>';
-							$emailMessage .= '<p>Bank Mandiri</p>';
-							$emailMessage .= '<p>Acc. No. 126-00-0618835-2</p>';
-							$emailMessage .= '<p>(Rupiah account)</p>';
-							$emailMessage .= '<br/><br/>';
-							$emailMessage .= '<a href="#">Confirm payment</a>';
-						}elseif($post['paymentMethod'] == "DOKU WALLET"){
-							$emailMessage .= '<br/><br/>';
-							$emailMessage .= 'Please do your payment by doku wallet in link bellow:<br/>';
-							$emailMessage .= '<a href="#">...</a>';
-						}
-
-						$emailResult = $this->emailSender($post['email'], 'Order #'.$resultList["feedId"], $emailMessage);
+						$emailResult = $this->emailOrder('placedOrder', array("email"=>$post['email'],"name"=>$post['name']), $resultList["feedId"]);
 						array_push($resultList['resultEmail'], $emailResult);
 					}
 				break;
@@ -146,14 +95,20 @@
 					if($resultList["feedStatus"] == "success") {
 						$resultList['resultEmail'] = array();
 
-						//--
-						$emailMessage  = "<h1><b>Your order has been delivered!</b></h1>";
-						$emailMessage .= '<h5 class="text-warning"><b>Your Order ID is <span id="orderNumber">#'.$post["orderId"].'</span></b></h5>';
-						$emailMessage .= '<h5><i>Confirmation of goods received.</i></h5>';
-						$emailMessage .= '<a href="#">Confirm to complete</a>';
-						$emailMessage .= '<a href="#">Return of goods</a>';
+						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.dokuStatus", "o.dokuMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status")
+						, "o.idData = ".$post['orderId']."", "");
+						if($data['feedStatus'] == "success"){
+							$data = $data['feedData'];
+						}else{
+							$data = array();
+						}
 
-						$emailResult = $this->emailSender($post['email'], 'Order #'.$post["orderId"], $emailMessage);
+						foreach ($data as $value) {
+							$post['email'] = $value['email'];
+							$post['name'] = $value['name'];
+						}
+
+						$emailResult = $this->emailOrder('shipped', array("email"=>$post['email'],"name"=>$post['name']), $post['orderId']);
 						array_push($resultList['resultEmail'], $emailResult);
 					}
 				break;
@@ -167,6 +122,31 @@
 							$upload = $this->uploadSingleImage($_FILES["transferPicture"], "transferPicture", "orders", "transferPicture", $post['idData'], '1');
 							array_push($resultList, array("feedUpload" => $upload['feedMessage']));
 						}
+					}
+				break;
+
+				case "completeConfirm" :
+					$values = array("status = 'Complete'");
+					$resultList = $this->update('orders', $values, $post['idData']);
+
+					if($resultList["feedStatus"] == "success") {
+						$resultList['resultEmail'] = array();
+
+						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.dokuStatus", "o.dokuMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status")
+						, "o.idData = ".$post['idData']."", "");
+						if($data['feedStatus'] == "success"){
+							$data = $data['feedData'];
+						}else{
+							$data = array();
+						}
+
+						foreach ($data as $value) {
+							$post['email'] = $value['email'];
+							$post['name'] = $value['name'];
+						}
+
+						$emailResult = $this->emailOrder('complete', array("email"=>$post['email'],"name"=>$post['name']), $post['idData']);
+						array_push($resultList['resultEmail'], $emailResult);
 					}
 				break;
 
@@ -191,15 +171,21 @@
 
 						$this->customQuery('UPDATE products_variant v SET qty = qty + (SELECT SUM(qty) FROM orders_item o WHERE variantId = v.idData AND o.orderId = '.$post['orderId'].') WHERE v.idData IN (SELECT variantId FROM orders_item o WHERE o.orderId = '.$post['orderId'].')');
 
-						// $order = $this->fetchSingleRequest("orders", array("email"), "idData = '".$post['orderId']."'");
-            //
-						// //-- email
-						// $emailMessage  = "<h1><b>Your have canceled the order!</b></h1>";
-						// $emailMessage .= '<h5 class="text-warning"><b>Your Order ID is <span id="orderNumber">#'.$post["orderId"].'</span></b></h5>';
-						// $emailMessage .= '<h5><i>Thankyou for your feedback.</i></h5>';
-            //
-						// $emailResult = $this->emailSender($post['email'], 'Order #'.$post["idData"], $emailMessage);
-						// array_push($resultList['resultEmail'], $emailResult);
+						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.dokuStatus", "o.dokuMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status")
+						, "o.idData = ".$post['orderId']."", "");
+						if($data['feedStatus'] == "success"){
+							$data = $data['feedData'];
+						}else{
+							$data = array();
+						}
+
+						foreach ($data as $value) {
+							$post['email'] = $value['email'];
+							$post['name'] = $value['name'];
+						}
+
+						$emailResult = $this->emailOrder('cancel', array("email"=>$post['email'],"name"=>$post['name']), $post['orderId']);
+						array_push($resultList['resultEmail'], $emailResult);
 					}
 				break;
 				default	   		: $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
@@ -217,16 +203,52 @@
 					$values = array("status = 'Shipping'");
 					$resultList = $this->updateMultiData('orders', $values, $post['pId']);
 
-				//EMAIL
+					//EMAIL
+					if($resultList["feedStatus"] == "success") {
+						$resultList['resultEmail'] = array();
 
+						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.dokuStatus", "o.dokuMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status")
+						, "o.idData = ".$post['pId']."", "");
+						if($data['feedStatus'] == "success"){
+							$data = $data['feedData'];
+						}else{
+							$data = array();
+						}
+
+						foreach ($data as $value) {
+							$post['email'] = $value['email'];
+							$post['name'] = $value['name'];
+						}
+
+						$emailResult = $this->emailOrder('shipped', array("email"=>$post['email'],"name"=>$post['name']), $post['pId']);
+						array_push($resultList['resultEmail'], $emailResult);
+					}
 				break;
 
 				case "completeOrder"  :
 					$values = array("status = 'Complete'");
 					$resultList = $this->updateMultiData('orders', $values, $post['pId']);
 
-				//EMAIL
+					//EMAIL
+					if($resultList["feedStatus"] == "success") {
+						$resultList['resultEmail'] = array();
 
+						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.dokuStatus", "o.dokuMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status")
+						, "o.idData = ".$post['pId']."", "");
+						if($data['feedStatus'] == "success"){
+							$data = $data['feedData'];
+						}else{
+							$data = array();
+						}
+
+						foreach ($data as $value) {
+							$post['email'] = $value['email'];
+							$post['name'] = $value['name'];
+						}
+
+						$emailResult = $this->emailOrder('complete', array("email"=>$post['email'],"name"=>$post['name']), $post['pId']);
+						array_push($resultList['resultEmail'], $emailResult);
+					}
 				break;
 
 				case "cancelOrder"  :
@@ -237,8 +259,26 @@
 						$this->customQuery('UPDATE products_variant v SET qty = qty + (SELECT SUM(qty) FROM orders_item o WHERE variantId = v.idData AND o.orderId = '.$post['pId'].') WHERE v.idData IN (SELECT variantId FROM orders_item o WHERE o.orderId = '.$post['pId'].')');
 					}
 
-				//EMAIL
+					//EMAIL
+					if($resultList["feedStatus"] == "success") {
+						$resultList['resultEmail'] = array();
 
+						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.dokuStatus", "o.dokuMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status")
+						, "o.idData = ".$post['pId']."", "");
+						if($data['feedStatus'] == "success"){
+							$data = $data['feedData'];
+						}else{
+							$data = array();
+						}
+
+						foreach ($data as $value) {
+							$post['email'] = $value['email'];
+							$post['name'] = $value['name'];
+						}
+
+						$emailResult = $this->emailOrder('complete', array("email"=>$post['email'],"name"=>$post['name']), $post['pId']);
+						array_push($resultList['resultEmail'], $emailResult);
+					}
 				break;
 
 				default	   		: $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
@@ -670,6 +710,665 @@
 		}
 
 		//EMAIL
+		public function emailOrder($type, $recipient, $orderId){
+			$eMessage= "Something went wrong, failed to send email!";
+
+			try {
+					$error   = 0;
+					$subject = "";
+					$message = "";
+					switch ($type) {
+						case 'placedOrder':
+							$subject = "TULISAN - Hi, here's your order!";
+							$message = $this->placeOrderText($orderId);
+						break;
+
+						case 'paid':
+							$subject = "TULISAN - Hi, we ship your order!";
+							$message = $this->paidOrderText($orderId);
+						break;
+
+						case 'shipped':
+							$subject = "TULISAN - Hi, your order is on the way!";
+							$message = $this->shippedOrderText($orderId);
+						break;
+
+						case 'complete':
+							$subject = "TULISAN - Thank you!";
+							$message = $this->completeOrderText($orderId);
+						break;
+
+						case 'cancel':
+							$subject = "TULISAN - Your order has been canceled!";
+							$message = $this->cancelOrderText($orderId);
+						break;
+
+						default:
+							$error = 1;
+						break;
+					}
+
+					if($error != 1){
+						$email = new PHPMailer(true); // Passing `true` enables exceptions
+				    //Server settings
+				    $email->SMTPDebug = 0; // Enable verbose debug output
+				    $email->isSMTP(); // Set mailer to use SMTP
+				    $email->Host = e_host;  // Specify main and backup SMTP servers
+				    $email->SMTPAuth = true;  // Enable SMTP authentication
+				    $email->Username = e_user; // SMTP username
+				    $email->Password = e_pass; // SMTP password
+				    $email->SMTPSecure = 'tls'; // Enable TLS encryption, `ssl` also accepted
+				    $email->Port = 587; // TCP port to connect to
+				    //Recipients
+				    $email->setFrom(e_user, e_name);
+				    $email->addAddress($recipient['email'], $recipient['name']); // Add a recipient
+						$email->addCC(e_user);
+				    $email->addReplyTo(e_user, 'Information');
+
+						$email->AddEmbeddedImage('../assets/PICS/tulisan.png', 'logo_tulisan');
+				    //Content
+				    $email->isHTML(true);  // Set email format to HTML
+				    $email->Subject = $subject;
+				    $email->Body    = $message;
+				    $email->AltBody = 'Please use Email that Support HTML Email.';
+
+				    $email->send();
+				    $eMessage = 'Message has been sent';
+					}
+			} catch (Exception $e) {
+			    $eMessage = 'Mailer Error: ' . $email->ErrorInfo;
+			}
+
+			return $eMessage;
+		}
+
+		public function placeOrderText($orderId){
+			$data = $this->fetchAllRecord('orders_item i JOIN products_variant v ON i.variantId = v.idData JOIN products p ON v.productId = p.idData', array("p.name", "v.sku", "i.price", "i.qty"), "orderId = ".$orderId."", "ORDER BY i.idData");
+			if($data['feedStatus'] == "success"){
+				$data = $data['feedData'];
+			}else{
+				$data = array();
+			}
+
+			$info = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank")
+			, "o.idData = ".$orderId."", "");
+			if($info['feedStatus'] == "success"){
+				$info = $info['feedData'];
+			}else{
+				$info = array();
+			}
+
+			$dumb = array("name"=>"", "address"=>"");
+			foreach ($info as $dataInfo) {
+				$dumb['name'] = $dataInfo['name'];
+				$dumb['address'] = $dataInfo['address']."<br/>".$dataInfo['city']." ".$dataInfo['zipCode']."<br/>".$dataInfo['country']."<br/>Phone : ".$dataInfo['phone'];
+			}
+
+			$htmlText = '<section style="float:left; width:100%;max-width:700px; font-family: Arial, Helvetica, sans-serif; box-sizing: border-box; font-size: 11px">
+			  <img src="cid:logo_tulisan" style="width: 200px" />
+				<h1>TULISAN</h1>
+			  <span style="float: right; color: #CCC">INVOICE</span>
+			  <hr style="margin: 20px 0; "/>
+			  <h3>Thank you for your order!</h3>
+			  <p>Your order number is#'.$orderId.'</p>
+			  <hr style="margin: 20px 0 0 0; "/>
+			  <div style="float:left; display: inline-block; width: 49%;">
+			    <h4>Shipping Address</h4>
+		      <p>'.$dumb['name'].'</p>
+		      <p>'.$dumb['address'].'</p>
+			  </div>
+			  <div style="float:left; display: inline-block; width: 49%;">
+			    <h4>Billing Address</h4>
+					<p>'.$dumb['name'].'</p>
+					<p>'.$dumb['address'].'</p>
+			  </div>
+			  <table width="100%" border="0" style="border-collapse: separate; margin-top: 30px; font-size: 11px" >
+			    <tr style="background-color: #E9E2DB; height: 40px">
+			      <th align="left" style="padding: 0 10px">Item</th>
+			      <th>SKU</th>
+			      <th>Price</th>
+			      <th>Discount</th>
+			      <th>Qty</th>
+			      <th>Total</th>
+			    </tr>';
+
+				$grandTotal = 0;
+				foreach ($data as $value) {
+					$total 			= (int)$value['price'] * (int)$value['qty'];
+					$grandTotal = $grandTotal + $total;
+					$htmlText .=
+			    '<tr style="background-color: #EEEEEE; height: 40px">
+			      <td width="30%" style="padding: 0 10px">'.$value['name'].'</td>
+			      <td align="center" style="padding: 0 10px">'.$value['sku'].'</td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($value['price']).'</td>
+			      <td align="center" style="padding: 0 10px">0</td>
+			      <td align="center" style="padding: 0 10px">'.$value['qty'].'</td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($total).'</td>
+			    </tr>';
+				}
+
+				$htmlText .=
+				'<tr>
+			      <td align="right" colspan="5">Cart Total</td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($grandTotal).'</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5">Discount</td>
+			      <td align="right" style="padding: 0 10px">0</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5">Sales tax (TAX)</td>
+			      <td align="right" style="padding: 0 10px">0</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5">Shipping</td>
+			      <td align="right" style="padding: 0 10px">0</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5"><b>Grand Total</b></td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($grandTotal).'</td>
+			    </tr>
+			  </table>
+			  <hr style="margin: 20px 0; "/>
+			  <p>
+			    Please read the important information below thoroughly. <br/><br/>
+
+			    Dear our beloved customers, <br/><br/>
+
+			    We now have a new payment method with DOKU. Since the new instalment is still relatively new and we are doing the process manually, we need your email confirming you selected DOKU as your payment method. Please simply reply this order confirmation to us and wait for our email to process your payment for your order.
+			    Orders placed on Fridays, Saturdays, Sundays or holidays will be processed the following business day. We will ship your order, after we receiver your payment confirmation from DOKU automated system.
+			    Please note that your order will automatically be cancelled if the payment is not confirmed within 24 hours after the order is made. You will be notified when your payment has been verified by our team.
+			    If you select payment via Bank Transfer, please confirm your payment by sending the proof of payment (scanned or picture image) directly to our email (shop@tulisan.com) or simply reply back our Order Confirmation email and we will process and ship your immediately after we receive the proof.
+
+			    <br/><br/>
+			    Please make payment transfer to:
+			    <br/><br/>
+			    PT. Tulisan Susunan Tinta<br/>
+			    Bank Mandiri<br/>
+			    Branch: Iskandarsyah (Jakarta-Selatan)<br/>
+			    Acc. No. 126-00-0689973-5<br/>
+			    <br/><br/>
+			    (Rupiah Account)
+			    <br/><br/>
+			    After making your transfer, please verify it by sending the proof of payment to shop@tulisan.com (you can scan or take a picture of it) with your order number and we will process your order after we receive it. Please note that shipping maybe delayed if we need to verify your information with you or your payment process.
+			    Please allow 1-2 business days to process your order from our warehouse. Our standard shipping (free delivery) typically arrives between 3-5 business days. Rural and remote areas may incur longer delivery times. Orders placed on Fridays, Saturdays, Sundays or holidays will ship the following business day after we receive your proof of payment.
+			    Note that your order will automatically be cancelled if the payment is not confirmed within 24 hours after the order is made. You will be notified when your payment has been verified by our team. Orders are only shipped after we receive your full payment.
+			    <br/><br/>
+			    Warmest regards,
+			    <br/><br/><br/>
+			    Team Tulisan.
+			    <br/><br/>
+
+
+			    <hr style="margin: 20px 0; "/>
+			    Jika anda memilih metode pembayaran dengan DOKU, mohon tunggu email dari kami untuk dapat memproses pembayaran untuk pesanan Anda. Pesanan yang masuk ke sistem kami pada hari Jumat, Sabtu, minggu atau hari libur akan dikirim pada harı kerja berikutnya. Setelah kami Sudah memverifikasi pembayaran Anda. Kami akan memproses dan mengirimkan pesanan Anda, setelah kami menerima konfirmasi pembayaran dari Sistem Automasi DOKU dari pembayaran yang telah dilakukan.
+			    Order Anda akan secara otomatis dibatalkan apabila pembayaran tidak terkonfirmasi dalam 24 jam setelah pembelin dilakukan. Anda akan menerima notifikasi saat pembayaran Anda telah diverifikasi Oleh Tim Tulisan.
+			    Jika Anda memilih Pembayaran via bank transfer, mohon transfer ke:
+			    <br/><br/>
+			    PT. Tulisan Susunan Tinta<br/>
+			    Bank Mandiri<br/>
+			    Cabang: Iskandarsyah (Jakarta-Selatan)<br/>
+			    Acc. No. 126-00-0689973-5<br/>
+			    <br/><br/>
+			    (Rupiah Account)
+			    <br/><br/>
+			    Setelah melakukan pembayaran, verifikasi status pembayaran Anda tengan mengirimkan bukti pembayaran ke shop@tulisan.com (bisa berupa scan atau foto) dengan memberikan nommer order pesanan Anda dan kami akan memproses pesanan Anda setelah kami menerima buktinya. Untuk diketahui pengiriman mungkin akan terlambat jika kami harus memverifikasi informasi kepada Anda atau tentang proses pembayaran Anda.
+			    Kami membutuhkan 1-2 hari uituk memproses pesanan Anda dari warehouse kami. Pesanan yang masuk ke sistem kami pada hari Jumat, Sabtu, mingau atau hari libar akan dikirimkan pada hari kerja berikutnya setelah kami Sudan memverifikasi pembayaran Anda.
+			    Order Anda akan secara otomatis dibatalkan apabila pembayaran tidak terkonfirmasi dalam 24 jam setelah pembelian dilakukan. Lahanan jasa pengiriman reguler kami (gratis biara pengiriman) biasanya sampai ditujuan antara 3-5 hari kerja. Untuk daerah jauh dari pusat pengiriman kami (yaitu Jakarta) akan sampai di tujuan lebih lama dari biasanya. Anda akan menerima notifikasi saat pembayaran Anda telah diverifikasi oleh Tim Tulisan. Order akan dikirimkan setelah pembayaran telah dilakukan secara penuh.
+			    <br/><br/>
+			    Salam hangat,
+			    <br/><br/><br/>
+			    Tim Tulisan.
+			  </p>
+			  <div style="margin-top: 20px">
+			    <h3>PT TULISAN SUSUNAN TINTA</h3>
+			    <div style="float:left; display: inline-block; width: 49%;">
+			      <p>Darmawangsa Square – The City Walk </p>
+			      <p>Ground Floor | Unit 24</p>
+			      <p>Jalan Darmawangsa VI</p>
+			      <p>Jakarta 12160, Indonesia</p>
+			    </div>
+			    <div style="float:left; display: inline-block; width: 49%;">
+			      <p>T +62 21 7278 0235</p>
+			      <p>shop@tulisan.com</p>
+			      <p>www.tulisan.com</p>
+			    </div>
+			  </div>
+			</section>';
+
+			return $htmlText;
+		}
+
+		public function paidOrderText($orderId){
+			$data = $this->fetchAllRecord('orders_item i JOIN products_variant v ON i.variantId = v.idData JOIN products p ON v.productId = p.idData', array("p.name", "v.sku", "i.price", "i.qty"), "orderId = ".$orderId."", "ORDER BY i.idData");
+			if($data['feedStatus'] == "success"){
+				$data = $data['feedData'];
+			}else{
+				$data = array();
+			}
+
+			$info = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank")
+			, "o.idData = ".$orderId."", "");
+			if($info['feedStatus'] == "success"){
+				$info = $info['feedData'];
+			}else{
+				$info = array();
+			}
+
+			$dumb = array("name"=>"", "address"=>"");
+			foreach ($info as $dataInfo) {
+				$dumb['name'] = $dataInfo['name'];
+				$dumb['address'] = $dataInfo['address']."<br/>".$dataInfo['city']." ".$dataInfo['zipCode']."<br/>".$dataInfo['country']."<br/>Phone : ".$dataInfo['phone'];
+			}
+
+			$htmlText = '<section style="float:left; width:100%;max-width:700px; font-family: Arial, Helvetica, sans-serif; box-sizing: border-box; font-size: 11px">
+			  <img src="'.e_path.'/PICS/tulisan.png" style="width: 200px" />
+			  <hr style="margin: 20px 0; "/>
+			  <h3>Congratulations, your order is being processed!</h3>
+			  <p>Your order number is <b>#'.$orderId.'</b>, Created on <b></b></p>
+			  <p>Subtotal: <b>0</b></p>
+			  <p>Shipping: <b>0</b></p>
+			  <p>Total: <b>0</b></p>
+			  <table width="100%" border="0" style="border-collapse: separate; margin-top: 10px; font-size: 11px" >
+			    <tr style="background-color: #E9E2DB; height: 40px">
+			      <th align="left" style="padding: 0 10px">Item</th>
+			      <th>SKU</th>
+			      <th>Price</th>
+			      <th>Discount</th>
+			      <th>Qty</th>
+			      <th>Total</th>
+			    </tr>';
+
+				$grandTotal = 0;
+				foreach ($data as $value) {
+					$total 			= (int)$value['price'] * (int)$value['qty'];
+					$grandTotal = $grandTotal + $total;
+					$htmlText .=
+			    '<tr style="background-color: #EEEEEE; height: 40px">
+			      <td width="30%" style="padding: 0 10px">'.$value['name'].'</td>
+			      <td align="center" style="padding: 0 10px">'.$value['sku'].'</td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($value['price']).'</td>
+			      <td align="center" style="padding: 0 10px">0</td>
+			      <td align="center" style="padding: 0 10px">'.$value['qty'].'</td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($total).'</td>
+			    </tr>';
+				}
+
+				$htmlText .=
+				'<tr>
+			      <td align="right" colspan="5">Cart Total</td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($grandTotal).'</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5">Discount</td>
+			      <td align="right" style="padding: 0 10px">0</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5">Sales tax (TAX)</td>
+			      <td align="right" style="padding: 0 10px">0</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5">Shipping</td>
+			      <td align="right" style="padding: 0 10px">0</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5"><b>Grand Total</b></td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($grandTotal).'</td>
+			    </tr>
+			  </table>
+			  <hr style="margin: 20px 0 0 0; "/>
+			  <h3>Customer details</h3>
+			  <div style="float:left; display: inline-block; width: 49%;">
+			    <h4>Shipping Address</h4>
+					<p>'.$dumb['name'].'</p>
+					<p>'.$dumb['address'].'</p>
+			  </div>
+			  <div style="float:left; display: inline-block; width: 49%;">
+			    <h4>Billing Address</h4>
+					<p>'.$dumb['name'].'</p>
+					<p>'.$dumb['address'].'</p>
+			  </div>
+			  <div style="clear: both"></div>
+			  <hr style="margin: 20px 0 0 0; "/>
+			  <p>This is an automatic message, Do not reply to it.</p>
+			  <div style="margin-top: 20px">
+			    <h3>PT TULISAN SUSUNAN TINTA</h3>
+			    <div style="float:left; display: inline-block; width: 49%;">
+			      <p>Darmawangsa Square – The City Walk </p>
+			      <p>Ground Floor | Unit 24</p>
+			      <p>Jalan Darmawangsa VI</p>
+			      <p>Jakarta 12160, Indonesia</p>
+			    </div>
+			    <div style="float:left; display: inline-block; width: 49%;">
+			      <p>T +62 21 7278 0235</p>
+			      <p>shop@tulisan.com</p>
+			      <p>www.tulisan.com</p>
+			    </div>
+			  </div>
+			</section>';
+
+			return $htmlText;
+		}
+
+		public function shippedOrderText($orderId){
+			$data = $this->fetchAllRecord('orders_item i JOIN products_variant v ON i.variantId = v.idData JOIN products p ON v.productId = p.idData', array("p.name", "v.sku", "i.price", "i.qty"), "orderId = ".$orderId."", "ORDER BY i.idData");
+			if($data['feedStatus'] == "success"){
+				$data = $data['feedData'];
+			}else{
+				$data = array();
+			}
+
+			$info = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',
+			array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.receiptNumber", "s.name as shippingAs", "s.link")
+			, "o.idData = ".$orderId."", "");
+
+			if($info['feedStatus'] == "success"){
+				$info = $info['feedData'];
+			}else{
+				$info = array();
+			}
+
+			$dumb = array("name"=>"", "address"=>"");
+			foreach ($info as $dataInfo) {
+				$dumb['name'] = $dataInfo['name'];
+				$dumb['shippingAs'] = $dataInfo['shippingAs'];
+				$dumb['receiptNumber'] = $dataInfo['receiptNumber'];
+				$dumb['address'] = $dataInfo['address']."<br/>".$dataInfo['city']." ".$dataInfo['zipCode']."<br/>".$dataInfo['country']."<br/>Phone : ".$dataInfo['phone'];
+			}
+
+			$htmlText = '<section style="float:left; width:100%;max-width:700px; font-family: Arial, Helvetica, sans-serif; box-sizing: border-box; font-size: 11px">
+			  <img src="'.e_path.'/PICS/tulisan.png" style="width: 200px" />
+			  <hr style="margin: 20px 0; "/>
+			  <h3>Great News, your order has shipped!</h3>
+			  <p>Your order number is <b>#'.$orderId.'</b>, Created on <b></b></p>
+			  <hr style="margin: 10px 0; "/>
+			  <h4><b>'.$dumb['shippingAs'].'</b></h4>
+			  <p>Your tracking number is <b>'.$dumb['receiptNumber'].'</b></p>
+			  <p>Free delivery within Indonesia: Your tracking number is (nomor airway bill / nomor resi) please</p>
+			  <p>Check it here : <b>'.$dumb['link'].'</b></p>
+			  <hr style="margin: 10px 0; "/>
+			  <div style="display: inline-block; width: 49%;">
+			    <h4>Shipping Address</h4>
+					<p>'.$dumb['name'].'</p>
+					<p>'.$dumb['address'].'</p>
+			  </div>
+			  <div style="clear: both"></div>
+			  <table width="100%" border="0" style="border-collapse: separate; margin-top: 10px; font-size: 11px" >
+			    <tr style="background-color: #E9E2DB; height: 40px">
+			      <th align="left" style="padding: 0 10px">Item</th>
+			      <th>SKU</th>
+			      <th>Price</th>
+			      <th>Discount</th>
+			      <th>Qty</th>
+			      <th>Total</th>
+			    </tr>';
+
+				$grandTotal = 0;
+				foreach ($data as $value) {
+					$total 			= (int)$value['price'] * (int)$value['qty'];
+					$grandTotal = $grandTotal + $total;
+					$htmlText .=
+			    '<tr style="background-color: #EEEEEE; height: 40px">
+			      <td width="30%" style="padding: 0 10px">'.$value['name'].'</td>
+			      <td align="center" style="padding: 0 10px">'.$value['sku'].'</td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($value['price']).'</td>
+			      <td align="center" style="padding: 0 10px">0</td>
+			      <td align="center" style="padding: 0 10px">'.$value['qty'].'</td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($total).'</td>
+			    </tr>';
+				}
+
+				$htmlText .=
+				'<tr>
+			      <td align="right" colspan="5">Cart Total</td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($grandTotal).'</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5">Discount</td>
+			      <td align="right" style="padding: 0 10px">0</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5">Sales tax (TAX)</td>
+			      <td align="right" style="padding: 0 10px">0</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5">Shipping</td>
+			      <td align="right" style="padding: 0 10px">0</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5"><b>Grand Total</b></td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($grandTotal).'</td>
+			    </tr>
+			  </table>
+			  <hr style="margin: 20px 0 0 0; "/>
+			  <p>This is an automatic message, Do not reply to it.</p>
+			  <div style="margin-top: 20px">
+			    <h3>PT TULISAN SUSUNAN TINTA</h3>
+			    <div style="float:left; display: inline-block; width: 49%;">
+			      <p>Darmawangsa Square – The City Walk </p>
+			      <p>Ground Floor | Unit 24</p>
+			      <p>Jalan Darmawangsa VI</p>
+			      <p>Jakarta 12160, Indonesia</p>
+			    </div>
+			    <div style="float:left; display: inline-block; width: 49%;">
+			      <p>T +62 21 7278 0235</p>
+			      <p>shop@tulisan.com</p>
+			      <p>www.tulisan.com</p>
+			    </div>
+			  </div>
+			</section>';
+
+			return $htmlText;
+		}
+
+		public function completeOrderText($orderId){
+			$data = $this->fetchAllRecord('orders_item i JOIN products_variant v ON i.variantId = v.idData JOIN products p ON v.productId = p.idData', array("p.name", "v.sku", "i.price", "i.qty"), "orderId = ".$orderId."", "ORDER BY i.idData");
+			if($data['feedStatus'] == "success"){
+				$data = $data['feedData'];
+			}else{
+				$data = array();
+			}
+
+			$htmlText = '<section style="float:left; width:100%;max-width:700px; font-family: Arial, Helvetica, sans-serif; box-sizing: border-box; font-size: 11px">
+			  <img src="'.e_path.'/PICS/tulisan.png" style="width: 200px" />
+			  <hr style="margin: 20px 0; "/>
+			  <h3>Congratulations, your order has completed!</h3>
+			  <h2>Thank you, we are waiting for your next order.</h2>
+			  <p>Your order number is <b>#'.$orderId.'</b>, Created on <b></b></p>
+			  <p>Subtotal: <b>0</b></p>
+			  <p>Shipping: <b>0</b></p>
+			  <p>Total: <b>0</b></p>
+			  <table width="100%" border="0" style="border-collapse: separate; margin-top: 10px; font-size: 11px" >
+			    <tr style="background-color: #E9E2DB; height: 40px">
+			      <th align="left" style="padding: 0 10px">Item</th>
+			      <th>SKU</th>
+			      <th>Price</th>
+			      <th>Discount</th>
+			      <th>Qty</th>
+			      <th>Total</th>
+			    </tr>';
+
+				$grandTotal = 0;
+				foreach ($data as $value) {
+					$total 			= (int)$value['price'] * (int)$value['qty'];
+					$grandTotal = $grandTotal + $total;
+					$htmlText .=
+			    '<tr style="background-color: #EEEEEE; height: 40px">
+			      <td width="30%" style="padding: 0 10px">'.$value['name'].'</td>
+			      <td align="center" style="padding: 0 10px">'.$value['sku'].'</td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($value['price']).'</td>
+			      <td align="center" style="padding: 0 10px">0</td>
+			      <td align="center" style="padding: 0 10px">'.$value['qty'].'</td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($total).'</td>
+			    </tr>';
+				}
+
+				$htmlText .=
+				'<tr>
+			      <td align="right" colspan="5">Cart Total</td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($grandTotal).'</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5">Discount</td>
+			      <td align="right" style="padding: 0 10px">0</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5">Sales tax (TAX)</td>
+			      <td align="right" style="padding: 0 10px">0</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5">Shipping</td>
+			      <td align="right" style="padding: 0 10px">0</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5"><b>Grand Total</b></td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($grandTotal).'</td>
+			    </tr>
+			  </table>
+			  <hr style="margin: 20px 0 0 0; "/>
+			  <h3>Customer details</h3>
+			  <div style="float:left; display: inline-block; width: 49%;">
+			    <h4>Shipping Address</h4>
+			      <p>Customer name</p>
+			      <p>Address</p>
+			  </div>
+			  <div style="float:left; display: inline-block; width: 49%;">
+			    <h4>Billing Address</h4>
+			      <p>Customer name</p>
+			      <p>Address</p>
+			  </div>
+			  <div style="clear: both"></div>
+			  <hr style="margin: 20px 0 0 0; "/>
+			  <p>This is an automatic message, Do not reply to it.</p>
+			  <div style="margin-top: 20px">
+			    <h3>PT TULISAN SUSUNAN TINTA</h3>
+			    <div style="float:left; display: inline-block; width: 49%;">
+			      <p>Darmawangsa Square – The City Walk </p>
+			      <p>Ground Floor | Unit 24</p>
+			      <p>Jalan Darmawangsa VI</p>
+			      <p>Jakarta 12160, Indonesia</p>
+			    </div>
+			    <div style="float:left; display: inline-block; width: 49%;">
+			      <p>T +62 21 7278 0235</p>
+			      <p>shop@tulisan.com</p>
+			      <p>www.tulisan.com</p>
+			    </div>
+			  </div>
+			</section>';
+
+			return $htmlText;
+		}
+
+		public function cancelOrderText($orderId){
+			$data = $this->fetchAllRecord('orders_item i JOIN products_variant v ON i.variantId = v.idData JOIN products p ON v.productId = p.idData', array("p.name", "v.sku", "i.price", "i.qty"), "orderId = ".$orderId."", "ORDER BY i.idData");
+			if($data['feedStatus'] == "success"){
+				$data = $data['feedData'];
+			}else{
+				$data = array();
+			}
+
+			$info = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank")
+			, "o.idData = ".$orderId."", "");
+			if($info['feedStatus'] == "success"){
+				$info = $info['feedData'];
+			}else{
+				$info = array();
+			}
+
+			$dumb = array("name"=>"", "address"=>"");
+			foreach ($info as $dataInfo) {
+				$dumb['name'] = $dataInfo['name'];
+				$dumb['address'] = $dataInfo['address']."<br/>".$dataInfo['city']." ".$dataInfo['zipCode']."<br/>".$dataInfo['country']."<br/>Phone : ".$dataInfo['phone'];
+			}
+
+			$htmlText = '<section style="float:left; width:100%;max-width:700px; font-family: Arial, Helvetica, sans-serif; box-sizing: border-box; font-size: 11px">
+			  <img src="'.e_path.'/PICS/tulisan.png" style="width: 200px" />
+				<h1>TULISAN</h1>
+			  <hr style="margin: 20px 0; "/>
+			  <h3>Your order has been canceled!</h3>
+			  <h2>Thank you, we are waiting for your next order.</h2>
+			  <p>Your recent order number is <b>#'.$orderId.'</b>, Created on <b></b></p>
+			  <table width="100%" border="0" style="border-collapse: separate; margin-top: 10px; font-size: 11px" >
+			    <tr style="background-color: #E9E2DB; height: 40px">
+			      <th align="left" style="padding: 0 10px">Item</th>
+			      <th>SKU</th>
+			      <th>Price</th>
+			      <th>Discount</th>
+			      <th>Qty</th>
+			      <th>Total</th>
+			    </tr>';
+
+				$grandTotal = 0;
+				foreach ($data as $value) {
+					$total 			= (int)$value['price'] * (int)$value['qty'];
+					$grandTotal = $grandTotal + $total;
+					$htmlText .=
+			    '<tr style="background-color: #EEEEEE; height: 40px">
+			      <td width="30%" style="padding: 0 10px">'.$value['name'].'</td>
+			      <td align="center" style="padding: 0 10px">'.$value['sku'].'</td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($value['price']).'</td>
+			      <td align="center" style="padding: 0 10px">0</td>
+			      <td align="center" style="padding: 0 10px">'.$value['qty'].'</td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($total).'</td>
+			    </tr>';
+				}
+
+				$htmlText .=
+				'<tr>
+			      <td align="right" colspan="5">Cart Total</td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($grandTotal).'</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5">Discount</td>
+			      <td align="right" style="padding: 0 10px">0</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5">Sales tax (TAX)</td>
+			      <td align="right" style="padding: 0 10px">0</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5">Shipping</td>
+			      <td align="right" style="padding: 0 10px">0</td>
+			    </tr>
+			    <tr>
+			      <td align="right" colspan="5"><b>Grand Total</b></td>
+			      <td align="right" style="padding: 0 10px">Rp. '.number_format($grandTotal).'</td>
+			    </tr>
+			  </table>
+			  <hr style="margin: 20px 0 0 0; "/>
+			  <h3>Customer details</h3>
+			  <div style="float:left; display: inline-block; width: 49%;">
+			    <h4>Shipping Address</h4>
+					<p>'.$dumb['name'].'</p>
+					<p>'.$dumb['address'].'</p>
+			  </div>
+			  <div style="float:left; display: inline-block; width: 49%;">
+			    <h4>Billing Address</h4>
+					<p>'.$dumb['name'].'</p>
+					<p>'.$dumb['address'].'</p>
+			  </div>
+			  <div style="clear: both"></div>
+			  <hr style="margin: 20px 0 0 0; "/>
+			  <p>This is an automatic message, Do not reply to it.</p>
+			  <div style="margin-top: 20px">
+			    <h3>PT TULISAN SUSUNAN TINTA</h3>
+			    <div style="float:left; display: inline-block; width: 49%;">
+			      <p>Darmawangsa Square – The City Walk </p>
+			      <p>Ground Floor | Unit 24</p>
+			      <p>Jalan Darmawangsa VI</p>
+			      <p>Jakarta 12160, Indonesia</p>
+			    </div>
+			    <div style="float:left; display: inline-block; width: 49%;">
+			      <p>T +62 21 7278 0235</p>
+			      <p>shop@tulisan.com</p>
+			      <p>www.tulisan.com</p>
+			    </div>
+			  </div>
+			</section>';
+
+			return $htmlText;
+		}
+
 		public function emailSender($to, $subject, $message){
 			/* initial condition */
 			$resultList = array();
@@ -758,5 +1457,4 @@
 
 		}
 	}
-
 ?>

@@ -4,6 +4,13 @@
 	define('db_pass', "root");
 	define('db_name', "tulisan_migration_5");
 
+	//email
+	define('e_host', "palbapang.idwebhost.com");
+	define('e_name', "Mailer");
+	define('e_user', "mailer@syncardtech.com");
+	define('e_pass', "syncard1234mailer");
+	define('e_path', "www.tulisan.local");
+
 	function openGate(){
 		$gate = new PDO("mysql:host=".db_host.";dbname=".db_name, db_user, db_pass);
 		$gate->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

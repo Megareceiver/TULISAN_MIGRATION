@@ -108,6 +108,7 @@
 					    	'<tr>'+
 									'<th width="5%"><input type="checkbox" name="customerSelect" id="selectRecord" value="0" onclick="checkboxToggle(this, \'customerSelect\')" /><label for="selectRecord"></label></th>'+
 						    	'<th>Shipping Option</th>'+
+						    	'<th>Shipping Link</th>'+
 					    	'</tr>'+
 					    '</thead>'+
 					    '<tbody></tbody>'+
@@ -217,6 +218,7 @@
 		    		'<tr>'+
 							'<td width="5%"><input type="checkbox" name="customerSelect" value="'+data[loop].idData+'" id="selectRecord' + loop + '"><label for="selectRecord' + loop + '"></label></td>'+
 		    			'<td class="syn-nowrap">'+ data[loop].name +'</td>'+
+		    			'<td class="syn-nowrap">'+ data[loop].link +'</td>'+
 		    		'</tr>';
 		    	}
 

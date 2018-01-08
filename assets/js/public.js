@@ -11,6 +11,7 @@ $(function(){
 	window.fbAsyncInit = function() {
 		FB.init({
 			// appId      : '1913874005353756', new.tulisan.com
+			// appId      : '1998510153756368', //dev.tulisan.syncardtech.com
 			appId      : '1958541230824445', //tulisan.local
 			cookie     : true,
 			xfbml      : true,
@@ -106,21 +107,21 @@ function p_logout(){
 		async: false,
 		data: { session : 'logout' },
 		success: function(result){
-			// reStatus = result.status;
-			// logoutAgent = 1;
-			// notifChecker = 0;
-			// clearTimeout(notifId);
-
 			//facebook
-			// FB.getLoginStatus(function(response) {
-			// 	if(response.status == "connected"){
-			FB.logout(function(responses){
-
+			FB.getLoginStatus(function(response) {
+				if(response.status == "connected"){
+					FB.logout(function(responses){
+						console.log(responses);
+						//global
+						r_clearCookies();
+						window.location.href = base_url;
+					});
+				}else{
+					//global
+					r_clearCookies();
+					window.location.href = base_url;
+				}
 			});
-			// 	}
-			// });
-
-			r_clearCookies();
 		},
 		complete: function(xhr,status) { },
 		error: function(xhr,status,error) { console.log(xhr); showNotification('danger', 'failure', 'Terjadi kesalahan, tidak ada respon dari server! ' + error); }
@@ -249,7 +250,6 @@ function r_callBack(back, custom, data=null){
 				FB.getLoginStatus(function(response) {
 					if(response.status == "connected"){
 						FB.logout(function(responses){
-							console.log(responses);
 							//global
 							r_clearCookies();
 							window.location.href = base_url;

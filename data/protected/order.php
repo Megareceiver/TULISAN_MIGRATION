@@ -23,8 +23,18 @@
 				case "orderItems" 	:
 				case "itemsCart" 	: $resultList = $this->fetchAllRecord('orders_item i JOIN products_variant v ON i.variantId = v.idData JOIN products p ON v.productId = p.idData',array("p.name", "v.sku", "i.price", "i.qty"), $post['keyword'], "ORDER BY i.idData"); break;
 				case "orderInfo" 	: $resultList = $this->fetchSingleRequest('orders o JOIN countries c ON o.country = c.country_code',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.paymentMethod"), $post['keyword']); break;
-				case "recentOrders" : $resultList = $this->fetchAllRecord('orders o',array("o.idData as number", 'DATE_FORMAT(o.createdDate, "%M, %d %Y") as date', "status"), "o.createdBy = '".$_SESSION['tulisan_user_username']."' AND o.status <> 'Waiting for payment'", "ORDER BY o.idData"); break;
-				case "unpaidOrders" : $resultList = $this->fetchAllRecord('orders o',array("o.idData as number", 'DATE_FORMAT(o.createdDate, "%M, %d %Y") as date', "status"), "o.createdBy = '".$_SESSION['tulisan_user_username']."' AND o.status = 'Waiting for payment'", "ORDER BY o.idData"); break;
+				case "recentOrders" :
+					if(isset($_SESSION['tulisan_user_username']))
+						$resultList = $this->fetchAllRecord('orders o',array("o.idData as number", 'DATE_FORMAT(o.createdDate, "%M, %d %Y") as date', "status"), "o.createdBy = '".$_SESSION['tulisan_user_username']."' AND o.status <> 'Waiting for payment'", "ORDER BY o.idData");
+					else
+						$resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array());
+				break;
+				case "unpaidOrders" :
+					if(isset($_SESSION['tulisan_user_username']))
+						$resultList = $this->fetchAllRecord('orders o',array("o.idData as number", 'DATE_FORMAT(o.createdDate, "%M, %d %Y") as date', "status"), "o.createdBy = '".$_SESSION['tulisan_user_username']."' AND o.status = 'Waiting for payment'", "ORDER BY o.idData");
+					else
+						$resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array());
+				break;
 				case "cancelOrders" : $resultList = $this->fetchAllRequest('cancelation', array("orderId", "reason", "createdDate"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
 				default	   			: $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
 			}
@@ -597,6 +607,7 @@
 					$temp   = "";
 				}
 
+				if(!isset($_SESSION['tulisan_user_username'])) $_SESSION['tulisan_user_username'] = "guest";
 				$sql = "UPDATE ".$table." SET ".$values.", changedBy = '".$_SESSION['tulisan_user_username']."', changedDate = NOW() WHERE idData = '".$id."'";
 
 				$result = $this->db->query($sql);
@@ -1090,7 +1101,7 @@
 			  <p>Free delivery within Indonesia: Your tracking number is (nomor airway bill / nomor resi) please</p>
 			  <p>Check it here : <a href="'.$dumb['link'].'"><b>'.$dumb['link'].'</b></a></p>
 			  <hr style="margin: 10px 0; "/>
-				<p>Please confirm if you have received the order item : <a href="'.$dumb['link'].'"><b>'.$dumb['link'].'</b></a></p>
+				<p>Please confirm if you have received the order item : <a href="'.domain.'/page/receivedConfirmation.html?oid='.$orderId.'"><b>'.domain.'/page/receivedConfirmation.html?oid='.$orderId.'</b></a></p>
 			  <hr style="margin: 10px 0; "/>
 			  <div style="display: inline-block; width: 49%;">
 			    <h4>Shipping Address</h4>

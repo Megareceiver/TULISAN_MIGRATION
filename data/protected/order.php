@@ -277,7 +277,7 @@
 							$post['name'] = $value['name'];
 						}
 
-						$emailResult = $this->emailOrder('complete', array("email"=>$post['email'],"name"=>$post['name']), $post['pId']);
+						$emailResult = $this->emailOrder('cancel', array("email"=>$post['email'],"name"=>$post['name']), $post['pId']);
 						array_push($resultList['resultEmail'], $emailResult);
 					}
 				break;
@@ -812,6 +812,7 @@
 			  <hr style="margin: 20px 0; "/>
 			  <h3>Thank you for your order!</h3>
 			  <p>Your order number is#'.$orderId.'</p>
+			  <p>Confirm your payment here: <a href="'.domain.'/page/paymentConfirm.html?oid='.$orderId.'">Confirm</a></p>
 			  <hr style="margin: 20px 0 0 0; "/>
 			  <div style="float:left; display: inline-block; width: 49%;">
 			    <h4>Shipping Address</h4>
@@ -1087,7 +1088,9 @@
 			  <h4><b>'.$dumb['shippingAs'].'</b></h4>
 			  <p>Your tracking number is <b>'.$dumb['receiptNumber'].'</b></p>
 			  <p>Free delivery within Indonesia: Your tracking number is (nomor airway bill / nomor resi) please</p>
-			  <p>Check it here : <b>'.$dumb['link'].'</b></p>
+			  <p>Check it here : <a href="'.$dumb['link'].'"><b>'.$dumb['link'].'</b></a></p>
+			  <hr style="margin: 10px 0; "/>
+				<p>Please confirm if you have received the order item : <a href="'.$dumb['link'].'"><b>'.$dumb['link'].'</b></a></p>
 			  <hr style="margin: 10px 0; "/>
 			  <div style="display: inline-block; width: 49%;">
 			    <h4>Shipping Address</h4>
@@ -1169,6 +1172,14 @@
 				$data = $data['feedData'];
 			}else{
 				$data = array();
+			}
+
+			$info = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank")
+			, "o.idData = ".$orderId."", "");
+			if($info['feedStatus'] == "success"){
+				$info = $info['feedData'];
+			}else{
+				$info = array();
 			}
 
 			$dumb = array("name"=>"", "address"=>"");

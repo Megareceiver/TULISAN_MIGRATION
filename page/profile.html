@@ -31,7 +31,7 @@
 					<h3 class="header">Account settings</h3>
 					<h4><b><span id="pro_name">Jen's</span> personal information</b></h4>
 					<h5>Your Information</h5>
-					<h5>Your email : <span id="pro_email">jen1810@yahoo.com</span></h5>
+					<h5>Your email : <span id="pro_email"></span></h5>
 					<!-- <h5>Saved addresses: 6 <small><a href="#">View</a></small></h5> -->
 					<!-- <h5>Email preferences <small><a href="#">Update</a></small></h5> -->
 					<h5><a href="register_completed.html">Edit</a></h5>
@@ -108,7 +108,7 @@
 
 				//==================================================================
 				$("#pro_name").html(r_getCookie('user_name') + '\'s');
-				$("#pro_email").html(r_getCookie('user_email'));
+				if(r_getCookie('user_email') != 'null')$("#pro_email").html(r_getCookie('user_email'));
 
 				p_formHandler('syncrom', 'logout', 'logout', 'yes');
 			}

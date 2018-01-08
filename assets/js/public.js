@@ -57,6 +57,9 @@ function checkLoginState() {
 						r_setCookie('user_facebook', 'checked');
 						window.location.href = base_url + "/page/shop.html";
 					}
+				}else{
+					FB.logout(function(responses){
+					});
 				}
 		});
 	});
@@ -109,14 +112,13 @@ function p_logout(){
 			// clearTimeout(notifId);
 
 			//facebook
-			FB.getLoginStatus(function(response) {
-				if(response.status == "connected"){
-					FB.logout(function(responses){
-						console.log('logout');
-						console.log(responses);
-					});
-				}
+			// FB.getLoginStatus(function(response) {
+			// 	if(response.status == "connected"){
+			FB.logout(function(responses){
+
 			});
+			// 	}
+			// });
 
 			r_clearCookies();
 		},
@@ -247,15 +249,18 @@ function r_callBack(back, custom, data=null){
 				FB.getLoginStatus(function(response) {
 					if(response.status == "connected"){
 						FB.logout(function(responses){
-							console.log('logout');
 							console.log(responses);
+							//global
+							r_clearCookies();
+							window.location.href = base_url;
 						});
+					}else{
+						//global
+						r_clearCookies();
+						window.location.href = base_url;
 					}
 				});
 
-				//global
-				r_clearCookies();
-				window.location.href = base_url;
 			break;
 			case "view-store":
 				r_clearCookies();

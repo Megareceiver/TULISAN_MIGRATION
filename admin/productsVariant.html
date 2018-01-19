@@ -49,7 +49,7 @@
 
 				html = html +
 				'<div class="operation-group">'+
-					'<form class="form-inline">' +
+					'<div class="form-inline">' +
 						'<div class="input-group">' +
 							'<a href="formProductVariant.html' + link + '"><i class="fa fa-plus-circle text-warning">&nbsp;</i> Add Variant</a>'+
 						'</div>' +
@@ -65,7 +65,7 @@
 		        		'<button type="button" class="search btn btn-default">SEARCH</button>' +
 		        	'</span>' +
 	        	'</div>' +
-	   			'</form>' +
+	   			'</div>' +
 	        '<div class="clearfix"></div>' +
 				'</div>';
 
@@ -173,6 +173,16 @@
 					var data = p_getData('operation', 'productVariant', '1', '(a.name LIKE "%' + keyword + '%" OR v.sku LIKE "%' + keyword + '%") AND productId = "' + id + '"');
 					data = data.feedData;
 					dataGenerator(data);
+				});
+
+				$("[placeholder='Search']").on("keypress", function(e){
+					var keycode = e.keyCode || e.which;
+					if(keycode == '13') {
+						var keyword = $("[placeholder='Search']").val();
+						var data = p_getData('operation', 'productVariant', '1', '(a.name LIKE "%' + keyword + '%" OR v.sku LIKE "%' + keyword + '%") AND productId = "' + id + '"');
+						data = data.feedData;
+						dataGenerator(data);
+					}
 				});
 
 				//filter end

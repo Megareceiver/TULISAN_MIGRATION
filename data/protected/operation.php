@@ -75,8 +75,8 @@
 				case "cms_chatter" 		: $resultList = $this->fetchAllRequest('cms_chatter', array("idData","title", "date", "description","picture", "type", "createdBy as publishedBy", "createdDate as publishedTime"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
 				case "cms_chatterFetch" : $resultList = $this->fetchSingleRequest('cms_chatter', array("idData","title", "date", "description","picture", "type"), $post['keyword']); break;
 
-				case "cms_home" 		: $resultList = $this->fetchAllRequest('cms_home', array("idData", "title", "description", "picture", "createdBy as publishedBy", "createdDate as publishedTime"), $post['keyword'], "ORDER BY idData ASC", $post['page']); break;
-				case "cms_homeFetch": $resultList = $this->fetchSingleRequest('cms_home', array("idData", "title", "description", "picture"), $post['keyword']); break;
+				case "cms_home" 		: $resultList = $this->fetchAllRequest('cms_home', array("idData", "title", "description", "picture", "pictureMobile", "createdBy as publishedBy", "createdDate as publishedTime"), $post['keyword'], "ORDER BY idData ASC", $post['page']); break;
+				case "cms_homeFetch": $resultList = $this->fetchSingleRequest('cms_home', array("idData", "title", "description", "picture", "pictureMobile"), $post['keyword']); break;
 
 				case "cms_home_gallery" 		: $resultList = $this->fetchAllRequest('cms_home_gallery', array("idData", "description", "thumbnail","link"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
 				case "cms_home_galleryFetch": $resultList = $this->fetchSingleRequest('cms_home_gallery', array("idData", "description", "thumbnail as picture", "link"), $post['keyword']); break;
@@ -271,7 +271,12 @@
 
 					if($resultList["feedStatus"] == "success") {
 						if(isset($_FILES["picture"])){
-							$upload = $this->uploadSingleImage($_FILES["picture"], "home", "cms_home", "picture", $resultList["feedId"]);
+							$upload = $this->uploadSingleImage($_FILES["picture"], "home", "cms_home", "picture", $resultList["feedId"], '1');
+							array_push($resultList, array("feedUpload" => $upload['feedMessage']));
+						}
+
+						if(isset($_FILES["pictureMobile"])){
+							$upload = $this->uploadSingleImage($_FILES["pictureMobile"], "home", "cms_home", "pictureMobile", $resultList["feedId"], '2');
 							array_push($resultList, array("feedUpload" => $upload['feedMessage']));
 						}
 					}
@@ -612,7 +617,12 @@
 
 					if($resultList["feedStatus"] == "success" && isset($post['idData']) && $post['idData']!="") {
 						if(isset($_FILES["picture"])){
-							$upload = $this->uploadSingleImage($_FILES["picture"], "home", "cms_home", "picture", $post['idData']);
+							$upload = $this->uploadSingleImage($_FILES["picture"], "home", "cms_home", "picture", $post['idData'], "1");
+							$resultList["feedUpload"] = $upload['feedMessage'];
+						}
+
+						if(isset($_FILES["pictureMobile"])){
+							$upload = $this->uploadSingleImage($_FILES["pictureMobile"], "home", "cms_home", "pictureMobile", $post['idData'], "2");
 							$resultList["feedUpload"] = $upload['feedMessage'];
 						}
 					}
@@ -937,7 +947,7 @@
 			return $json;
 		}
 
-		public function fetchAllRequest($table, $fields, $conditions = "", $orderBy = "", $paging = "1"){
+		public function fetchAllRequest($table, $fields, $conditions = "", $orderBy = "", $paging = "1", $pageSize = 20){
 			/* initial condition */
 			$resultList = array();
 			$feedStatus	= "failed";
@@ -974,9 +984,9 @@
 
 
 				$temp = intval($paging);
-				$temp = ($temp - 1) * 20;
+				$temp = ($temp - 1) * $pageSize;
 
-				$paging = "LIMIT ".$temp.",20";
+				$paging = "LIMIT ".$temp.",".$pageSize;
 
 				$sql = "SELECT ".$fields." FROM ".$table." ".$conditions." ".$orderBy." ".$paging;
 

@@ -38,7 +38,7 @@
 			function loadShop(){
 				var html = '';
 				var counter = 0;
-				var paging = "";
+				var paging = 0;
 				var pagingLink = "";
 				var pagingLinkBefore = "";
 				var pagingState = 1;
@@ -46,7 +46,10 @@
 				var data = [];
 				var product = [];
 
-				paging = 0;
+				if(getParam('page') != "" && getParam('page') != null){
+					pagingState = eval(getParam('page'));
+				}
+
 				filter = [];
 
 				keyword = "";
@@ -71,7 +74,7 @@
 				if(keyword != "") { keyword = keyword + " AND "; }
 				keyword = keyword + "qty > 0 AND status != 0";
 
-				data = p_getData('operation', 'productGroup', "1", keyword);
+				data = p_getData('operation', 'productGroup', pagingState, keyword);
 				product = data.feedData;
 
 				data = p_getData('operation', 'color');
@@ -91,7 +94,8 @@
 				html = html + '<ul>';
 
 				if(product.length > 0){
-
+					var maxItem	 	 = 15;
+					var stateItem  = 1;
 					var caption    = [];
 					var checker    = [];
 					var group   	 = [];
@@ -146,6 +150,7 @@
 				html = html + '</ul></div>';
 
 				html = html + '<div class="col-md-9 col-md-offset-3 product-list">';
+
 				if(keywordSearch != "") { html = html + '<h5><i>Search : </i>' + keywordSearch + '</h5><hr/>'; }
 				if(filter.name != undefined) { html = html + '<h5><i>Color : </i>' + filter.name + '</h5><hr/>'; }
 				if(filter.title != undefined) { html = html + '<h5>' + filter.title + '</h5>'; }
@@ -161,7 +166,7 @@
 							price = currencyFormat(String(temp));
 						}
 						html = html +
-						'<div class="col-md-4">'+
+						'<div class="col-md-4" page-target=' + stateItem + ' style="display:none">'+
 							'<a href="shopDetail.html?q=' + product[loop].idData + '">' +
 								'<img class="big-image" src="../assets/products/large/'+product[loop].frontPicture+'">'+
 								'<hr/>' +
@@ -171,23 +176,29 @@
 								'<hr/>' +
 							'</a>' +
 						'</div>';
+
+						dtemp = (loop + 1) % 15;
+						if(dtemp == 0){ stateItem++; }
 					}
 
 					/*paging*/
-					for(var loop=pagingState; loop<=paging; loop++){
-						if((paging - pagingState) > 5){
+					paging = Math.ceil(product.length / maxItem);
+					dtemp  = pagingState - 3;
+					pageStart = (dtemp <= 0) ? 1 : dtemp;
+					for(var loop=pageStart; loop<=paging; loop++){
+						if((paging - pageStart) > 5){
 							if(counter == 4){
-								pagingLink = pagingLink + "..." + "<a href='#?" + paging + "' class='data-paging'>" + paging + "</a>";
+								pagingLink = pagingLink + "..." + "<a href='?page=" + paging + "' class='data-paging'>" + paging + "</a>";
 								break;
 							}
 						}
-						pagingLink = pagingLink + "<a href='#?" + loop + "' class='data-paging'>" + loop + "</a>";
+						pagingLink = pagingLink + "<a href='?page=" + loop + "' class='data-paging'>" + loop + "</a>";
 						counter++;
 					}
 
 					html = html + '<div class="clearfix"></div>';
 					html = html + '<div class="row">';
-					html = html + "<div class='data-paging center'>" + pagingLink + "</div>";
+					html = html + "<div class='data-paging center'>- " + pagingLink + " -</div>";
 					html = html + "</div>";
 				}else{
 					html = html +
@@ -201,6 +212,10 @@
 				html = html + "</div><div class='clearfix'></div>";
 
 				$("main").html(html);
+				//active page
+				$("[page-target=" + pagingState + "]").attr('style','display: inline-block');
+
+
 				$(".left-menu-toggle").on('click', function(){
 					if($($(this).attr('toggle-target')).is(":hidden")){
 						$(this).switchClass('fa-chevron-down', 'fa-chevron-up');
@@ -211,6 +226,37 @@
 					$($(this).attr('toggle-target')).slideToggle();
 
 				});
+
+				//paging
+				$('.pagging-text .pagging-right').on("click", function(){
+					var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
+					page = parseInt(page) + 1;
+
+					var keyword = $("[placeholder='Search']").val();
+					var alpha = (r_getCookie('adminAlphaFilter') != "" ? '(name LIKE "' + r_getCookie('adminAlphaFilter') + '%") AND ': "");
+
+					var data = p_getData('operation', 'color', page, alpha + '(name LIKE "%' + keyword + '%")');
+					data = data.feedData;
+
+					if(data.length > 0){ dataGenerator(data); } else { page = parseInt(page) - 1; }
+
+					r_setCookie('adminPageFilter', page);
+				});
+
+				$('.pagging-text .pagging-left').on("click", function(){
+					var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
+					if(page > 1){
+						page = parseInt(page) - 1;
+
+						var keyword = $("[placeholder='Search']").val();
+						var data = p_getData('operation', 'color', page, '(name LIKE "%' + keyword + '%")');
+						data = data.feedData;
+						dataGenerator(data);
+
+						r_setCookie('adminPageFilter', page);
+					}
+				});
+				//paging end
 			}
 		</script>
 	</body>

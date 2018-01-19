@@ -171,6 +171,10 @@ iframe { border: 1px solid #ddd; background-color: #000; }
 
 .hide-block { opacity: 0 }
 
+/*pagging-text*/
+.pagging-text { font-size: 14px; display: block; }
+.pagging-text .pagging-left { color: #CCC; }
+
 /*=============================================================================================*/
 /* */
 body { background-color: #CCC }

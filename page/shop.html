@@ -42,6 +42,7 @@
 				var pagingLink = "";
 				var pagingLinkBefore = "";
 				var pagingState = 1;
+				var paramState = "";
 
 				var data = [];
 				var product = [];
@@ -56,12 +57,14 @@
 				keywordSearch = "";
 				if(getParam('story') != "" && getParam('story') != null){
 					keyword = "v.storyId =" + getParam('story');
+					paramState = paramState + "&story=" + getParam('story');
 					data = p_getData('operation', 'cms_storyFetch', "1", " idData = '" + getParam('story') + "'");
 					filter = data.feedData;
 				}
 
 				if(getParam('color') != "" && getParam('color') != null){
 					keyword = "colorId =" + getParam('color');
+					paramState = paramState + "&color=" + getParam('color');
 					data = p_getData('operation', 'color', "1", " idData = '" + getParam('color') + "'");
 					filter = data.feedData[0];
 				}
@@ -69,6 +72,7 @@
 				if(getParam('keyword') != "" && getParam('keyword') != null){
 					keyword = "(p.name LIKE '%" + getParam('keyword') + "%' OR v.sku LIKE '%" + getParam('keyword') + "%')";
 					keywordSearch = getParam('keyword');
+					paramState = paramState + "&keyword=" + getParam('keyword');
 				}
 
 				if(keyword != "") { keyword = keyword + " AND "; }
@@ -188,11 +192,11 @@
 					for(var loop=pageStart; loop<=paging; loop++){
 						if((paging - pageStart) > 5){
 							if(counter == 4){
-								pagingLink = pagingLink + "..." + "<a href='?page=" + paging + "' class='data-paging'>" + paging + "</a>";
+								pagingLink = pagingLink + "..." + "<a href='?page=" + paging + paramState + "' class='data-paging'>" + paging + "</a>";
 								break;
 							}
 						}
-						pagingLink = pagingLink + "<a href='?page=" + loop + "' class='data-paging'>" + loop + "</a>";
+						pagingLink = pagingLink + "<a href='?page=" + loop + paramState + "' class='data-paging'>" + loop + "</a>";
 						counter++;
 					}
 

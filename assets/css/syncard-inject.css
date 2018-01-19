@@ -2,8 +2,8 @@
 * { box-sizing: border-box; }
 
 html, body { overflow-x: hidden; }
-body { 
-  font-family: Georgia, Times, "Times New Roman", serif;
+body {
+  font-family: Georgia, Times, "Times New Roman", serif !important;
 }
 
 .form-control,.btn{
@@ -1095,7 +1095,11 @@ footer.parent .license {
 .content h1 { font-size: 40px; font-weight: bold; margin-bottom: 30px }
 
 .story-box { margin-bottom: 45px }
-.story-box .limit-box { height: 245px; overflow: hidden; margin-bottom: 15px; }
+.story-box .limit-box { height: 234px; overflow: hidden; margin-bottom: 15px; }
+.content-story.limit-box p, .content-story.limit-box span {
+  font-family: Georgia, Times, "Times New Roman", serif !important;
+  font-size: 14px !important;
+}
 
 .media span:first-child {
 	min-width: 200px;

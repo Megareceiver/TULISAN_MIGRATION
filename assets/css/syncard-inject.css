@@ -2,6 +2,9 @@
 * { box-sizing: border-box; }
 
 html, body { overflow-x: hidden; }
+body { 
+  font-family: Georgia, Times, "Times New Roman", serif;
+}
 
 .form-control,.btn{
   border-radius: 0px;
@@ -157,9 +160,9 @@ iframe { border: 1px solid #ddd; background-color: #000; }
 .text-default-color{
   color: #605B5D;
 }
-.fontserif{
+/* .fontserif{
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-}
+} */
 
 .sosmed a { margin-right: 15px; }
 .sosmed a .fa { font-size: 24px; }

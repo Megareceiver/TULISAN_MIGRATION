@@ -276,8 +276,9 @@ function footer(){
 		{ "icon": "youtube", 			"link": "#" },
 	];
 
-	var license = 'Copyright © 2014 Tulisan LLC. All Rights Reserved';
-
+	var d = new Date();
+	var n = d.getFullYear();
+	var license = n + " PT Tulisan Susunan Tinta. All Rights Reserved.";
 
 	/*===========================================================================================*/
 	/*===========================================================================================*/

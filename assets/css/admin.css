@@ -4,6 +4,7 @@
 html, body { height: 100% }
 body {
   background-color: #FFF;
+  font-family: Georgia, Times, "Times New Roman", serif;
 }
 
 ul { padding: 0; }

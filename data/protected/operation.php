@@ -15,7 +15,7 @@
 				case "product" 				: $resultList = $this->fetchAllRequest('products p LEFT JOIN products_variant v ON p.idData = v.productId LEFT JOIN categories c ON p.categoryId = c.idData', array("DISTINCT p.idData", "(SELECT x.frontPicture FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as frontPicture", "p.name", "p.description", "status", "c.name as category"), $post['keyword'], "ORDER BY p.name ASC", $post['page']); break;
 				case "productGroup" 	: $resultList = $this->fetchAllRecord('products p LEFT JOIN products_variant v ON p.idData = v.productId LEFT JOIN categories c ON p.categoryId = c.idData',
 																array("DISTINCT p.idData",
-																"(SELECT x.frontPicture FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as frontPicture",
+																"(SELECT x.frontPicture FROM products_variant x WHERE x.productId = p.idData AND ".$post['keyword']." ORDER BY x.idData ASC LIMIT 1) as frontPicture",
 																"p.name",
 																"c.name as category",
 																"(SELECT x.price FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as price"), $post['keyword'], "ORDER BY c.idData ASC, p.name ASC"); break;

@@ -177,7 +177,9 @@ function pageAdmin(){
 }
 
 function footerAdmin(){
-	var html = "Copyright © 2014 Tulisan LLC. All Rights Reserved.";
+	var d = new Date();
+	var n = d.getFullYear();
+	var html = n + " PT Tulisan Susunan Tinta. All Rights Reserved.";
 	html = html + '<a href="#" id="back-to-top" title="Back to top"><span class="fa fa-arrow-up fa-2x"></span></a>';
 
 	$(".main-footer").html(html);

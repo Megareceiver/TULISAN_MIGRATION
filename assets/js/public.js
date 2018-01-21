@@ -7,7 +7,9 @@ var Base64={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456
 /* =============================================================================================== */
 
 //facebook
+var FB = null;
 $(function(){
+
 	window.fbAsyncInit = function() {
 		FB.init({
 			// appId      : '1913874005353756', new.tulisan.com
@@ -247,19 +249,25 @@ function r_callBack(back, custom, data=null){
 			break;
 			case "logout":
 				//facebook
-				FB.getLoginStatus(function(response) {
-					if(response.status == "connected"){
-						FB.logout(function(responses){
+				if(FB != null){
+					FB.getLoginStatus(function(response) {
+						if(response.status == "connected"){
+							FB.logout(function(responses){
+								//global
+								r_clearCookies();
+								window.location.href = base_url;
+							});
+						}else{
 							//global
 							r_clearCookies();
 							window.location.href = base_url;
-						});
-					}else{
-						//global
-						r_clearCookies();
-						window.location.href = base_url;
-					}
-				});
+						}
+					});
+			}else{
+				//global
+				r_clearCookies();
+				window.location.href = base_url;
+			}
 
 			break;
 			case "view-store":

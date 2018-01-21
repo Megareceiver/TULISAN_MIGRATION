@@ -11,6 +11,7 @@
 		public function requestData($post, $target){
 			switch($target){
 				case "feedback" 		: $resultList = $this->fetchAllRequest('feedback', array("idData", "name", "email", "category", "subject", "message"), $post['keyword'], "ORDER BY idData ASC", $post['page']); break;
+				case "systemFetch" 	: $resultList = $this->fetchSingleRequest('system', array("idData", "acc_number", "bank", "instagram", "facebook", "twitter", "pinterest", "youtube"), $post['keyword'], "ORDER BY idData ASC"); break;
 				default	   					: $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
 			}
 
@@ -58,6 +59,17 @@
 
 		public function updateData($post, $target){
 			switch($target){
+				case "system"  :
+					$fields = array("acc_number", "bank", "instagram", "facebook", "twitter", "pinterest", "youtube");
+					$values = array();
+					foreach ($fields as $key) {
+						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
+						$values[$key] = $key." = '".str_replace(',','',$value)."'";
+					}
+
+					$resultList = $this->update('system', $values, $post['idData']);
+
+				break;
 				default	   		: $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
 			}
 

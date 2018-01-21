@@ -188,7 +188,7 @@
 					$fields = array("sku", "qty", "size", "dimension", "artworkId", "colorId", "storyId", "productId", "price");
 					$values = array();
 					foreach ($fields as $key) {
-						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
+						$value = (isset($post[$key]) && $post[$key] != "") ? str_replace(',','',$post[$key]) : "";
 						array_push($values, $value);
 					}
 

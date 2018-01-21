@@ -99,8 +99,8 @@
 											<div id="bankTransfer" class="col-md-12 syn-clear">
 												<h5 class="syn-plus">Please transfer your order payment to:</h5>
 												<h5>PT. Tulisan Susunan Tinta</h5>
-												<h5>Bank Mandiri</h5>
-												<h5><b>Acc. No. 126-00-0618835-2</b></h5>
+												<h5>Bank <span id="bankName">Mandiri</span></h5>
+												<h5><b>Acc. No. <span id="accNumb">126-00-0618835-2</span></b></h5>
 												<h5>(Rupiah account)</h5>
 												<div class="radio syn-plus">
 												  <label><input type="radio" name="bank" checked="checked" value="0">Payment from Bank Mandiri</label>
@@ -367,6 +367,14 @@
 				});
 
 				$("#placeButton").on('click', function(){ placeOrder(); });
+
+				//=================
+				//system
+				var system = getData('support', 'systemFetch');
+				    system = system.feedData;
+
+				$('#bankName').html(system.bank);
+				$('#accNumb').html(system.acc_number);
 			}
 
 			function keepAlternative(){

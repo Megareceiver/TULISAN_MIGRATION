@@ -268,12 +268,15 @@ function footer(){
 		]},
 	];
 
+	var data = getData('support', 'systemFetch');
+	    data = data.feedData;
+
 	var socmed = [
-		{ "icon": "instagram", 	 		"link": "#" },
-		{ "icon": "facebook-official", 	"link": "#" },
-		{ "icon": "twitter", 	 		"link": "#" },
-		{ "icon": "pinterest-p", 		"link": "#" },
-		{ "icon": "youtube", 			"link": "#" },
+		{ "icon": "instagram", 	 		"link": data.instagram },
+		{ "icon": "facebook-official", 	"link": data.facebook },
+		{ "icon": "twitter", 	 		"link": data.twitter },
+		{ "icon": "pinterest-p", 		"link": data.pinterest },
+		{ "icon": "youtube", 			"link": data.youtube },
 	];
 
 	var d = new Date();
@@ -542,4 +545,25 @@ function timeSince(date) {
 		//return new Date(time).toLocaleDateString();
 		return date.getDate().toString() + " " + months[date.getMonth()] + ", " + date.getFullYear();
 	}
+}
+
+/* local request management */
+/* =============================================================================================== */
+function getData(group, target, page="1", keyword=""){
+	var data = null;
+	$.ajax({
+		url: base_url + '/data/router.php?session=requestData&group=' + group + '&target=' + target,
+		type: 'post',
+		dataType: 'json',
+		async: false,
+		data: { page : page, keyword: keyword },
+		success: function(result){
+			console.log(result);
+			data = result;
+		},
+		complete: function(xhr,status) {  },
+		error: function(xhr,status,error) { console.log(xhr); }
+	});
+
+	return data;
 }

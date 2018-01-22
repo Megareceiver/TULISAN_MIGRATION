@@ -54,6 +54,12 @@
 							'<div class="input-group operation-button">' +
 								'<a href="#" id="manageArtwork"><i class="fa fa-paint-brush text-warning">&nbsp;</i> Manage Art Work</a>'+
 							'</div>' +
+							'<div class="input-group operation-button">' +
+								'<a href="#" id="enableButton"><i class="fa fa-bars text-warning">&nbsp;</i> Publish Story</a>'+
+							'</div>' +
+							'<div class="input-group operation-button">' +
+								'<a href="#" id="disableButton"><i class="fa fa-bars text-warning">&nbsp;</i> Keep Story</a>'+
+							'</div>' +
 			        '<div class="input-group pull-right">' +
 			        		'<input type="text" class="form-control" placeholder="Search">' +
 				        	'<span class="input-group-btn">' +
@@ -107,6 +113,7 @@
 					    '<thead>'+
 					    	'<tr>'+
 						    	'<th width="5%"><input type="checkbox" value="0" id="selectRecord" onclick="checkboxToggle(this, \'customerSelect\')" /><label for="selectRecord"></label></th>'+
+						        '<th width="10%">Status</th>'+
 						        '<th>Title</th>'+
 						        '<th width="25%">Subtitle</th>'+
 						        '<th width="30%">Description</th>'+
@@ -157,7 +164,7 @@
 				r_setCookie('adminAlphaFilter', '');
 				var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
 				var data = p_getData('operation', 'cms_story', page);
-					data = data.feedData;
+					  data = data.feedData;
 
 				dataGenerator(data);
 
@@ -216,17 +223,21 @@
 			function dataGenerator(data){
 				var html = "";
 
-				for(var loop =0; loop<data.length; loop++){
-					var desc = (Base64.decode(data[loop].description));
-		    		html = html +
-		    		'<tr>'+
-		    			'<td><input type="checkbox" name="customerSelect" value="'+data[loop].idData+'" id="selectRecord' + loop + '"><label for="selectRecord' + loop + '"></label></td>'+
-		    			'<td>'+ data[loop].title +'</td>'+
-		    			'<td>'+ data[loop].subtitle +'</td>'+
-		    			'<td><section style="max-height: 197px; overflow-y: auto">'+ desc +'</section></td>'+
-		    			'<td class="syn-nowrap">'+ data[loop].author +'</td>'+
-		    		'</tr>';
+				if(data.length > 0){
+					for(var loop =0; loop<data.length; loop++){
+						var desc = (Base64.decode(data[loop].description));
+							desc = desc.replace(/\\/g, '');
+			    		html = html +
+			    		'<tr>'+
+			    			'<td><input type="checkbox" name="customerSelect" value="'+data[loop].idData+'" id="selectRecord' + loop + '"><label for="selectRecord' + loop + '"></label></td>'+
+			    			'<td>'+ ((data[loop].status!= '0') ? 'Published' : '<b>Draft</b>') +'</td>'+
+			    			'<td>'+ data[loop].title +'</td>'+
+			    			'<td>'+ data[loop].subtitle +'</td>'+
+			    			'<td><section style="max-height: 197px; overflow-y: auto">'+ desc +'</section></td>'+
+			    			'<td class="syn-nowrap">'+ data[loop].author +'</td>'+
+			    		'</tr>';
 		    	}
+				}
 
 				$('main.parent-admin table tbody').html('').append(html);
 				$('main.parent-admin #totalRecord').html(data.length);
@@ -247,7 +258,7 @@
 							r_setCookie('adminAlphaFilter', '');
 							var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
 							var data = p_getData('operation', 'cms_story', page);
-								data = data.feedData;
+								  data = data.feedData;
 
 							dataGenerator(data);
 						}
@@ -270,6 +281,48 @@
 					// }else{
 					// 	alert("Please choose only one record!");
 					// }
+				});
+
+				$('#enableButton').unbind().on("click", function(){
+					if(checkedArray.length > 0){
+						var confirmation = confirm("Are you sure you want publish the selected story?");
+						if (confirmation == true) {
+							var res = p_changeData('operation', 'publishStory', checkedArray);
+
+							if(res.feedStatus == "success"){
+								r_setCookie('adminPageFilter', '1');
+								r_setCookie('adminAlphaFilter', '');
+								var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
+								var data = p_getData('operation', 'cms_story', page);
+									  data = data.feedData;
+
+								dataGenerator(data);
+							}
+						}
+					}else{
+						alert("Please choose record first!");
+					}
+				});
+
+				$('#disableButton').unbind().on("click", function(){
+					if(checkedArray.length > 0){
+						var confirmation = confirm("Are you sure you want keep the selected story?");
+						if (confirmation == true) {
+							var res = p_changeData('operation', 'keepStory', checkedArray);
+
+							if(res.feedStatus == "success"){
+								r_setCookie('adminPageFilter', '1');
+								r_setCookie('adminAlphaFilter', '');
+								var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
+								var data = p_getData('operation', 'cms_story', page);
+									  data = data.feedData;
+
+								dataGenerator(data);
+							}
+						}
+					}else{
+						alert("Please choose record first!");
+					}
 				});
 			}
 		</script>

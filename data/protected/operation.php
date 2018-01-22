@@ -81,7 +81,7 @@
 				case "cms_home_gallery" 		: $resultList = $this->fetchAllRequest('cms_home_gallery', array("idData", "description", "thumbnail","link"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
 				case "cms_home_galleryFetch": $resultList = $this->fetchSingleRequest('cms_home_gallery', array("idData", "description", "thumbnail as picture", "link"), $post['keyword']); break;
 
-				case "cms_story" 		: $resultList = $this->fetchAllRequest('cms_story', array("idData","title", "subtitle", "description", "author", "picture"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
+				case "cms_story" 				: $resultList = $this->fetchAllRequest('cms_story', array("idData","title", "subtitle", "description", "author", "picture", "status"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
 				case "cms_storyOption" 	: $resultList = $this->fetchAllRecord('cms_story', array("title as caption", "idData as value"), $post['keyword'], "ORDER BY title ASC"); break;
 				case "cms_storyFetch" 	: $resultList = $this->fetchSingleRequest('cms_story', array("idData", "title", "subtitle", "description", "author", "picture"), $post['keyword']); break;
 
@@ -677,6 +677,16 @@
 						}
 					}
 
+				break;
+
+				case "publishStory"  :
+					$values = array("status = 1");
+					$resultList = $this->updateMultiData('cms_story', $values, $post['pId']);
+				break;
+
+				case "keepStory"  :
+					$values = array("status = 0");
+					$resultList = $this->updateMultiData('cms_story', $values, $post['pId']);
 				break;
 
 				case "artWork"  :

@@ -2,7 +2,7 @@
 	define('db_host', "localhost");
 	define('db_user', "root");
 	define('db_pass', "root");
-	define('db_name', "tulisan_migration_6");
+	define('db_name', "tulisan_migration_7");
 
 	//email
 	define('e_host', "palbapang.idwebhost.com");

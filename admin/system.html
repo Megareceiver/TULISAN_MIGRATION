@@ -43,7 +43,7 @@
 					'<div class="operation-group">'+
 						'<div class="form-inline">' +
 							'<div class="input-group operation-button">' +
-								'<a href="#" id="goUsers"><i class="fa fa-group text-warning">&nbsp;</i> Manage Users</a>'+
+								'<a href="setting.html"><i class="fa fa-group text-warning">&nbsp;</i> Manage Users</a>'+
 							'</div>' +
 			   		'</div>' +
 			   		'<div class="clearfix"></div>' +
@@ -51,56 +51,58 @@
 				'</div>';
 
 				html = html +
-				'<form id="syncrom" f-group="support" f-target="system" enctype="multipart/form-data">'+
-					'<div class="input-frame col-md-6">'+
-						'<h3><b>Bank Account</b></h3>'+
-						'<div class="form-group">'+
-							'<label>Acc No.</label>'+
-							'<input name="idData" type="hidden" class="form-control">'+
-							'<input name="acc_number" type="text" class="form-control">'+
+				'<div class="row">'+
+					'<form id="syncrom" f-group="support" f-target="system" enctype="multipart/form-data">'+
+						'<div class="input-frame col-md-6">'+
+							'<h3><b>Bank Account</b></h3>'+
+							'<div class="form-group">'+
+								'<label>Acc No.</label>'+
+								'<input name="idData" type="hidden" class="form-control">'+
+								'<input name="acc_number" type="text" class="form-control">'+
+							'</div>'+
+						'</div>' +
+						'<div class="input-frame col-md-6">'+
+							'<h3>&nbsp;</h3>'+
+							'<div class="form-group">'+
+								'<label>Bank</label>'+
+								'<input name="bank" type="text" class="form-control">'+
+							'</div>'+
+						'</div>' +
+						'<div class="clearfix"></div>'+
+						'<hr/>' +
+						'<div class="input-frame col-md-6">'+
+							'<h3><b>Social Media</b></h3>'+
+							'<div class="form-group">'+
+								'<label>Instagram</label>'+
+								'<input name="instagram" type="text" class="form-control">'+
+							'</div>'+
+							'<div class="form-group">'+
+								'<label>Facebook</label>'+
+								'<input name="facebook" type="text" class="form-control">'+
+							'</div>'+
+							'<div class="form-group">'+
+								'<label>Twitter</label>'+
+								'<input name="twitter" type="text" class="form-control">'+
+							'</div>'+
+							'<div class="form-group">'+
+								'<label>Pinterest</label>'+
+								'<input name="pinterest" type="text" class="form-control">'+
+							'</div>'+
+							'<div class="form-group">'+
+								'<label>Youtube</label>'+
+								'<input name="youtube" type="text" class="form-control">'+
+							'</div>'+
+						'</div>' +
+						'<div class="clearfix"></div>'+
+						'<hr/>' +
+						'<div class="input-frame col-md-6">'+
+							'<div class="btn-group">'+
+								'<button class="btn btn-warning" type="submit">Create</button>'+
+								'<a href="story.html" class="btn btn-warning" type="reset">Cancel</a>'+
+							'</div>'+
 						'</div>'+
-					'</div>' +
-					'<div class="input-frame col-md-6">'+
-						'<h3>&nbsp;</h3>'+
-						'<div class="form-group">'+
-							'<label>Bank</label>'+
-							'<input name="bank" type="text" class="form-control">'+
-						'</div>'+
-					'</div>' +
-					'<div class="clearfix"></div>'+
-					'<hr/>' +
-					'<div class="input-frame col-md-6">'+
-						'<h3><b>Social Media</b></h3>'+
-						'<div class="form-group">'+
-							'<label>Instagram</label>'+
-							'<input name="instagram" type="text" class="form-control">'+
-						'</div>'+
-						'<div class="form-group">'+
-							'<label>Facebook</label>'+
-							'<input name="facebook" type="text" class="form-control">'+
-						'</div>'+
-						'<div class="form-group">'+
-							'<label>Twitter</label>'+
-							'<input name="twitter" type="text" class="form-control">'+
-						'</div>'+
-						'<div class="form-group">'+
-							'<label>Pinterest</label>'+
-							'<input name="pinterest" type="text" class="form-control">'+
-						'</div>'+
-						'<div class="form-group">'+
-							'<label>Youtube</label>'+
-							'<input name="youtube" type="text" class="form-control">'+
-						'</div>'+
-					'</div>' +
-					'<div class="clearfix"></div>'+
-					'<hr/>' +
-					'<div class="input-frame col-md-6">'+
-						'<div class="btn-group">'+
-							'<button class="btn btn-warning" type="submit">Create</button>'+
-							'<a href="story.html" class="btn btn-warning" type="reset">Cancel</a>'+
-						'</div>'+
-					'</div>'+
-				'</form>';
+					'</form>' +
+				'</div>';
 
 				$('main.parent-admin .main-content').append(html);
 

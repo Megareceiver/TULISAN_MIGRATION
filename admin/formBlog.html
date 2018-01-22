@@ -138,16 +138,16 @@
 
 				imagePreviewActivator('[name="pictures[]"]');
 
-				// // //textarea editor
-				// new nicEditor({iconsPath : '../assets/PICS/nicEditorIcons.gif'}).panelInstance('editor');
-        //
-				// $(".nicEdit-main").on("blur",function(){
-				// 	$("[name='description']").val($(this).html());
-				// });
+				// //textarea editor
+				new nicEditor({iconsPath : '../assets/PICS/nicEditorIcons.gif'}).panelInstance('editor');
 
-				$('.editor').each(function(){
-				    this.contentEditable = true;
+				$(".nicEdit-main").on("blur",function(){
+					$("[name='description']").val($(this).html());
 				});
+
+				// $('.editor').each(function(){
+				//     this.contentEditable = true;
+				// });
 			}
 
 			function dataGenerator(idData){

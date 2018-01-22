@@ -74,7 +74,7 @@ function pageAdmin(){
 						'<li class="dashboard-route"><a href="index.html">DASHBOARD</a></li>'+
 						'<li class="product-route"><a href="product.html">PRODUCTS</a></li>'+
 						'<li class="cms-route"><a href="cms.html">CMS</a></li>'+
-						'<li class="setting-route"><a href="setting.html">SYSTEM SETTING</a></li>'+
+						'<li class="setting-route"><a href="system.html">SYSTEM SETTING</a></li>'+
 						'<li class="blog-route"><a href="blog.html">USERS BLOG</a></li>'+
 						'<li class="customer-route"><a href="customer.html">CUSTOMERS</a></li>'+
 						'<li class="vendor-route"><a href="vendor.html">VENDORS</a></li>'+

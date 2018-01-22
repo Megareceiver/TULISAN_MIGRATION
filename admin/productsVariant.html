@@ -59,6 +59,12 @@
 						'<div class="input-group operation-button">' +
 							'<a href="#" id="manageButton"><i class="fa fa-bars text-warning">&nbsp;</i> Manage Variant</a>'+
 						'</div>' +
+						'<div class="input-group operation-button">' +
+							'<a href="#" id="enableButton"><i class="fa fa-bars text-warning">&nbsp;</i> Publish Variant</a>'+
+						'</div>' +
+						'<div class="input-group operation-button">' +
+							'<a href="#" id="disableButton"><i class="fa fa-bars text-warning">&nbsp;</i> Keep Variant</a>'+
+						'</div>' +
 	        	'<div class="input-group pull-right">' +
 	        		'<input type="text" class="form-control" placeholder="Search">' +
 		        	'<span class="input-group-btn">' +
@@ -263,10 +269,55 @@
 							r_setCookie('adminPageFilter', '1');
 							r_setCookie('adminAlphaFilter', '');
 							var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
-							var data = p_getData('operation', 'productVariant', page);
-								data = data.feedData;
+							var id 	 = getParam('q');
+							var data = p_getData('operation', 'productVariant', page, 'productId = "' + id + '"');
+									data = data.feedData;
 
 							dataGenerator(data);
+						}
+					}else{
+						alert("Please choose record first!");
+					}
+				});
+
+				$('#enableButton').unbind().on("click", function(){
+					if(checkedArray.length > 0){
+						var confirmation = confirm("Are you sure you want publish the selected variant?");
+						if (confirmation == true) {
+							var res = p_changeData('operation', 'publishVariant', checkedArray);
+
+							if(res.feedStatus == "success"){
+								r_setCookie('adminPageFilter', '1');
+								r_setCookie('adminAlphaFilter', '');
+								var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
+								var id 	 = getParam('q');
+								var data = p_getData('operation', 'productVariant', page, 'productId = "' + id + '"');
+									  data = data.feedData;
+
+								dataGenerator(data);
+							}
+						}
+					}else{
+						alert("Please choose record first!");
+					}
+				});
+
+				$('#disableButton').unbind().on("click", function(){
+					if(checkedArray.length > 0){
+						var confirmation = confirm("Are you sure you want keep the selected variant?");
+						if (confirmation == true) {
+							var res = p_changeData('operation', 'keepVariant', checkedArray);
+
+							if(res.feedStatus == "success"){
+								r_setCookie('adminPageFilter', '1');
+								r_setCookie('adminAlphaFilter', '');
+								var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
+								var id 	 = getParam('q');
+								var data = p_getData('operation', 'productVariant', page, 'productId = "' + id + '"');
+									  data = data.feedData;
+
+								dataGenerator(data);
+							}
 						}
 					}else{
 						alert("Please choose record first!");

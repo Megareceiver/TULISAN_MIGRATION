@@ -868,6 +868,17 @@
 					}
 
 				break;
+
+				case "publishVariant"  :
+					$values = array("status = '1'");
+					$resultList = $this->updateMultiData('products_variant', $values, $post['pId']);
+				break;
+
+				case "keepVariant"  :
+					$values = array("status = '0'");
+					$resultList = $this->updateMultiData('products_variant', $values, $post['pId']);
+				break;
+
 				default	   		: $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
 			}
 
@@ -1318,6 +1329,62 @@
 			$json = $resultList;
 
 			return $json;
+		}
+
+		public function updateMultiData($table, $values, $ids){
+			/* initial condition */
+			$resultList = array();
+			$feedStatus	= "failed";
+			$feedType   = "danger";
+			$feedMessage= "Something went wrong, failed to collect data!";
+			$feedData	= array();
+			$feedId		= "";
+
+			$temp		= "";
+
+			/* open connection */
+			$gate = $this->db;
+			if($gate){
+
+				if(is_array($values)) {
+					foreach ($values as $item) {
+						if($temp  == "") $temp = $item;
+						else $temp = $temp.",".$item;
+					}
+
+					$values = $temp;
+					$temp   = "";
+				}
+
+				if(is_array($ids)) {
+					foreach ($ids as $value) {
+						if($temp  == "") $temp = $value;
+						else $temp = $temp.",".$value;
+					}
+
+					$ids = $temp;
+					$temp   = "";
+				}
+
+				$sql = "UPDATE ".$table." SET ".$values.", changedBy = '".$_SESSION['tulisan_user_username']."', changedDate = NOW() WHERE idData IN (".$ids.")";
+
+				$result = $this->db->query($sql);
+				if($result){
+					$feedStatus	= "success";
+					$feedType   = "success";
+					$feedMessage= "The process has been successful";
+				}
+
+				$feedType = $sql;
+			}
+
+			$resultList = array( "feedStatus" => $feedStatus, "feedType" => $feedType, "feedMessage" => $feedMessage, "feedData" => $feedData);
+
+			/* result fetch */
+			$json = $resultList;
+
+			return $json;
+
 		}
 
 		//UPLOAD IMAGE

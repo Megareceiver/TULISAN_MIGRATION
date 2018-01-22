@@ -52,6 +52,7 @@ iframe { border: 1px solid #ddd; background-color: #000; }
 
 .border-all { border: 1px solid #CCC; }
 .border-all.danger { border: 2px dashed RED; }
+.border-all.warning { border: 2px solid ORANGE; background-color: oldlace; }
 
 .btn-default:hover,
 .btn-default:active,

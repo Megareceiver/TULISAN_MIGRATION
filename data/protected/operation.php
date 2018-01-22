@@ -12,13 +12,13 @@
 			switch($target){
 				case "summary" 			: $resultList = $this->summary(); break;
 
-				case "product" 				: $resultList = $this->fetchAllRequest('products p LEFT JOIN products_variant v ON p.idData = v.productId LEFT JOIN categories c ON p.categoryId = c.idData', array("DISTINCT p.idData", "(SELECT x.frontPicture FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as frontPicture", "p.name", "p.description", "p.status", "c.name as category"), $post['keyword'], "ORDER BY p.name ASC", $post['page']); break;
+				case "product" 				: $resultList = $this->fetchAllRequest('products p LEFT JOIN products_variant v ON p.idData = v.productId LEFT JOIN categories c ON p.categoryId = c.idData', array("DISTINCT p.idData", "(SELECT x.frontPicture FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as frontPicture", "p.name", "p.description", "p.status", "c.name as category", "p.highlight"), $post['keyword'], "ORDER BY p.name ASC", $post['page']); break;
 				case "productGroup" 	: $resultList = $this->fetchAllRecord('products p LEFT JOIN products_variant v ON p.idData = v.productId LEFT JOIN categories c ON p.categoryId = c.idData',
-																array("DISTINCT p.idData",
+																array("DISTINCT p.idData", "p.highlight",
 																"(SELECT x.frontPicture FROM products_variant x WHERE x.productId = p.idData AND x.status != '0' AND ".$post['keyword']." ORDER BY x.idData ASC LIMIT 1) as frontPicture",
 																"p.name",
 																"c.name as category",
-																"(SELECT x.price FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as price"), $post['keyword'], "ORDER BY c.idData DESC, p.name ASC"); break;
+																"(SELECT x.price FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as price"), $post['keyword'], "ORDER BY p.highlight DESC, p.name ASC"); break;
 				case "productFetch" 	: $resultList = $this->fetchSingleRequest('products', array("idData", "name", "description", "material", "categoryId", "status", "lookBook1", "lookBook2"), $post['keyword']); break;
 				// case "productDetail" 	: $resultList = $this->fetchSingleRequest('products', array("lookBook1", "lookBook2", "idData", "sku", "name", "description", "price", "material", "dimension", "storyId"), $post['keyword']); break;
 				case "productDetail" 	: $resultList = $this->fetchSingleRequest(
@@ -557,6 +557,16 @@
 						}
 					}
 
+				break;
+
+				case "addHighlightProduct"  :
+					$values = array("highlight = 1");
+					$resultList = $this->updateMultiData('products', $values, $post['pId']);
+				break;
+
+				case "removeHighlightProduct"  :
+					$values = array("highlight = 0");
+					$resultList = $this->updateMultiData('products', $values, $post['pId']);
 				break;
 
 				case "productVariant"  :

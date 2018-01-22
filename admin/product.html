@@ -54,7 +54,10 @@
 							'<a href="#" id="duplicateButton"><i class="fa fa-copy text-warning">&nbsp;</i> Duplicate Product</a>'+
 						'</div>' +
 						'<div class="input-group operation-button">' +
-							'<a href="#" id="manageVariant"><i class="fa fa-tags text-warning">&nbsp;</i> Manage Variant</a>'+
+							'<a href="#" id="addHighlight"><i class="fa fa-star text-warning">&nbsp;</i> Add Highlight</a>'+
+						'</div>' +
+						'<div class="input-group operation-button">' +
+							'<a href="#" id="removeHighlight"><i class="fa fa-star-o text-warning">&nbsp;</i> Remove Highlight</a>'+
 						'</div>' +
 	        	'<div class="input-group pull-right">' +
 	        		'<input type="text" class="form-control" placeholder="Search">' +
@@ -64,7 +67,13 @@
 	        	'</div>' +
 	   			'</div>' +
 	        '<div class="clearfix"></div>' +
+					'<div class="form-inline">' +
+						'<div class="input-group operation-button">' +
+							'<a href="#" id="manageVariant"><i class="fa fa-tags text-warning">&nbsp;</i> Manage Variant</a>'+
+						'</div>' +
+	   			'</div>' +
 				'</div>';
+
 				html = html +
 					'<div class="summary-group">'+
 						'<div class="summary-text">'+
@@ -223,8 +232,9 @@
 					data[loop].frontPicture = (data[loop].frontPicture != "" && data[loop].frontPicture != null) ? "../assets/products/large/" + data[loop].frontPicture : "../assets/default/no.gif";
 					status = (data[loop].status == 1) ? "Show in store" : "<b>- DRAFT -</b>";
 					category = (data[loop].category == "" || data[loop].category == null) ? "<b>- NO CATEGORY -</b>" : data[loop].category;
+					highlight = (data[loop].highlight == 1) ? "warning" : "";
 	    		html = html +
-	    		'<div class="col-md-3 border-all">'+
+	    		'<div class="col-md-3 border-all ' + highlight + '">'+
 						'<br/>' +
 	    			'<input type="checkbox" name="customerSelect" value="'+data[loop].idData+'" id="selectRecord' + loop + '"><label for="selectRecord' + loop + '"></label>'+
 	    			'<img class="big-image" src="'+ data[loop].frontPicture + '?last=' + unixtime + '">'+
@@ -299,6 +309,48 @@
 						window.location.href = base_url + "/admin/productsVariant.html?q=" + checkedArray[0];
 					}else{
 						alert("Please choose only one record!");
+					}
+				});
+
+				$('#addHighlight').unbind().on("click", function(){
+					if(checkedArray.length > 0){
+						var confirmation = confirm("Are you sure you want mark the selected items ?");
+						if (confirmation == true) {
+							var res = p_changeData('operation', 'addHighlightProduct', checkedArray);
+
+							if(res.feedStatus == "success"){
+								r_setCookie('adminPageFilter', '1');
+								r_setCookie('adminAlphaFilter', '');
+								var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
+								var data = p_getData('operation', 'product', page);
+									  data = data.feedData;
+
+								dataGenerator(data);
+							}
+						}
+					}else{
+						alert("Please choose record first!");
+					}
+				});
+
+				$('#removeHighlight').unbind().on("click", function(){
+					if(checkedArray.length > 0){
+						var confirmation = confirm("Are you sure you want unmark the selected items ?");
+						if (confirmation == true) {
+							var res = p_changeData('operation', 'removeHighlightProduct', checkedArray);
+
+							if(res.feedStatus == "success"){
+								r_setCookie('adminPageFilter', '1');
+								r_setCookie('adminAlphaFilter', '');
+								var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
+								var data = p_getData('operation', 'product', page);
+									  data = data.feedData;
+
+								dataGenerator(data);
+							}
+						}
+					}else{
+						alert("Please choose record first!");
 					}
 				});
 			}

@@ -95,7 +95,14 @@
 					'<div class="col-md-6 col-md-offset-3">' +
 						"<div class='blog-box'>"+
 							"<div class='blog-subtitle'>"+
-								"<p>"+data.subtitle+" </p>"+
+								"<p>"+data.subtitle+" </p>";
+
+				if(data.caption != "" && data.link != "" && data.link != null){
+					html = html +
+					"<p class='syn-plus'><a href='../assets/blogs/attachment/"+data.link+"' target='_blank' class='text-info'><u>" + data.caption + "</u></a></p>";
+				}
+
+				html = html +
 							"</div>"+
 						"</div>" +
 					"</div>" +
@@ -103,12 +110,7 @@
 						"<div class='blog-box'>"+
 							"<div class='blog-description'>"+
 								"<p>"+Base64.decode(data.description)+" </p>"+
-								"<p class='syn-plus'>Photo by "+data.photoBy+" </p>";
-								if(data.link != "" && data.link != null){
-									html = html + "<hr/>" +
-									"<p class='syn-plus'>Please find the <a href='"+data.link+"' class='text-info'><u>link</u></a> for full catalog.</p>";
-								}
-				html = html +
+								"<p class='syn-plus'>Photo by "+data.photoBy+" </p>" +
 							"</div>"+
 						"</div>" +
 					"</div>" +

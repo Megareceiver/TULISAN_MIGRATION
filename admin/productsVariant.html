@@ -227,15 +227,15 @@
 
 			function dataGenerator(data){
 				var html = "";
+				var unixtime = Math.round(+new Date()/1000);
+
 				for(var loop =0; loop<data.length; loop++){
-
 					data[loop].frontPicture = (data[loop].frontPicture != "") ? "../assets/products/large/" + data[loop].frontPicture : "../assets/default/no.gif";
-
 	    		html = html +
 	    		'<div class="col-md-3 border-all ' + ((parseInt(data[loop].qty) <= 0) ? 'danger' : '') + '">'+
 						'<br/>' +
 	    			'<input type="checkbox" name="customerSelect" value="'+data[loop].idData+'" id="selectRecord' + loop + '"><label for="selectRecord' + loop + '"></label>'+
-	    			'<img class="big-image" src="'+ data[loop].frontPicture +'">'+
+	    			'<img class="big-image" src="'+ data[loop].frontPicture + '?last=' + unixtime +'">'+
 						'<hr/>' +
 	    			'<p class="text-center">'+ ((data[loop].sku!=null && data[loop].sku!="") ? data[loop].sku : '<b>- NO SKU -</b>') +'</p>'+
 	    			'<p class="text-center">'+

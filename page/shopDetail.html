@@ -64,6 +64,8 @@
 
 				temp = normalFormatChanger(data.price);
 				price = currencyFormat(String(temp));
+				dimension = data.dimension;
+				dimension = dimension.replace("\r\n","<br>");
 
 				html = html +
 				'<div class="col-md-6">'+
@@ -103,7 +105,7 @@
 								'</p>'+
 								'<p>'+
 									'DIMENSION<br>'+
-									'<span id="productDimension">' + data.dimension + '</span>' +
+									'<span id="productDimension">' + dimension + '</span>' +
 								'</p>'+
 							'</div>'+
 							'<hr/>' +
@@ -357,10 +359,13 @@
 					'</ul>'+
 				'</div>';
 
+				dimension = data.dimension;
+				dimension = dimension.replace("\r\n","<br>");
+
 				$("#productViewer").html(html);
 				$("[name=variantId]").val(data.idData);
 				$("#productPrice").html(currencyFormat(String(data.price)));
-				$("#productDimension").html(data.dimension);
+				$("#productDimension").html(dimension);
 				$("#qty").html(data.qty);
 				$("#count").val(1);
 				count = 1;

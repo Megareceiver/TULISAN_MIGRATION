@@ -54,7 +54,7 @@
 						'</div>'+
 						'<div class="form-group">'+
 							'<label>Description</label>'+
-							'<textarea name="description" class="form-control" rows="5" id="editor"></textarea>'+
+							'<textarea name="description" class="form-control editor" rows="5" id="editor"></textarea>'+
 						'</div>'+
 					'</div>'+
 					'<div class="input-frame col-md-6">'+
@@ -68,13 +68,34 @@
 							'<input name="photoBy" type="text" class="form-control">'+
 						'</div>'+
 						'<div class="form-group">'+
-							'<label>External Link</label>'+
-							'<input name="link" type="text" class="form-control">'+
+							'<label>Publish on</label>'+
+							'<input name="publishDate" placeholder="yyyy-mm-dd" type="text" class="form-control">'+
 						'</div>'+
 					'</div>' +
 					'<div class="clearfix"></div><hr/>';
 
-				var col = '8';
+				html = html +
+				'<div class="clearfix"></div>'+
+				'<hr/>' +
+				'<div class="input-frame col-md-6">'+
+					'<h3><b>Attachment</b></h3>'+
+					'<div class="form-group">'+
+						'<label>Caption</label>'+
+						'<input name="caption" type="text" class="form-control">'+
+					'</div>'+
+				'</div>'+
+				'<div class="input-frame col-md-6">'+
+					'<h3>&nbsp;</h3>'+
+					'<div class="form-group">'+
+						'<label>File</label>'+
+						'<input name="link" type="file" class="form-control">'+
+						'<input name="filename" type="text" class="form-control" value="No file" disabled>'+
+					'</div>'+
+				'</div>' +
+				'<div class="clearfix"></div>'+
+				'<hr/>';
+
+				var col = '6';
 				for(var loop=0; loop<8; loop++){
 
 					html = html +
@@ -91,8 +112,8 @@
 						'</div>' +
 					'</div>';
 
-					if(loop % 3 == 0) html = html + "<div class='clearfix'></div>";
-					col = '4';
+					if(loop % 4 == 0) html = html + "<div class='clearfix'></div>";
+					col = '3';
 				}
 
 				html = html +
@@ -117,11 +138,15 @@
 
 				imagePreviewActivator('[name="pictures[]"]');
 
-				// //textarea editor
-				new nicEditor({iconsPath : '../assets/PICS/nicEditorIcons.gif'}).panelInstance('editor');
+				// // //textarea editor
+				// new nicEditor({iconsPath : '../assets/PICS/nicEditorIcons.gif'}).panelInstance('editor');
+        //
+				// $(".nicEdit-main").on("blur",function(){
+				// 	$("[name='description']").val($(this).html());
+				// });
 
-				$(".nicEdit-main").on("blur",function(){
-					$("[name='description']").val($(this).html());
+				$('.editor').each(function(){
+				    this.contentEditable = true;
 				});
 			}
 

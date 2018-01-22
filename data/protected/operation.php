@@ -18,7 +18,7 @@
 																"(SELECT x.frontPicture FROM products_variant x WHERE x.productId = p.idData AND x.status != '0' AND ".$post['keyword']." ORDER BY x.idData ASC LIMIT 1) as frontPicture",
 																"p.name",
 																"c.name as category",
-																"(SELECT x.price FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as price"), $post['keyword'], "ORDER BY c.idData ASC, p.name ASC"); break;
+																"(SELECT x.price FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as price"), $post['keyword'], "ORDER BY c.idData DESC, p.name ASC"); break;
 				case "productFetch" 	: $resultList = $this->fetchSingleRequest('products', array("idData", "name", "description", "material", "categoryId", "status", "lookBook1", "lookBook2"), $post['keyword']); break;
 				// case "productDetail" 	: $resultList = $this->fetchSingleRequest('products', array("lookBook1", "lookBook2", "idData", "sku", "name", "description", "price", "material", "dimension", "storyId"), $post['keyword']); break;
 				case "productDetail" 	: $resultList = $this->fetchSingleRequest(
@@ -68,9 +68,9 @@
 				case "customer" 		: $resultList = $this->fetchAllRequest('customers c LEFT JOIN countries y ON c.country = y.country_code', array("idData", "name", "company", "phone", "email", "CONCAT(address, '</br>', city, ' ', zipCode, '</br>', country_name) as address", "COALESCE(userId,'guest')"), $post['keyword'], "ORDER BY name ASC", $post['page']); break;
 				case "customerFetch" 	: $resultList = $this->fetchSingleRequest('customers c LEFT JOIN users u ON c.userId = u.idData', array("c.idData", "c.name", "c.company", "c.phone", "c.email", "c.address", "c.city", "c.zipCode", "c.country, u.picture"), $post['keyword']); break;
 
-				case "cms_blog" 		: $resultList = $this->fetchAllRequest('cms_blog', array("idData","title", "date", "subtitle", "SUBSTRING(description, 1, 300) as description", "photoBy", "pictures", "link"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
-				case "cms_blogFetch" 	: $resultList = $this->fetchSingleRequest('cms_blog', array("idData","title", "date", "subtitle", "description", "photoBy", "pictures as `pictures[]`", "link"), $post['keyword']); break;
-				case "cms_blogDetail" 	: $resultList = $this->fetchSingleRequest('cms_blog', array("idData","title", "date", "subtitle", "description", "photoBy", "pictures as pictures", "link"), $post['keyword']); break;
+				case "cms_blog" 		: $resultList = $this->fetchAllRequest('cms_blog', array("idData","title", "date", "subtitle", "SUBSTRING(description, 1, 300) as description", "photoBy", "pictures", "link", "caption", "publishDate"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
+				case "cms_blogFetch" 	: $resultList = $this->fetchSingleRequest('cms_blog', array("idData","title", "date", "subtitle", "description", "photoBy", "pictures as `pictures[]`", "link as filename", "caption", "publishDate"), $post['keyword']); break;
+				case "cms_blogDetail" 	: $resultList = $this->fetchSingleRequest('cms_blog', array("idData","title", "date", "subtitle", "description", "photoBy", "pictures as pictures", "link", "caption", "publishDate"), $post['keyword']); break;
 
 				case "cms_chatter" 		: $resultList = $this->fetchAllRequest('cms_chatter', array("idData","title", "date", "description","picture", "type", "createdBy as publishedBy", "createdDate as publishedTime"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
 				case "cms_chatterFetch" : $resultList = $this->fetchSingleRequest('cms_chatter', array("idData","title", "date", "description","picture", "type"), $post['keyword']); break;
@@ -185,11 +185,16 @@
 				break;
 
 				case "productVariant"  :
-					$fields = array("sku", "qty", "size", "dimension", "artworkId", "colorId", "storyId", "productId", "price");
+					$fields = array("sku", "qty", "size", "artworkId", "colorId", "storyId", "productId", "price");
 					$values = array();
 					foreach ($fields as $key) {
 						$value = (isset($post[$key]) && $post[$key] != "") ? str_replace(',','',$post[$key]) : "";
 						array_push($values, $value);
+					}
+
+					if(isset($post['dimension'])) {
+						array_push($fields, "dimension");
+						array_push($values, base64_encode($post['dimension']));
 					}
 
 					$resultList = $this->insert('products_variant', $fields, $values);
@@ -310,7 +315,7 @@
 
 					if(isset($post['description'])) {
 						array_push($fields, "description");
-						array_push($values, base64_encode($post['description']));
+						array_push($values, htmlspecialchars($post['description']));
 					}
 
 					$resultList = $this->insert('cms_story', $fields, $values);
@@ -335,7 +340,7 @@
 				break;
 
 				case "cms_blog"  :
-					$fields = array("title", "date", "subtitle", "photoBy", "link");
+					$fields = array("title", "date", "subtitle", "photoBy", "caption", "publishDate");
 					$values = array();
 					foreach ($fields as $key) {
 						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
@@ -353,6 +358,11 @@
 						if(isset($_FILES["pictures"])){
 							$upload = $this->uploadMultiImage($_FILES["pictures"], "blogs", "cms_blog", "pictures", $resultList['feedId']);
 							$resultList["feedMultiUpload"] = $upload['feedMessage'];
+						}
+
+						if(isset($_FILES["link"]) && isset($post['caption']) && $post['caption'] != ""){
+							$upload = $this->uploadFile($_FILES["link"], "blogs/attachment", "cms_blog", "link", $resultList['feedId'], $post['caption']);
+							$resultList["feedUploadFile"] = $upload['feedMessage'];
 						}
 					}
 				break;
@@ -550,11 +560,15 @@
 				break;
 
 				case "productVariant"  :
-					$fields = array("sku", "qty", "size", "dimension", "storyId", "artworkId", "colorId", "price");
+					$fields = array("sku", "qty", "size", "storyId", "artworkId", "colorId", "price");
 					$values = array();
 					foreach ($fields as $key) {
 						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
 						$values[$key] = $key." = '".str_replace(',','',$value)."'";
+					}
+
+					if(isset($post['dimension'])) {
+						$values['dimension'] = "dimension = '".htmlspecialchars($post['dimension'])."'";
 					}
 
 					$resultList = $this->update('products_variant', $values, $post['idData']);
@@ -695,7 +709,7 @@
 				break;
 
 				case "cms_blog"  :
-					$fields = array("title", "date", "subtitle", "photoBy", "link");
+					$fields = array("title", "date", "subtitle", "photoBy", "caption", "publishDate");
 					$values = array();
 					foreach ($fields as $key) {
 						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
@@ -712,6 +726,11 @@
 						if(isset($_FILES["pictures"])){
 							$upload = $this->uploadMultiImage($_FILES["pictures"], "blogs", "cms_blog", "pictures", $post['idData']);
 							$resultList["feedMultiUpload"] = $upload['feedMessage'];
+						}
+
+						if(isset($_FILES["link"])){
+							$upload = $this->uploadFile($_FILES["link"], "blogs/attachment", "cms_blog", "link", $post['idData'], $post['caption']);
+							$resultList["feedUploadFile"] = $upload['feedMessage'];
 						}
 
 					}
@@ -1584,8 +1603,7 @@
 
 		}
 
-		public function imageThumb($src,$dest,$desired_width = false, $desired_height = false)
-		{
+		public function imageThumb($src,$dest,$desired_width = false, $desired_height = false){
 		    /*If no dimenstion for thumbnail given, return false */
 		    // if (!$desired_height&&!$desired_width) return false;
 		    $fparts = pathinfo($src);
@@ -1672,6 +1690,58 @@
 								$feedType   = "success".is_dir($saveAs);
 								$feedMessage= "The process has been successful";
 							}
+						}
+					}
+				}
+				/*upload end*/
+
+			}
+
+			$resultList = array( "feedStatus" => $feedStatus, "feedType" => $feedType, "feedMessage" => $feedMessage, "feedData" => $feedData);
+
+			/* result fetch */
+			$json = $resultList;
+
+			return $json;
+
+		}
+
+		//UPLOAD FILE
+		public function uploadFile($image, $dir, $table, $field, $id, $custom_name = ""){
+			error_reporting(E_ALL);
+			/* initial condition */
+			$resultList = array();
+			$feedStatus	= "failed";
+			$feedType   = "danger";
+			$feedMessage= "Something went wrong, failed to upload data!";
+			$feedData	= array();
+
+			$temp		= "";
+
+			/* open connection */
+			$gate = $this->db;
+			if($gate){
+
+				/*upload image*/
+				if(isset($image)){
+
+					$file_name = $image['name'];
+			    $file_size = $image['size'];
+			    $file_tmp  = $image['tmp_name'];
+			    $file_type = $image['type'];
+
+					$temporary 		 = explode(".", $file_name);
+					$fileExtension = end($temporary);
+					$newFileName 	 = (($custom_name != "") ? (str_replace(' ', '', $custom_name)).".".$fileExtension : "file_".$id.".".$fileExtension);
+					$saveAs 		   = "../assets/".$dir."/".$newFileName;
+
+					if(move_uploaded_file($file_tmp, $saveAs)){
+						$sql = "UPDATE ".$table." SET ".$field."='".$newFileName."' WHERE idData ='".$id."'";
+						$result = $this->db->query($sql);
+						if($result){
+							$feedStatus	= "success";
+							$feedType   = "success".is_dir($saveAs);
+							$feedMessage= "The process has been successful";
 						}
 					}
 				}

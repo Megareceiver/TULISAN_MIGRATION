@@ -8,7 +8,7 @@
 		<link rel="icon" type="image/x-icon" href="../assets/PICS/TL_Favicon.png">
 		<!-- Site Properities -->
 		<title>Tulisan</title>
-	  
+
 		<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="../assets/css/font-awesome.min.css" rel="stylesheet">
 		<link href="../assets/css/syncard-inject.css" rel="stylesheet">
@@ -19,17 +19,17 @@
 			<header class="parent"></header>
 
 			<main class="parent clear"></main>
-	
+
 			<footer class="parent"></footer>
 		</div>
 
 		<!-- Script collection -->
 		<script type="text/javascript" src="../assets/js/jquery-3.2.1.min.js"></script>
 		<script type="text/javascript" src="../assets/js/jquery-ui-1.10.0.custom.min.js"></script>
-		<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>	
+		<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="../assets/js/imagesloaded.pkgd.min.js"></script>
-		<script type="text/javascript" src="../assets/js/partial.js"></script>	
-		<script type="text/javascript" src="../assets/js/public.js"></script>	
+		<script type="text/javascript" src="../assets/js/partial.js"></script>
+		<script type="text/javascript" src="../assets/js/public.js"></script>
 
 		<!-- page script -->
 		<script type="text/javascript">
@@ -42,44 +42,19 @@
 				var pagingLink = "";
 				var pagingLinkBefore = "";
 				var pagingState = 1;
-				var data = {	
-							"data":[ 
-							{
-								blogId	: "blogDetail.html",
-								title	: "DOTTY OUTFIT",
-								subtitle: "The riniestv slither of silver light escaped from between the grey sheet of clouds above and spiled onto the concrete pavement below.",
-								date	: "25 FEBRUARY 2014",
-								picture	: "blogPic1.jpg",
-							},
-							{
-								blogId	: "blogDetail.html",
-								title	: "DOTTY OUTFIT",
-								subtitle: "The riniestv slither of silver light escaped from between the grey sheet of clouds above and spiled onto the concrete pavement below.",
-								date	: "25 FEBRUARY 2014",
-								picture	: "blogPic2.jpg",
-							},
-							{
-								blogId	: "blogDetail.html",
-								title	: "DOTTY OUTFIT",
-								subtitle: "The riniestv slither of silver light escaped from between the grey sheet of clouds above and spiled onto the concrete pavement below.",
-								date	: "25 FEBRUARY 2014",
-								picture	: "blogPic3.jpg",
-							}],
+				var data = [];
 
-							"paging": "124"
-						};
-
-				data = p_getData('operation', 'cms_blog');
+				data = p_getData('operation', 'cms_blog', 1, 'publishDate <= CURDATE()');
 				data = data.feedData;
 				paging = '0';
 
 				html = '<div class="row">';
 				for(var loop=0; loop<data.length; loop++){
-
 					var img = data[loop].pictures;
-						img = img.split(',');
+						  img = img.split(',');
+					var desc= Base64.decode(data[loop].description);
 
-					html = html + 
+					html = html +
 					"<div class='blog-container'>" +
 						'<div class="col-md-6 col-md-offset-3">' +
 							"<div class='blog-box'>"+
@@ -89,6 +64,7 @@
 								"</div>"+
 							"</div>" +
 						"</div>" +
+
 						'<div class="col-md-10 col-md-offset-1">' +
 							"<div class='blog-box'>"+
 								"<div class='blog-pic'>"+
@@ -96,20 +72,21 @@
 								"</div>"+
 							"</div>" +
 						"</div>" +
+
 						'<div class="col-md-6 col-md-offset-3">' +
 							"<div class='blog-box'>"+
 								"<div class='blog-subtitle'>"+
-									"<p>"+Base64.decode(data[loop].description)+"... </p>"+
+									"<section>" + desc + "</section>"+
 								"</div>"+
-								
 							"</div>" +
 						"</div>" +
+
 						'<div class="col-md-10 col-md-offset-1">' +
 							"<div class='blog-box'>"+
 								"<div class='blog-detailLink'><a href='blogDetail.html?q="+data[loop].idData+"'>CONTINUE READING</a></div>" +
 							"</div>" +
 						"</div>" +
-					"</div>";
+					"</div>" + '<div class="clearfix"></div>';
 				}
 
 				for(var loop=pagingState; loop<=paging; loop++){

@@ -106,7 +106,7 @@
  					'</div>'+
  					'<div class="form-group">'+
  						'<img id="lookBook1" name-tag="lookBook1" class="big-image" src="../assets/default/lookBook.gif">'+
-						'<button class="btn btn-warning form-control lookbook_btn" remove-name="lookBook1_removed" type="button">Remove</button>'+
+						'<button class="btn btn-warning form-control lookbook_btn" remove-name="lookBook1_removed" preview-name="lookBook1" type="button">Remove</button>'+
  					'</div>'+
  					'<div class="form-group">'+
 						'<input name="lookBook1_removed" type="hidden" />' +
@@ -120,7 +120,7 @@
 					 '<div class="form-group text-center">'+
 					 	 '<input name="lookBook2_removed" type="hidden" />' +
 						 '<img id="lookBook2" name-tag="lookBook2" class="big-image" src="../assets/default/lookBook.gif">'+
-						 '<button class="btn btn-warning form-control lookbook_btn" remove-name="lookBook2_removed" type="button">Remove</button>'+
+						 '<button class="btn btn-warning form-control lookbook_btn" remove-name="lookBook2_removed" preview-name="lookBook2" type="button">Remove</button>'+
 					 '</div>'+
 					 '<div class="form-group">'+
 						 '<input name="lookBook2" preview-id="lookBook2" accept="image/x-png,image/gif,image/jpeg" type="file" class="file form-control" data-preview-file-type="text">'+
@@ -153,7 +153,9 @@
 
 				$(".lookbook_btn").unbind().on("click", function(){
 					x = $(this).attr("remove-name");
+					y = $(this).attr("preview-name");
 					$("[name=" + x + "]").val("yes");
+					$("[name-tag=" + y + "]").attr("src", "../assets/default/lookBook.gif");
 				});
 
 				/* data generator */

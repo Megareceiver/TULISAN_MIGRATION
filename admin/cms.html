@@ -8,7 +8,7 @@
 		<link rel="icon" type="image/x-icon" href="../assets/PICS/TL_Favicon.png">
 		<!-- Site Properities -->
 		<title>Tulisan</title>
-	  
+
 		<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="../assets/css/font-awesome.min.css" rel="stylesheet">
 		<link href="../assets/css/syncard-inject.css" rel="stylesheet">
@@ -19,16 +19,16 @@
 			<header class="parent-admin"></header>
 
 			<main class="parent-admin"></main>
-					
+
 			<footer class="parent-admin"></footer>
 		</div>
 
 		<!-- Script collection -->
 		<script type="text/javascript" src="../assets/js/jquery-3.2.1.min.js"></script>
 		<script type="text/javascript" src="../assets/js/jquery-ui-1.10.0.custom.min.js"></script>
-		<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>	
-		<script type="text/javascript" src="../assets/js/syncard.js"></script>	
-		<script type="text/javascript" src="../assets/js/public.js"></script>	
+		<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../assets/js/syncard.js"></script>
+		<script type="text/javascript" src="../assets/js/public.js"></script>
 
 		<!-- page script -->
 		<script type="text/javascript">
@@ -38,25 +38,7 @@
 			function customer(){
 				var html = '';
 
-				var data = [
-					{ customerId: "1", name: 'Achdiyati Sumi', email: 'sumiong.ong@gmail.com', company: 'PT. Sky Aviation', phone: '', address: '' },
-					{ customerId: "2", name: 'Achdiyati Sumi', email: 'sumiong.ong@gmail.com', company: 'PT. Sky Aviation', phone: '', address: '' },
-					{ customerId: "3", name: 'Achdiyati Sumi', email: 'sumiong.ong@gmail.com', company: 'PT. Sky Aviation', phone: '', address: '' },
-					{ customerId: "4", name: 'Achdiyati Sumi', email: 'sumiong.ong@gmail.com', company: 'PT. Sky Aviation', phone: '', address: '' },
-					{ customerId: "5", name: 'Achdiyati Sumi', email: 'sumiong.ong@gmail.com', company: 'PT. Sky Aviation', phone: '', address: '' },
-					{ customerId: "6", name: 'Achdiyati Sumi', email: 'sumiong.ong@gmail.com', company: 'PT. Sky Aviation', phone: '', address: '' },
-					{ customerId: "7", name: 'Achdiyati Sumi', email: 'sumiong.ong@gmail.com', company: 'PT. Sky Aviation', phone: '', address: '' },
-					{ customerId: "8", name: 'Achdiyati Sumi', email: 'sumiong.ong@gmail.com', company: 'PT. Sky Aviation', phone: '', address: '' },
-					{ customerId: "9", name: 'Achdiyati Sumi', email: 'sumiong.ong@gmail.com', company: 'PT. Sky Aviation', phone: '', address: '' },
-					{ customerId: "10", name: 'Achdiyati Sumi', email: 'sumiong.ong@gmail.com', company: 'PT. Sky Aviation', phone: '', address: '' },
-					{ customerId: "11", name: 'Achdiyati Sumi', email: 'sumiong.ong@gmail.com', company: 'PT. Sky Aviation', phone: '', address: '' },
-					{ customerId: "11", name: 'Achdiyati Sumi', email: 'sumiong.ong@gmail.com', company: 'PT. Sky Aviation', phone: '', address: '' },
-					{ customerId: "11", name: 'Achdiyati Sumi', email: 'sumiong.ong@gmail.com', company: 'PT. Sky Aviation', phone: '', address: '' },
-					{ customerId: "11", name: 'Achdiyati Sumi', email: 'sumiong.ong@gmail.com', company: 'PT. Sky Aviation', phone: '', address: '' },
-					{ customerId: "11", name: 'Achdiyati Sumi', email: 'sumiong.ong@gmail.com', company: 'PT. Sky Aviation', phone: '', address: '' },
-					{ customerId: "11", name: 'Achdiyati Sumi', email: 'sumiong.ong@gmail.com', company: 'PT. Sky Aviation', phone: '', address: '' },
-					{ customerId: "11", name: 'Achdiyati Sumi', email: 'sumiong.ong@gmail.com', company: 'PT. Sky Aviation', phone: '', address: '' },
-				]
+				var data = []
 
 				var menu = [
 					{ 'title': "HOME", 'link': 'home.html', 'icon': 'home' },
@@ -64,7 +46,7 @@
 					{ 'title': "BLOG", 'link': 'blog.html', 'icon': 'commenting-o' },
 					{ 'title': "VIDEOS", 'link': 'videos.html', 'icon': 'play' },
 					{ 'title': "CHATTER", 'link': 'chatter.html', 'icon': 'camera' },
-					{ 'title': "SETTINGS", 'link': 'setting.html', 'icon': 'gear' },
+					{ 'title': "SETTINGS", 'link': 'system.html', 'icon': 'gear' },
 				];
 
 				html = html +
@@ -75,7 +57,7 @@
 					html = html +
 					'<li>' +
 						'<span class="fa fa-' + menu[loop].icon + '"></span>' +
-						'<a href="' + menu[loop].link + '">' + menu[loop].title + '</a>' + 
+						'<a href="' + menu[loop].link + '">' + menu[loop].title + '</a>' +
 					'</li>';
 				}
 

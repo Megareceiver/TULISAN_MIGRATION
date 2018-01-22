@@ -1,12 +1,16 @@
 <?php
 	error_reporting(-1);
 	ini_set('display_errors', 1);
+	define('email_active', false);
+
 	use PHPMailer\PHPMailer\PHPMailer;
 	use PHPMailer\PHPMailer\Exception;
 
-	require 'library/src/Exception.php';
-	require 'library/src/PHPMailer.php';
-	require 'library/src/SMTP.php';
+	if(email_active == true){
+		require 'library/src/Exception.php';
+		require 'library/src/PHPMailer.php';
+		require 'library/src/SMTP.php';
+	}
 
 	Class order {
 		public function __construct(){
@@ -760,7 +764,7 @@
 						break;
 					}
 
-					if($error != 1){
+					if($error != 1 && email_active == true){
 						$email = new PHPMailer(true); // Passing `true` enables exceptions
 				    //Server settings
 				    $email->SMTPDebug = 0; // Enable verbose debug output

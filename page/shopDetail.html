@@ -53,7 +53,7 @@
 
 				if(getParam('q') != "" && getParam('q') != null){
 					productId = getParam('q');
-					data = p_getData('operation', 'productDetail', '1', 'p.idData = "' + productId + '" AND v.qty > 0');
+					data = p_getData('operation', 'productDetail', '1', 'p.idData = "' + productId + '" AND v.qty > 0 AND v.status != "0"');
 					data = data.feedData;
 				}else{
 					window.location.href = base_url + "/page/shop.html";
@@ -171,16 +171,16 @@
 				product_htmlGenerate(data);
 				$("#custom-bread-detail").html(toTitleCase(data.name));
 
-				var oData = p_getData('operation', 'productStoryOption', '', "v.productId='" + productId + "' AND v.qty > 0");
+				var oData = p_getData('operation', 'productStoryOption', '', "v.productId='" + productId + "' AND v.qty > 0 AND v.status != '0'");
 				$("[name=storyId]").append(dataToOptionHtml(oData.feedData));
 
-				oData = p_getData('operation', 'productArtworkOption', '', "v.productId='" + productId + "' AND v.storyId = '" + data.storyId + "' AND v.qty > 0");
+				oData = p_getData('operation', 'productArtworkOption', '', "v.productId='" + productId + "' AND v.storyId = '" + data.storyId + "' AND v.qty > 0 AND v.status != '0'");
 				$("[name=artworkId]").append(dataToOptionHtml(oData.feedData));
 
-				oData = p_getData('operation', 'productColorOption', '', "v.productId='" + productId + "' AND v.storyId = '" + data.storyId + "' AND v.artworkId = '" + data.artworkId + "' AND v.qty > 0");
+				oData = p_getData('operation', 'productColorOption', '', "v.productId='" + productId + "' AND v.storyId = '" + data.storyId + "' AND v.artworkId = '" + data.artworkId + "' AND v.qty > 0 AND v.status != '0'");
 				$("[name=colorId]").append(dataToOptionHtml(oData.feedData));
 
-				oData = p_getData('operation', 'productSizeOption', '', "v.productId='" + productId + "' AND v.storyId = '" + data.storyId + "' AND v.artworkId = '" + data.artworkId + "' AND v.qty > 0");
+				oData = p_getData('operation', 'productSizeOption', '', "v.productId='" + productId + "' AND v.storyId = '" + data.storyId + "' AND v.artworkId = '" + data.artworkId + "' AND v.qty > 0 AND v.status != '0'");
 				$("[name=size]").append(dataToOptionHtml(oData.feedData));
 
 				$('[name=storyId]').on("change", function(){ custom_story($(this).val()); });
@@ -231,23 +231,23 @@
 			}
 
 			function custom_story(storyId){
-				$("[name=colorId], [name=size]").html("");
+				$("[name=artworkId], [name=colorId], [name=size]").html("");
 
 				var productId = getParam('q');
-				oData = p_getData('operation', 'productArtworkOption', '', "v.productId='" + productId + "' AND v.storyId = '" + storyId + "' AND v.qty > 0");
+				oData = p_getData('operation', 'productArtworkOption', '', "v.productId='" + productId + "' AND v.storyId = '" + storyId + "' AND v.qty > 0 AND v.status != '0'");
 				$("[name=artworkId]").append(dataToOptionHtml(oData.feedData));
 
 				var artworkId = $('[name=artworkId]').val();
 
-				oData = p_getData('operation', 'productColorOption', '', "v.productId='" + productId + "' AND v.artworkId = '" + artworkId + "' AND v.qty > 0");
+				oData = p_getData('operation', 'productColorOption', '', "v.productId='" + productId + "' AND v.storyId = '" + storyId + "' AND v.artworkId = '" + artworkId + "' AND v.qty > 0 AND v.status != '0'");
 				$("[name=colorId]").append(dataToOptionHtml(oData.feedData));
 
 				var colorId = $('[name=colorId]').val();
 
-				oData = p_getData('operation', 'productSizeOption', '', "v.productId='" + productId + "' AND v.artworkId = '" + artworkId + "' AND v.colorId = '" + colorId + "' AND v.qty > 0");
+				oData = p_getData('operation', 'productSizeOption', '', "v.productId='" + productId + "' AND v.storyId = '" + storyId + "' AND v.artworkId = '" + artworkId + "' AND v.colorId = '" + colorId + "' AND v.qty > 0 AND v.status != '0'");
 				$("[name=size]").append(dataToOptionHtml(oData.feedData));
 
-				data = p_getData('operation', 'productDetail', '1', 'p.idData = "' + productId + '" AND v.artWorkId ="' + artworkId + '" AND v.colorId = "' + colorId + '" AND v.qty > 0');
+				data = p_getData('operation', 'productDetail', '1', 'p.idData = "' + productId + "' AND v.storyId = '" + storyId + '" AND v.artWorkId ="' + artworkId + '" AND v.colorId = "' + colorId + '" AND v.qty > 0 AND v.status != "0"');
 				data = data.feedData;
 				product_htmlGenerate(data);
 			}
@@ -256,15 +256,15 @@
 				$("[name=colorId], [name=size]").html("");
 
 				var productId = getParam('q');
-				var oData = p_getData('operation', 'productColorOption', '', "v.productId='" + productId + "' AND v.artworkId = '" + artworkId + "' AND v.qty > 0");
+				var oData = p_getData('operation', 'productColorOption', '', "v.productId='" + productId + "' AND v.artworkId = '" + artworkId + "' AND v.qty > 0 AND v.status != '0'");
 				$("[name=colorId]").append(dataToOptionHtml(oData.feedData));
 
 				var colorId = $('[name=colorId]').val();
 
-				oData = p_getData('operation', 'productSizeOption', '', "v.productId='" + productId + "' AND v.artworkId = '" + artworkId + "' AND v.colorId = '" + colorId + "' AND v.qty > 0");
+				oData = p_getData('operation', 'productSizeOption', '', "v.productId='" + productId + "' AND v.artworkId = '" + artworkId + "' AND v.colorId = '" + colorId + "' AND v.qty > 0 AND v.status != '0'");
 				$("[name=size]").append(dataToOptionHtml(oData.feedData));
 
-				data = p_getData('operation', 'productDetail', '1', 'p.idData = "' + productId + '" AND v.artWorkId ="' + artworkId + '" AND v.colorId = "' + colorId + '" AND v.qty > 0');
+				data = p_getData('operation', 'productDetail', '1', 'p.idData = "' + productId + '" AND v.artWorkId ="' + artworkId + '" AND v.colorId = "' + colorId + '" AND v.qty > 0 AND v.status != "0"');
 				data = data.feedData;
 				product_htmlGenerate(data);
 			}
@@ -275,10 +275,10 @@
 				var productId = getParam('q');
 				var artworkId = $('[name=artworkId]').val();
 
-				oData = p_getData('operation', 'productSizeOption', '', "v.productId='" + productId + "' AND v.artworkId = '" + artworkId + "' AND v.colorId = '" + colorId + "' AND v.qty > 0");
+				oData = p_getData('operation', 'productSizeOption', '', "v.productId='" + productId + "' AND v.artworkId = '" + artworkId + "' AND v.colorId = '" + colorId + "' AND v.qty > 0 AND v.status != '0'");
 				$("[name=size]").append(dataToOptionHtml(oData.feedData));
 
-				data = p_getData('operation', 'productDetail', '1', 'p.idData = "' + productId + '" AND v.artWorkId ="' + artworkId + '" AND v.colorId = "' + colorId + '" AND v.qty > 0');
+				data = p_getData('operation', 'productDetail', '1', 'p.idData = "' + productId + '" AND v.artWorkId ="' + artworkId + '" AND v.colorId = "' + colorId + '" AND v.qty > 0 AND v.status != "0"');
 				data = data.feedData;
 				product_htmlGenerate(data);
 			}
@@ -288,7 +288,7 @@
 				var artworkId = $('[name=artworkId]').val();
 				var colorId = $('[name=colorId]').val();
 
-				data = p_getData('operation', 'productDetail', '1', 'p.idData = "' + productId + '" AND v.artWorkId ="' + artworkId + '" AND v.colorId = "' + colorId + '" AND v.size = "' + size + '" AND v.qty > 0');
+				data = p_getData('operation', 'productDetail', '1', 'p.idData = "' + productId + '" AND v.artWorkId ="' + artworkId + '" AND v.colorId = "' + colorId + '" AND v.size = "' + size + '" AND v.qty > 0 AND v.status != "0"');
 				data = data.feedData;
 				product_htmlGenerate(data);
 			}

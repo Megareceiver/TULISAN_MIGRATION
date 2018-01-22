@@ -12,10 +12,10 @@
 			switch($target){
 				case "summary" 			: $resultList = $this->summary(); break;
 
-				case "product" 				: $resultList = $this->fetchAllRequest('products p LEFT JOIN products_variant v ON p.idData = v.productId LEFT JOIN categories c ON p.categoryId = c.idData', array("DISTINCT p.idData", "(SELECT x.frontPicture FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as frontPicture", "p.name", "p.description", "status", "c.name as category"), $post['keyword'], "ORDER BY p.name ASC", $post['page']); break;
+				case "product" 				: $resultList = $this->fetchAllRequest('products p LEFT JOIN products_variant v ON p.idData = v.productId LEFT JOIN categories c ON p.categoryId = c.idData', array("DISTINCT p.idData", "(SELECT x.frontPicture FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as frontPicture", "p.name", "p.description", "p.status", "c.name as category"), $post['keyword'], "ORDER BY p.name ASC", $post['page']); break;
 				case "productGroup" 	: $resultList = $this->fetchAllRecord('products p LEFT JOIN products_variant v ON p.idData = v.productId LEFT JOIN categories c ON p.categoryId = c.idData',
 																array("DISTINCT p.idData",
-																"(SELECT x.frontPicture FROM products_variant x WHERE x.productId = p.idData AND ".$post['keyword']." ORDER BY x.idData ASC LIMIT 1) as frontPicture",
+																"(SELECT x.frontPicture FROM products_variant x WHERE x.productId = p.idData AND x.status != '0' AND ".$post['keyword']." ORDER BY x.idData ASC LIMIT 1) as frontPicture",
 																"p.name",
 																"c.name as category",
 																"(SELECT x.price FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as price"), $post['keyword'], "ORDER BY c.idData ASC, p.name ASC"); break;
@@ -39,7 +39,7 @@
 
 				case "productCart" 	: $resultList = $this->fetchAllRequest('products p JOIN products_variant v ON p.idData = v.productId',array("DISTINCT v.idData", "v.qty", "v.frontPicture","p.name", "v.price", "p.sku"), $post['keyword'], "ORDER BY v.idData", $post['page']); break;
 
-				case "productVariant" 			: $resultList = $this->fetchAllRequest('products p JOIN products_variant v ON p.idData = v.productId LEFT JOIN cms_story_artwork a ON v.artworkId = a.idData LEFT JOIN colors c ON v.colorId = c.idData', array("v.idData", "p.name", "v.qty", "v.size", "v.frontPicture", "a.name as artwork", "c.name as color", "v.price", "v.sku"), $post['keyword'], "ORDER BY v.artWorkId ASC", $post['page']); break;
+				case "productVariant" 			: $resultList = $this->fetchAllRequest('products p JOIN products_variant v ON p.idData = v.productId LEFT JOIN cms_story_artwork a ON v.artworkId = a.idData LEFT JOIN colors c ON v.colorId = c.idData', array("v.idData", "p.name", "v.qty", "v.size", "v.frontPicture", "a.name as artwork", "c.name as color", "v.price", "v.sku", "v.status"), $post['keyword'], "ORDER BY v.artWorkId ASC", $post['page']); break;
 				case "productVariantFetch" 	: $resultList = $this->fetchSingleRequest('products_variant', array("frontPicture", "backPicture", "topPicture", "rightPicture", "bottomPicture", "leftPicture", "idData", "qty", "size", "storyId", "colorId", "artworkId", "price", "dimension", "sku"), $post['keyword']); break;
 				case "productStoryOption" 	: $resultList = $this->fetchAllRecord('products_variant v JOIN cms_story a ON v.storyId = a.idData', array("DISTINCT a.title as caption", "a.idData as value"), $post['keyword'], "ORDER BY v.idData ASC"); break;
 				case "productArtworkOption" : $resultList = $this->fetchAllRecord('products_variant v JOIN cms_story_artwork a ON v.artworkId = a.idData', array("DISTINCT a.name as caption", "a.idData as value"), $post['keyword'], "ORDER BY v.idData ASC"); break;
@@ -523,6 +523,14 @@
 					foreach ($fields as $key) {
 						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
 						$values[$key] = $key." = '".str_replace(',','',$value)."'";
+					}
+
+					if(isset($post['lookBook1_removed']) && $post['lookBook1_removed'] == "yes"){
+						$values['lookBook1'] = "lookBook1 = ''";
+					}
+
+					if(isset($post['lookBook2_removed']) && $post['lookBook2_removed'] == "yes"){
+						$values['lookBook2'] = "lookBook2 = ''";
 					}
 
 					$resultList = $this->update('products', $values, $post['idData']);

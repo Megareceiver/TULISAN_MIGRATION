@@ -93,9 +93,10 @@ function pageAdmin(){
 					'<ul>' +
 						'<li class="departement-route"><a href="department.html">Departement</a></li>'+
 						'<li class="product-route"><a href="product.html">Item</a></li>'+
+						'<li class="category-route"><a href="category.html">Item Category</a></li>'+
+						'<li class="color-route"><a href="color.html">Item Color</a></li>'+
 						'<li class="customer-route"><a href="customer.html">Customer</a></li>'+
 						'<li class="shipping-route"><a href="shippingOption.html">Shipping Option</a></li>'+
-						// '<li><a href="#" style="color: #555">Payment Method</a></li>'+
 						// '<li><a href="#" style="color: #555">Discounts</a></li>'+
 						// '<li><a href="#" style="color: #555">Catalog Price Rule</a></li>'+
 					'</ul>' +
@@ -134,10 +135,12 @@ function pageAdmin(){
 		switch(page){
 			case "product.html":
 			case "productVariant.html":
-			case "color.html":
-			case "formColor.html":
 			case "formProductVariant.html":
 			case "formProduct.html": $(".product-route").addClass('active'); break;
+			case "category.html":
+			case "formCategory.html": $(".category-route").addClass('active'); break;
+			case "color.html":
+			case "formColor.html": $(".color-route").addClass('active'); break;
 			case "customer.html":
 			case "formCustomer.html": $(".customer-route").addClass('active'); break;
 			case "formDepartment.html":

@@ -76,7 +76,7 @@
 				}
 
 				if(keyword != "") { keyword = keyword + " AND "; }
-				keyword = keyword + "qty > 0 AND status != 0";
+				keyword = keyword + "qty > 0 AND p.status != 0 AND v.status != '0'";
 
 				data = p_getData('operation', 'productGroup', pagingState, keyword);
 				product = data.feedData;

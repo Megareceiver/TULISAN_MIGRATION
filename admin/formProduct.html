@@ -104,10 +104,12 @@
  					'<div class="form-group">'+
  						'<label>Look book</label>'+
  					'</div>'+
- 					'<div class="form-group text-center">'+
+ 					'<div class="form-group">'+
  						'<img id="lookBook1" name-tag="lookBook1" class="big-image" src="../assets/default/lookBook.gif">'+
+						'<button class="btn btn-warning form-control lookbook_btn" remove-name="lookBook1_removed" type="button">Remove</button>'+
  					'</div>'+
  					'<div class="form-group">'+
+						'<input name="lookBook1_removed" type="hidden" />' +
  						'<input name="lookBook1" preview-id="lookBook1" accept="image/x-png,image/gif,image/jpeg" type="file" class="file form-control" data-preview-file-type="text">'+
  					'</div>' +
  			 '</div>' +
@@ -116,7 +118,9 @@
 						 '<label>&nbsp;</label>'+
 					 '</div>'+
 					 '<div class="form-group text-center">'+
+					 	 '<input name="lookBook2_removed" type="hidden" />' +
 						 '<img id="lookBook2" name-tag="lookBook2" class="big-image" src="../assets/default/lookBook.gif">'+
+						 '<button class="btn btn-warning form-control lookbook_btn" remove-name="lookBook2_removed" type="button">Remove</button>'+
 					 '</div>'+
 					 '<div class="form-group">'+
 						 '<input name="lookBook2" preview-id="lookBook2" accept="image/x-png,image/gif,image/jpeg" type="file" class="file form-control" data-preview-file-type="text">'+
@@ -147,6 +151,11 @@
 				oData = p_getData('operation', 'categoryOption');
 				$("[name=categoryId]").append(dataToOptionHtml(oData.feedData));
 
+				$(".lookbook_btn").unbind().on("click", function(){
+					x = $(this).attr("remove-name");
+					$("[name=" + x + "]").val("yes");
+				});
+
 				/* data generator */
 				if(getParam('q') != "" && getParam('q') != null) dataGenerator(getParam('q'));
 				else p_formHandler('syncrom', 'addData', 'product.html');
@@ -160,7 +169,10 @@
 					if($("[name='" + key + "']").attr('type') != "file") $("[name=" + key + "]").val(xData[key]);
 					else{
 						if(xData[key]!="") $("[name-tag=" + key + "]").attr('src', '../assets/products/' + xData[key]);
-						else $("[name-tag='" + key + "']").attr('src', '../assets/default/lookBook.gif');
+						else {
+							$("[name-tag='" + key + "']").attr('src', '../assets/default/lookBook.gif');
+							$('[remove-name="' + key + '_removed"]').remove();
+						}
 					}
 				}
 

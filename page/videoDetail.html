@@ -59,12 +59,14 @@
 					'</div>' +
 				'</div>';
 
+				desc = Base64.decode(data.description);
+				desc = desc.replace(/\\/g, '');
 				html = html +
 				'<div class="col-md-8 col-md-offset-2 content description-box">'+
 					'<h3 class="fontserif">'+data.title+'</h3>' +
 					'<p>Published on ' + timeSince(new Date(Date.parse(data.publish))) + '</p>' +
 					'<div class="detail-content">'+
-						'<p>'+Base64.decode(data.description)+'</p>'+
+						'<p>'+desc+'</p>'+
 					'</div>' +
 				'</div>';
 

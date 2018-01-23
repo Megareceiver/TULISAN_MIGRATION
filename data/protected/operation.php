@@ -18,7 +18,7 @@
 																"(SELECT x.frontPicture FROM products_variant x WHERE x.productId = p.idData AND x.status != '0' AND ".$post['keyword']." ORDER BY x.idData ASC LIMIT 1) as frontPicture",
 																"p.name",
 																"c.name as category",
-																"(SELECT x.price FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as price"), $post['keyword'], "ORDER BY p.highlight DESC, p.idData DESC, p.name ASC"); break;
+																"(SELECT x.price FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as price"), $post['keyword'], "ORDER BY p.highlight DESC, c.name ASC, p.name ASC"); break;
 				case "productFetch" 	: $resultList = $this->fetchSingleRequest('products', array("idData", "name", "description", "material", "categoryId", "status", "lookBook1", "lookBook2"), $post['keyword']); break;
 				// case "productDetail" 	: $resultList = $this->fetchSingleRequest('products', array("lookBook1", "lookBook2", "idData", "sku", "name", "description", "price", "material", "dimension", "storyId"), $post['keyword']); break;
 				case "productDetail" 	: $resultList = $this->fetchSingleRequest(

@@ -85,6 +85,8 @@
 						'</div>' +
 					'</div>';
 					}
+
+					if((loop) % 3 == 0) { html = html + '<div class="clearfix"></div>'; }
 				}
 
 				for(var loop=pagingState; loop<=paging; loop++){

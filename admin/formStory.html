@@ -112,7 +112,9 @@
 							else $("[name-tag='" + key + "']").attr('src', '../assets/default/story.gif');
 						}
 					}else{
-						$("[name=" + key + "]").val(Base64.decode(xData[key]));
+						desc = Base64.decode(xData[key]);
+						desc = desc.replace(/\\/g, '');
+						$("[name=" + key + "]").val(desc);
 					}
 				}
 

@@ -281,7 +281,7 @@ function footer(){
 
 	var d = new Date();
 	var n = d.getFullYear();
-	var license = n + " PT Tulisan Susunan Tinta. All Rights Reserved.";
+	var license = "Copyright © 2010-" + n + " PT Tulisan Susunan Tinta. All Rights Reserved.";
 
 	/*===========================================================================================*/
 	/*===========================================================================================*/

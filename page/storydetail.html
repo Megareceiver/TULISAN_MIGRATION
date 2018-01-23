@@ -19,9 +19,7 @@
 			<main class="parent clear yellow-flex">
 				<div class="row">
 					<div class="page-article">
-						<div class="col-md-8 col-md-offset-2 center-div">
-							<img id="picture" class="small-image" src="../assets/stories/">
-						</div>
+						<div class="col-md-8 col-md-offset-2 center-div" id="storyPicture"></div>
 						<div class="col-md-8 col-md-offset-2 center-div margin-top">
 							<h1 id="title" class="title-story fontserif"><b>&nbsp;</b></h1>
 							<h2 id="subtitle" class="title-story fontserif"><i></i></h2>
@@ -103,13 +101,17 @@
 				//GENERATOR
 				if(story != null){
 					// story.description = story.description.replace(/(?:\r\n|\r|\n)/g, '<br />');
-
+					desc = Base64.decode(story.description);
+					desc = desc.replace(/\\/g, '');
 					$("#author i").html('by ' + story.author);
 					$("#custom-bread-detail").html(toTitleCase(story.title));
 					$("#title b").html(story.title);
 					$("#subtitle i").html(story.subtitle);
-					$("#description").html(Base64.decode(story.description));
-					$("#picture").attr('src', $("#picture").attr('src') + story.picture);
+					$("#description").html(desc);
+
+					if(story.picture != "" && story.picture != null){
+						$("#storyPicture").append('<img id="picture" class="small-image" src="../assets/stories/' + story.picture + '">');
+					}
 				}
 			}
 		</script>

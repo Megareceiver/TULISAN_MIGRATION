@@ -54,9 +54,11 @@
 				filter = [];
 
 				keyword = "";
+				keyword2= "";
 				keywordSearch = "";
 				if(getParam('story') != "" && getParam('story') != null){
 					keyword = "v.storyId =" + getParam('story');
+					keyword2= "x.storyId =" + getParam('story');
 					paramState = paramState + "&story=" + getParam('story');
 					data = p_getData('operation', 'cms_storyFetch', "1", " idData = '" + getParam('story') + "'");
 					filter = data.feedData;
@@ -70,13 +72,17 @@
 				}
 
 				if(getParam('keyword') != "" && getParam('keyword') != null){
-					keyword = "(p.name LIKE '%" + getParam('keyword') + "%' OR v.sku LIKE '%" + getParam('keyword') + "%')";
+					keyword = '(p.name LIKE "%' + getParam('keyword') + '%" OR v.sku LIKE "%' + getParam('keyword') + '%")';
 					keywordSearch = getParam('keyword');
 					paramState = paramState + "&keyword=" + getParam('keyword');
 				}
 
 				if(keyword != "") { keyword = keyword + " AND "; }
 				keyword = keyword + "qty > 0 AND p.status != 0 AND v.status != 0";
+
+				if(keyword2 != ""){
+					keyword = keyword + ";" + keyword2;
+				}
 
 				data = p_getData('operation', 'productGroup', pagingState, keyword);
 				product = data.feedData;
@@ -101,32 +107,38 @@
 					var maxItem	 	 = 15;
 					var stateItem  = 1;
 					var caption    = [];
-					var checker    = [];
-					var group   	 = [];
-					var dumbCaption= "";
-					var dumbCount  = -1;
 					var category   = "";
+					var counter		 = 0;
+					var index 		 = 0;
+					var categories = [];
+					var items			 = [];
+
 					for(var loop   = 0; loop < product.length; loop++){
-						dumbString = "";
-						dumbCaption= "";
+						item = "";
+						dumb = "";
 
 						category 	 = (product[loop].category) != null ? product[loop].category : "Not Categorized";
-						dumbCaption= category;
-						category 	 = category.replace(' ', '');
+						dumb			 = category;
+						category 	 = category.replace(/&/g,'').replace(/\s/g, "");
+						item = item + '<p class="action-list"><a href="shopDetail.html?q=' + product[loop].idData + '">' + product[loop].name + '</a></p>';
 
-						dumbString = dumbString + '<p class="action-list"><a href="shopDetail.html?q=' + product[loop].idData + '">' + product[loop].name + '</a></p>';
+						if(categories.indexOf(category) == -1){
+							caption[counter] 	  = dumb;
+							categories[counter] = category;
+							counter++;
+						}
 
-						if (checker[category] == undefined) { checker[category] = ""; dumbCount++; }
-						if (group[dumbCount] == undefined) { group[dumbCount] = ""; caption[dumbCount] = dumbCaption; }
-						group[dumbCount] = group[dumbCount] + dumbString;
+						index = categories.indexOf(category);
+						if (items[index] == undefined) { items[index] = ""; }
+						items[index] = items[index] + item;
 
 					}
 
-					for(var loop = 0; loop < group.length; loop++){
+					for(var loop = 0; loop < categories.length; loop++){
 						html = html +
 						'<li>' +
 							'<h5>' + caption[loop] + ' <span toggle-target="#productList' + loop + '" class="left-menu-toggle fa fa-chevron-up syn-fixed-right "></span></h5>' +
-							'<div id="productList' + loop + '" style="display:none">' + group[loop] + '</div>' +
+							'<div id="productList' + loop + '" style="display:none">' + items[loop] + '</div>' +
 						'</li>';
 					}
 				}

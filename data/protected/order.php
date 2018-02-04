@@ -93,8 +93,8 @@
 							$resultItem = $this->insert('orders_item', $fields, $values);
 							array_push($resultList['resultItem'], $resultItem);
 
-							$resultUQty = $this->update('products_variant', "qty = (qty - ".$item['qty'].")", $item['variantId']);
-							array_push($resultList['resultUQty'], $resultUQty);
+							// $resultUQty = $this->update('products_variant', "qty = (qty - ".$item['qty'].")", $item['variantId']);
+							// array_push($resultList['resultUQty'], $resultUQty);
 						}
 
 						$emailResult = $this->emailOrder('placedOrder', array("email"=>$post['email'],"name"=>$post['name']), $resultList["feedId"]);
@@ -1486,6 +1486,11 @@
 
 			return $json;
 
+		}
+
+		public function updatePayment($values, $id){
+			$resultList = $this->update('orders', $values, $id);
+			return $resultList;
 		}
 	}
 ?>

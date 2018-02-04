@@ -93,7 +93,7 @@
 											<div class="form-group select-box">
 												<select class="form-control" id="paymentMethod">
 													<option value="BANK TRANSFER">BANK TRANSFER</option>
-													<option value="DOKU WALLET">DOKU WALLET</option>
+													<option value="PAYMENT GATEWAY">PAYMENT GATEWAY</option>
 												</select>
 											</div>
 											<div id="bankTransfer" class="col-md-12 syn-clear">
@@ -127,7 +127,7 @@
 												<h5 class="text-warning">Please include your Order ID as a reference when making your transfer.</h5>
 												<h5 class="syn-plus"><b><i>Your order will automatically be cancelled if the payment is not confirmed within 24 hours after the order is made.</i></b></h5>
 											</div>
-											<div id="dokeWallet" class="col-md-12 syn-clear">
+											<div id="midtrans" class="col-md-12 syn-clear">
 											</div>
 											<div class="col-md-6 syn-clear"><button type="button" class="btn btn-warning syn-plus form-control" id="placeButton">Next</button></div>
 										</form>
@@ -189,7 +189,7 @@
 										<hr/>
 										<h5><i>After making your transfer, click this button to confirm.</i></h5>
 									</div>
-									<a href="#" class="btn btn-warning syn-plus" id="confirmButton">Confirm Payment</a>
+									<a href="#" class="btn btn-warning syn-plus" id="confirmButton">Pay Order</a>
 									<a href="#" class="btn btn-warning syn-plus" id="cancelButton">Cancel Order</a>
 								</div>
 							</div>
@@ -209,6 +209,7 @@
 		<script type="text/javascript" src="../assets/js/imagesloaded.pkgd.min.js"></script>
 		<script type="text/javascript" src="../assets/js/partial.js"></script>
 		<script type="text/javascript" src="../assets/js/public.js"></script>
+		<script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="SB-Mid-client-szjRZnhi-4U80Sul"></script>
 
 		<!-- page script -->
 		<script type="text/javascript">
@@ -306,10 +307,14 @@
 					$(".sessionCountry").html(dumb.country);
 					$(".sessionPhone").html("phone: " + dumb.phone);
 
-					if(dumb.paymentMethod == "DOKU WALLET"){
+					if(dumb.paymentMethod == "PAYMENT GATEWAY"){
 							$("#transferInfo").attr("style", "display:none");
-							$("#confirmButton").html("DOKU Payment");
+							$("#confirmButton").html("Pay Order");
 							$("#confirmButton").attr("href", "#");
+							$("#confirmButton").on("click", function(){
+								var dumb = p_getData('snap', 'requestToken', 1, oid);
+								snap.pay(dumb.feedData);
+							});
 					}else{
 						$("#transferInfo").attr("style", "display:block");
 						$("#confirmButton").html("Confirm Payment");
@@ -361,8 +366,8 @@
 				$("#grandTotalAmount").val(grandTotal);
 
 				$("#paymentMethod").on('change', function(){
-					$("#bankTransfer, #dokeWallet").hide();
-					if($(this).val() == "DOKU WALLET") $("#dokeWallet").show();
+					$("#bankTransfer, #midtrans").hide();
+					if($(this).val() == "PAYMENT GATEWAY") $("#midtrans").show();
 					else $("#bankTransfer").show();
 				});
 
@@ -416,10 +421,14 @@
 				if(sendOrder()){
 					var oid = getParam('oid');
 
-					if($("#paymentForm #paymentMethod").val() == "DOKU WALLET"){
+					if($("#paymentForm #paymentMethod").val() == "PAYMENT GATEWAY"){
 							$("#transferInfo").attr("style", "display:none");
-							$("#confirmButton").html("DOKU Payment");
+							$("#confirmButton").html("Pay Order");
 							$("#confirmButton").attr("href", "#");
+							$("#confirmButton").on("click", function(){
+								var dumb = p_getData('snap', 'requestToken', 1, oid);
+								snap.pay(dumb.feedData);
+							});
 					}else{
 						$("#transferInfo").attr("style", "display:block");
 						$("#confirmButton").html("Confirm Payment");
@@ -434,6 +443,7 @@
 			}
 
 			function sendOrder(){
+				// return false;
 				 var res 		= false;
 				 var param 	= [];
 				 var cookieData = [];
@@ -466,7 +476,7 @@
 				localData['bank']					 = "";
 
 				if(localData['paymentMethod'] == "BANK TRANSFER"){
-					localData['bank']	= ($("[name=bank]").val() == '0') ? "MANDIRI" : $("#otherBank").val();
+					localData['bank']	= ($("[name=bank]:checked").val() == '0') ? "MANDIRI" : ($("#otherBank").val()).toUpperCase();
 				}
 
 				param = {

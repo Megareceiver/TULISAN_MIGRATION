@@ -11,6 +11,7 @@
 			case "operation"	: require_once('protected/operation.php'); $route = new operation(); break;
 			case "order"			: require_once('protected/order.php'); $route = new order(); break;
 			case "support"		: require_once('protected/support.php'); $route = new support(); break;
+			case "snap"				: require_once('protected/snap.php'); $route = new snap(); break;
 			default  					: $error = 1; break;
 		}
 
@@ -29,7 +30,6 @@
 					$json = $route->logout();
 				break;
 				/* end auth session */
-
 
 				case 'addData':
 					$json = $route->addData($_POST, $_GET['target']);

@@ -57,9 +57,13 @@
 				var transferLink = "#";
 				var transferCaption = "No";
 
-				if(head.transferPicture != null && head.transferPicture != ""){ 
-					transferLink = "../assets/transferPicture/" + head.transferPicture; 
+				if(head.transferPicture != null && head.transferPicture != ""){
+					transferLink = "../assets/transferPicture/" + head.transferPicture;
 					transferCaption = "View";
+				}
+
+				if(head.paymentStatus != null){
+					transferCaption = "Auto";
 				}
 
 				if(head.shippingMethod == null || head.shippingMethod == ""){
@@ -95,7 +99,7 @@
 						'<h5>Payment method : ' + head.paymentMethod + '</h5>' +
 						'<h5>Bank : ' + head.bank + '</h5>' +
 						'<h5>Payment confirm : <a href="' + transferLink + '">' + transferCaption + '</a></h5>' +
-						'<h5>Doku status : ' + ((head.dokuStatus == null || head.dokuStatus == "") ? "-" : "#" + head.dokuStatus) + '</h5>' +
+						'<h5>Payment status : ' + ((head.paymentStatus == null || head.paymentStatus == "") ? "-" : head.paymentStatus) + '</h5>' +
 						'<h5>Shipping Option : ' + ((head.shippingMethod == null || head.shippingMethod == "") ? "-" : head.shippingMethod) + '</h5>' +
 						'<h5>Receipt Numb. : ' + ((head.receiptNumber == null || head.receiptNumber == "") ? "-" : "#" + head.receiptNumber) + '</h5>' +
 					'</div>' +

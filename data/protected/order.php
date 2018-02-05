@@ -23,7 +23,7 @@
 		public function requestData($post, $target){
 			switch($target){
 				case "orders" 		: $resultList = $this->fetchAllRequest('orders', array("idData", "name", "status", "total", "createdDate"), $post['keyword'], "ORDER BY idData DESC, name ASC", $post['page']); break;
-				case "orderFetch" 	: $resultList = $this->fetchSingleRequest('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.dokuStatus", "o.dokuMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status"), "o.".$post['keyword']); break;
+				case "orderFetch" 	: $resultList = $this->fetchSingleRequest('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.paymentStatus", "o.paymentMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status"), "o.".$post['keyword']); break;
 				case "orderItems" 	:
 				case "itemsCart" 	: $resultList = $this->fetchAllRecord('orders_item i JOIN products_variant v ON i.variantId = v.idData JOIN products p ON v.productId = p.idData',array("p.name", "v.sku", "i.price", "i.qty"), $post['keyword'], "ORDER BY i.idData"); break;
 				case "orderInfo" 	: $resultList = $this->fetchSingleRequest('orders o JOIN countries c ON o.country = c.country_code',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.paymentMethod"), $post['keyword']); break;
@@ -109,7 +109,7 @@
 					if($resultList["feedStatus"] == "success") {
 						$resultList['resultEmail'] = array();
 
-						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.dokuStatus", "o.dokuMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status")
+						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.paymentStatus", "o.paymentMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status")
 						, "o.idData = ".$post['orderId']."", "");
 						if($data['feedStatus'] == "success"){
 							$data = $data['feedData'];
@@ -146,7 +146,7 @@
 					if($resultList["feedStatus"] == "success") {
 						$resultList['resultEmail'] = array();
 
-						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.dokuStatus", "o.dokuMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status")
+						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.paymentStatus", "o.paymentMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status")
 						, "o.idData = ".$post['idData']."", "");
 						if($data['feedStatus'] == "success"){
 							$data = $data['feedData'];
@@ -185,7 +185,7 @@
 
 						$this->customQuery('UPDATE products_variant v SET qty = qty + (SELECT SUM(qty) FROM orders_item o WHERE variantId = v.idData AND o.orderId = '.$post['orderId'].') WHERE v.idData IN (SELECT variantId FROM orders_item o WHERE o.orderId = '.$post['orderId'].')');
 
-						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.dokuStatus", "o.dokuMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status")
+						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.paymentStatus", "o.paymentMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status")
 						, "o.idData = ".$post['orderId']."", "");
 						if($data['feedStatus'] == "success"){
 							$data = $data['feedData'];
@@ -221,7 +221,7 @@
 					if($resultList["feedStatus"] == "success") {
 						$resultList['resultEmail'] = array();
 
-						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.dokuStatus", "o.dokuMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status")
+						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.paymentStatus", "o.paymentMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status")
 						, "o.idData = ".$post['pId']."", "");
 						if($data['feedStatus'] == "success"){
 							$data = $data['feedData'];
@@ -248,7 +248,7 @@
 						$resultList['resultEmail'] = array();
 
 						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',
-						array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.dokuStatus", "o.dokuMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status"),
+						array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.paymentStatus", "o.paymentMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status"),
 						"o.idData = ".$post['pId']."","");
 						if($data['feedStatus'] == "success"){
 							$data = $data['feedData'];
@@ -278,7 +278,7 @@
 					if($resultList["feedStatus"] == "success") {
 						$resultList['resultEmail'] = array();
 
-						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.dokuStatus", "o.dokuMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status")
+						$data = $this->fetchAllRecord('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.paymentStatus", "o.paymentMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status")
 						, "o.idData = ".$post['pId']."", "");
 						if($data['feedStatus'] == "success"){
 							$data = $data['feedData'];

@@ -101,7 +101,7 @@
 						'<h5>Payment confirm : <a href="' + transferLink + '">' + transferCaption + '</a></h5>' +
 						'<h5>Payment status : ' + ((head.paymentStatus == null || head.paymentStatus == "") ? "-" : head.paymentStatus) + '</h5>' +
 						'<h5>Shipping Option : ' + ((head.shippingMethod == null || head.shippingMethod == "") ? "-" : head.shippingMethod) + '</h5>' +
-						'<h5>Receipt Numb. : ' + ((head.receiptNumber == null || head.receiptNumber == "") ? "-" : "#" + head.receiptNumber) + '</h5>' +
+						'<h5>Air Waybill. : ' + ((head.receiptNumber == null || head.receiptNumber == "") ? "-" : "#" + head.receiptNumber) + '</h5>' +
 					'</div>' +
 					'<div class="clearfix"></div>' +
 					'<div class="col-md-6 syn-clear">' +
@@ -116,7 +116,10 @@
 					'<table class="table table-striped table-responsive">'+
 					    '<thead>'+
 					    	'<tr>'+
-									'<th width="70%">Item</th>'+
+									'<th width="30%">Item</th>'+
+						      '<th class="text-center">SKU</th>'+
+						      '<th class="text-center">Size</th>'+
+						      '<th class="text-center">Color</th>'+
 						      '<th class="text-center">Price</th>'+
 						      '<th class="text-center">Qty</th>'+
 					    	'</tr>'+
@@ -228,6 +231,9 @@
 		    		html = html +
 		    		'<tr>'+
 		    			'<td class="syn-nowrap">'+ data[loop].name +'</td>'+
+							'<td class="text-center">'+ data[loop].sku +'</td>'+
+							'<td class="text-center">'+ data[loop].size +'</td>'+
+							'<td class="text-center">'+ data[loop].color +'</td>'+
 							'<td class="text-right">'+ currencyFormat(String(data[loop].price)) +'</td>'+
 		    			'<td class="text-center">'+ data[loop].qty +'</td>'+
 		    		'</tr>';

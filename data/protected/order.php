@@ -25,7 +25,7 @@
 				case "orders" 		: $resultList = $this->fetchAllRequest('orders', array("idData", "name", "status", "total", "createdDate"), $post['keyword'], "ORDER BY idData DESC, name ASC", $post['page']); break;
 				case "orderFetch" 	: $resultList = $this->fetchSingleRequest('orders o JOIN countries c ON o.country = c.country_code LEFT JOIN shipping_options s ON o.shippingMethod = s.idData',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.total", "o.paymentMethod", "o.bank", "o.transferPicture", "o.paymentStatus", "o.paymentMessage", "s.name as shippingMethod", "o.receiptNumber", "o.status"), "o.".$post['keyword']); break;
 				case "orderItems" 	:
-				case "itemsCart" 	: $resultList = $this->fetchAllRecord('orders_item i JOIN products_variant v ON i.variantId = v.idData JOIN products p ON v.productId = p.idData',array("p.name", "v.sku", "i.price", "i.qty"), $post['keyword'], "ORDER BY i.idData"); break;
+				case "itemsCart" 	: $resultList = $this->fetchAllRecord('orders_item i JOIN products_variant v ON i.variantId = v.idData JOIN products p ON v.productId = p.idData JOIN colors c ON v.colorId = c.idData',array("p.name", "v.sku", "i.price", "v.size", "c.name as color", "i.qty"), $post['keyword'], "ORDER BY i.idData"); break;
 				case "orderInfo" 	: $resultList = $this->fetchSingleRequest('orders o JOIN countries c ON o.country = c.country_code',array("o.name", "o.address", "o.city", "o.zipCode", "c.country_name as country", "o.phone", "o.email", "o.paymentMethod"), $post['keyword']); break;
 				case "recentOrders" :
 					if(isset($_SESSION['tulisan_user_username']))

@@ -48,8 +48,9 @@
 							<div class='blog-description table-frame'>
 								<div id="orderItems" class="col-md-12 basic-table italic syn-clear syn-plus clear">
 									<ul class="header">
-										<li class="col-md-4">Product</li>
-										<li class="col-md-2">SKU</li>
+										<li class="col-md-1"></li>
+										<li class="col-md-3">SKU</li>
+										<li class="col-md-2">Size</li>
 										<li class="col-md-2 text-center">Price</li>
 										<li class="col-md-2 text-center">Quantity</li>
 										<li class="col-md-2 text-center">Total</li>
@@ -172,8 +173,8 @@
 					html = html +
 					'<ul>' +
 						'<li class="col-xs-1"><img src="../assets/products/small/' + items[loop].frontPicture + '" class="medium-image" /></li>' +
-						'<li class="col-xs-3">' + items[loop].name + '</li>' +
-						'<li class="col-xs-2">' + items[loop].sku + '</li>' +
+						'<li class="col-xs-3">' + items[loop].sku + '</li>' +
+						'<li class="col-xs-2">' + items[loop].size + '</li>' +
 						'<li class="col-xs-2 text-right">' + currencyFormat(items[loop].price) + '</li>' +
 						'<li class="col-xs-2 text-center">' + qty + '</li>' +
 						'<li class="col-xs-2 text-right">' + currencyFormat(String(total)) + '</li>' +

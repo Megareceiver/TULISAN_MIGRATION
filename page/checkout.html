@@ -99,8 +99,8 @@
 											<div id="bankTransfer" class="col-md-12 syn-clear">
 												<h5 class="syn-plus">Please transfer your order payment to:</h5>
 												<h5>PT. Tulisan Susunan Tinta</h5>
-												<h5>Bank <span id="bankName">Mandiri</span></h5>
-												<h5><b>Acc. No. <span id="accNumb">126-00-0618835-2</span></b></h5>
+												<h5>Bank <span class="bankName">Mandiri</span></h5>
+												<h5><b>Acc. No. <span class="accNumb">126-00-0618835-2</span></b></h5>
 												<h5>(Rupiah account)</h5>
 												<div class="radio syn-plus">
 												  <label><input type="radio" name="bank" checked="checked" value="0">Payment from Bank Mandiri</label>
@@ -143,28 +143,30 @@
 								<div class='blog-description'>
 									<h5 class="text-warning"><b>Your Order ID is <span id="orderNumber">#</span></b></h5>
 									<h5><i>Please put this Order ID in the message reference when making your transfer.</i></h5>
-									<div class="col-md-6 syn-clear">
-										<h3>SHIPPING ADDRESS</h3>
-										<h5 class="syn-plus"><b class="sessionName" >&nbsp;</b></h5>
-										<h5><i class="sessionAddress">&nbsp;</i></h4>
-										<h5><i class="sessionCity">&nbsp;</i></h5>
-										<h5><i class="sessionCountry">&nbsp;</i></h5>
-										<h5><i class="sessionPhone">&nbsp;</i></h5>
-									</div>
-									<div class="col-md-6 syn-clear">
-										<h3>BILLING ADDRESS</h3>
-										<h5 class="syn-plus"><b class="sessionName" >&nbsp;</b></h5>
-										<h5><i class="sessionAddress">&nbsp;</i></h4>
-										<h5><i class="sessionCity">&nbsp;</i></h5>
-										<h5><i class="sessionCountry">&nbsp;</i></h5>
-										<h5><i class="sessionPhone">&nbsp;</i></h5>
+									<div class="row">
+										<div class="col-md-6">
+											<h3>SHIPPING ADDRESS</h3>
+											<h5 class="syn-plus"><b class="sessionName" >&nbsp;</b></h5>
+											<h5><i class="sessionAddress">&nbsp;</i></h4>
+											<h5><i class="sessionCity">&nbsp;</i></h5>
+											<h5><i class="sessionCountry">&nbsp;</i></h5>
+											<h5><i class="sessionPhone">&nbsp;</i></h5>
+										</div>
+										<div class="col-md-6">
+											<h3>BILLING ADDRESS</h3>
+											<h5 class="syn-plus"><b class="sessionName" >&nbsp;</b></h5>
+											<h5><i class="sessionAddress">&nbsp;</i></h4>
+											<h5><i class="sessionCity">&nbsp;</i></h5>
+											<h5><i class="sessionCountry">&nbsp;</i></h5>
+											<h5><i class="sessionPhone">&nbsp;</i></h5>
+										</div>
 									</div>
 								</div>
 								<div class='blog-description table-frame'>
 									<div id="orderItems" class="col-md-12 basic-table italic syn-clear syn-plus clear">
 										<ul class="header">
-											<li class="col-md-3">Product</li>
-											<li class="col-md-3">SKU</li>
+											<li class="col-md-4">Product</li>
+											<li class="col-md-2">SKU</li>
 											<li class="col-md-2 text-center">Price</li>
 											<li class="col-md-2 text-center">Quantity</li>
 											<li class="col-md-2 text-center">Total</li>
@@ -183,8 +185,8 @@
 									<div id="transferInfo">
 										<h5 class="syn-plus">Please transfer your order payment to:</h5>
 										<h5>PT. Tulisan Susunan Tinta</h5>
-										<h5>Bank Mandiri</h5>
-										<h5><b>Acc. No. 126-00-0618835-2</b></h5>
+										<h5 class="bankName">Bank Mandiri</h5>
+										<h5><b class="accNumb">Acc. No. 126-00-0618835-2</b></h5>
 										<h5>(Rupiah account)</h5>
 										<hr/>
 										<h5><i>After making your transfer, click this button to confirm.</i></h5>
@@ -349,11 +351,11 @@
 
 					total = parseInt(items[loop].price) * parseInt(qty);
 					grandTotal = grandTotal + total;
-
 					html = html +
 					'<ul>' +
+						'<li class="col-xs-1"><img src="../assets/products/small/' + items[loop].frontPicture + '" class="medium-image" /></li>' +
 						'<li class="col-xs-3">' + items[loop].name + '</li>' +
-						'<li class="col-xs-3">' + items[loop].sku + '</li>' +
+						'<li class="col-xs-2">' + items[loop].sku + '</li>' +
 						'<li class="col-xs-2 text-right">' + currencyFormat(items[loop].price) + '</li>' +
 						'<li class="col-xs-2 text-center">' + qty + '</li>' +
 						'<li class="col-xs-2 text-right">' + currencyFormat(String(total)) + '</li>' +
@@ -378,8 +380,8 @@
 				var system = getData('support', 'systemFetch');
 				    system = system.feedData;
 
-				$('#bankName').html(system.bank);
-				$('#accNumb').html(system.acc_number);
+				$('.bankName').html(system.bank);
+				$('.accNumb').html(system.acc_number);
 			}
 
 			function keepAlternative(){

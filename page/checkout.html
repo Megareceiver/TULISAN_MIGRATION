@@ -23,7 +23,7 @@
 					<div class="tab-header in-style">
 						<ul>
 							<li class="fontserif"><span class="tab-button active" t-target="#1" id="shippingTab">Shipping</span></li>
-							<li class="fontserif"><span class="tab-button" t-target="#2" id="paymentTab">Payment</span></li>
+							<!-- <li class="fontserif"><span class="tab-button" t-target="#2" id="paymentTab">Payment</span></li> -->
 							<li class="fontserif"><span class="tab-button" t-target-disabled="#0">Place order</span></li>
 							<li style="display:none"><span class="tab-button" t-target="#3" id="placeTab">Place order</span></li>
 						</ul>
@@ -38,7 +38,8 @@
 									<h5><b class="sessionAddress">&nbsp;</b></h4>
 									<h5><b class="sessionCity">&nbsp;</b></h5>
 									<h5><b class="sessionPhone">&nbsp;</b></h5>
-									<button type="button" class="btn btn-warning syn-plus" t-target="#2">Ship to this address</button>
+									<!-- <button type="button" class="btn btn-warning syn-plus" t-target="#2">Ship to this address</button> -->
+									<button type="button" class="btn btn-warning syn-plus" id="placeButton">Ship to this address</button>
 								</div>
 								<hr/>
 								<div class="col-md-8 syn-clear">
@@ -92,8 +93,8 @@
 											<input type="hidden" id="grandTotalAmount" />
 											<div class="form-group select-box">
 												<select class="form-control" id="paymentMethod">
-													<option value="BANK TRANSFER">BANK TRANSFER</option>
 													<option value="PAYMENT GATEWAY">PAYMENT GATEWAY</option>
+													<option value="BANK TRANSFER">BANK TRANSFER</option>
 												</select>
 											</div>
 											<div id="bankTransfer" class="col-md-12 syn-clear">
@@ -129,7 +130,7 @@
 											</div>
 											<div id="midtrans" class="col-md-12 syn-clear">
 											</div>
-											<div class="col-md-6 syn-clear"><button type="button" class="btn btn-warning syn-plus form-control" id="placeButton">Next</button></div>
+											<!-- <div class="col-md-6 syn-clear"><button type="button" class="btn btn-warning syn-plus form-control" id="placeButton">Next</button></div> -->
 										</form>
 									</div>
 								</div>
@@ -266,7 +267,7 @@
 				var countries = p_getData('operation', 'countryOption');
 						countries = countries.feedData;
 				$("#country").html(listOption(countries));
-				$("#alternativeShipping").unbind().on("click", function(){ keepAlternative(); });
+				$("#alternativeShipping").unbind().on("click", function(){ keepAlternative(); placeOrder(); });
 
 				if(r_getCookie('checkOutTab') == "placeTab") {
 					$("[t-target]").unbind();
@@ -442,6 +443,7 @@
 
 					keepTabPosition("#3");
 					tabWizardChange($("#placeTab"));
+					location.reload();
 				}
 			}
 
@@ -503,7 +505,6 @@
 					async: false,
 					data: param,
 					success: function(result){
-						console.log(result);
 
 						if(result.feedStatus == "success") {
 							res = true;

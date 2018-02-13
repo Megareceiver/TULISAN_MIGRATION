@@ -320,7 +320,7 @@ function footer(){
 				'<p>' +
 					'<b>KEEP UP TO DATE</b> <br>' +
 					'Stay up to date with all the latest news and <br>' +
-					'specil offers from Tulisan' +
+					'special offers from Tulisan' +
 				'</p>' +
 			'</div>' +
 			'<div class="col-md-6 socmed-box">';

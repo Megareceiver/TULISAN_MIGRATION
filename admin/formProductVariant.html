@@ -136,8 +136,10 @@
 					'</div>'+
 					'<div class="form-group text-center">'+
 						'<img id="frontPicture" name-tag="frontPicture" class="big-image" src="../assets/default/product.gif">'+
+						'<button class="btn btn-warning form-control remove_btn" remove-name="frontPicture_removed" preview-name="frontPicture" type="button">Remove</button>'+
 					'</div>'+
 					'<div class="form-group">'+
+						'<input name="frontPicture_removed" type="hidden" />' +
 						'<input name="frontPicture" preview-id="frontPicture" accept="image/x-png,image/gif,image/jpeg" type="file" class="file form-control" data-preview-file-type="text">'+
 					'</div>' +
 			 '</div>' +
@@ -147,8 +149,10 @@
  					'</div>'+
  					'<div class="form-group text-center">'+
  						'<img id="backPicture" name-tag="backPicture" class="big-image" src="../assets/default/product.gif">'+
+						'<button class="btn btn-warning form-control remove_btn" remove-name="backPicture_removed" preview-name="backPicture" type="button">Remove</button>'+
  					'</div>'+
  					'<div class="form-group">'+
+						'<input name="backPicture_removed" type="hidden" />' +
  						'<input name="backPicture" preview-id="backPicture" accept="image/x-png,image/gif,image/jpeg" type="file" class="file form-control" data-preview-file-type="text">'+
  					'</div>' +
  			 '</div>' +
@@ -158,8 +162,10 @@
  					'</div>'+
  					'<div class="form-group text-center">'+
  						'<img id="topPicture" name-tag="topPicture" class="big-image" src="../assets/default/product.gif">'+
+						'<button class="btn btn-warning form-control remove_btn" remove-name="topPicture_removed" preview-name="topPicture" type="button">Remove</button>'+
  					'</div>'+
  					'<div class="form-group">'+
+						'<input name="topPicture_removed" type="hidden" />' +
  						'<input name="topPicture" preview-id="topPicture" accept="image/x-png,image/gif,image/jpeg" type="file" class="file form-control" data-preview-file-type="text">'+
  					'</div>' +
  			 '</div>' +
@@ -169,8 +175,10 @@
  					'</div>'+
  					'<div class="form-group text-center">'+
  						'<img id="bottomPicture" name-tag="bottomPicture" class="big-image" src="../assets/default/product.gif">'+
+						'<button class="btn btn-warning form-control remove_btn" remove-name="bottomPicture_removed" preview-name="bottomPicture" type="button">Remove</button>'+
  					'</div>'+
  					'<div class="form-group">'+
+						'<input name="bottomPicture_removed" type="hidden" />' +
  						'<input name="bottomPicture" preview-id="bottomPicture" accept="image/x-png,image/gif,image/jpeg" type="file" class="file form-control" data-preview-file-type="text">'+
  					'</div>' +
  			 '</div>' +
@@ -181,8 +189,10 @@
  					'</div>'+
  					'<div class="form-group text-center">'+
  						'<img id="leftPicture" name-tag="leftPicture" class="big-image" src="../assets/default/product.gif">'+
+						'<button class="btn btn-warning form-control remove_btn" remove-name="leftPicture_removed" preview-name="leftPicture" type="button">Remove</button>'+
  					'</div>'+
  					'<div class="form-group">'+
+						'<input name="leftPicture_removed" type="hidden" />' +
  						'<input name="leftPicture" preview-id="leftPicture" accept="image/x-png,image/gif,image/jpeg" type="file" class="file form-control" data-preview-file-type="text">'+
  					'</div>' +
  			 '</div>' +
@@ -192,8 +202,10 @@
  					'</div>'+
  					'<div class="form-group text-center">'+
  						'<img id="rightPicture" name-tag="rightPicture" class="big-image" src="../assets/default/product.gif">'+
+						'<button class="btn btn-warning form-control remove_btn" remove-name="rightPicture_removed" preview-name="rightPicture" type="button">Remove</button>'+
  					'</div>'+
  					'<div class="form-group">'+
+					'<input name="rightPicture_removed" type="hidden" />' +
  						'<input name="rightPicture" preview-id="rightPicture" accept="image/x-png,image/gif,image/jpeg" type="file" class="file form-control" data-preview-file-type="text">'+
  					'</div>' +
  			 '</div>';
@@ -215,6 +227,13 @@
 				numberOnlyActivator('[name="qty"]');
 				currencyFormatActivator('[name="price"]');
 				imagePreviewActivator('[preview-id]');
+
+				$(".remove_btn").unbind().on("click", function(){
+				 x = $(this).attr("remove-name");
+				 y = $(this).attr("preview-name");
+				 $("[name=" + x + "]").val("yes");
+				 $("[name-tag=" + y + "]").attr("src", "../assets/default/product.gif");
+			 });
 
 				var oData = p_getData('operation', 'colorOption');
 				$("[name=colorId]").append(dataToOptionHtml(oData.feedData));

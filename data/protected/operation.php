@@ -577,6 +577,31 @@
 						$values[$key] = $key." = '".str_replace(',','',$value)."'";
 					}
 
+					if(isset($post['frontPicture_removed']) && $post['frontPicture_removed'] == "yes"){
+						$values['frontPicture'] = "frontPicture = ''";
+					}
+
+					if(isset($post['backPicture_removed']) && $post['backPicture_removed'] == "yes"){
+						$values['backPicture'] = "backPicture = ''";
+					}
+
+					if(isset($post['topPicture_removed']) && $post['topPicture_removed'] == "yes"){
+						$values['topPicture'] = "topPicture = ''";
+					}
+
+					if(isset($post['rightPicture_removed']) && $post['rightPicture_removed'] == "yes"){
+						$values['rightPicture'] = "rightPicture = ''";
+					}
+
+					if(isset($post['bottomPicture_removed']) && $post['bottomPicture_removed'] == "yes"){
+						$values['bottomPicture'] = "bottomPicture = ''";
+					}
+
+					if(isset($post['leftPicture_removed']) && $post['leftPicture_removed'] == "yes"){
+						$values['leftPicture'] = "leftPicture = ''";
+					}
+
+
 					if(isset($post['dimension'])) {
 						$values['dimension'] = "dimension = '".htmlspecialchars($post['dimension'])."'";
 					}

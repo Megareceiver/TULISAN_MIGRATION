@@ -265,6 +265,7 @@ function footer(){
 		]},
 		{ "head": "LEGAL", "head_link": "#", "body": [
 			{ "caption": "Store / Privacy Policy", 	"link": base_url + "/page/privacyPolicy.html" },
+			{ "caption": "Refund Policy", 	"link": base_url + "/page/refundPolicy.html" },
 		]},
 	];
 

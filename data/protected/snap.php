@@ -41,10 +41,10 @@
 			$resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array());
 
 			//Set Your server key
-			Veritrans_Config::$serverKey = "SB-Mid-server-l8u18wZuwEFkIVaJvCbkV-RI";
+			Veritrans_Config::$serverKey = "Mid-server-ejzVupQ8DqvYyjus54wgcnuc";
 
 			// Uncomment for production environment
-			// Veritrans_Config::$isProduction = true;
+			Veritrans_Config::$isProduction = true;
 
 			Veritrans_Config::$isSanitized = true;
 			Veritrans_Config::$is3ds = true;

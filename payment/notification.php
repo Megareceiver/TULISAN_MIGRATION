@@ -17,8 +17,8 @@
   require_once('../data/payment/Veritrans/Sanitizer.php');
 
   //modul start
-  Veritrans_Config::$isProduction = false;
-  Veritrans_Config::$serverKey = 'SB-Mid-server-l8u18wZuwEFkIVaJvCbkV-RI';
+  Veritrans_Config::$isProduction = true;
+  Veritrans_Config::$serverKey = 'Mid-server-ejzVupQ8DqvYyjus54wgcnuc';
   $notif = new Veritrans_Notification();
   $notification = new notification();
   print_r($notification->execPayment($notif));

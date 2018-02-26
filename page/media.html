@@ -8,7 +8,7 @@
 		<link rel="icon" type="image/x-icon" href="../assets/PICS/TL_Favicon.png">
 		<!-- Site Properities -->
 		<title>Tulisan</title>
-	  
+
 		<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="../assets/css/font-awesome.min.css" rel="stylesheet">
 		<link href="../assets/css/syncard-inject.css" rel="stylesheet">
@@ -19,7 +19,7 @@
 			<header class="parent"></header>
 
 			<main class="parent clear yellow-flex"></main>
-	
+
 			<footer class="parent clear"></footer>
 		</div>
 
@@ -27,8 +27,9 @@
 		<script type="text/javascript" src="../assets/js/jquery-3.2.1.min.js"></script>
 		<script type="text/javascript" src="../assets/js/jquery-ui-1.10.0.custom.min.js"></script>
 		<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="../assets/js/imagesloaded.pkgd.min.js"></script>	
-		<script type="text/javascript" src="../assets/js/partial.js"></script>	
+		<script type="text/javascript" src="../assets/js/imagesloaded.pkgd.min.js"></script>
+		<script type="text/javascript" src="../assets/js/partial.js"></script>
+		<script type="text/javascript" src="../assets/js/public.js"></script>
 
 		<!-- page script -->
 		<script type="text/javascript">
@@ -36,35 +37,66 @@
 
 			function loadPrivacy(){
 				var html = '';
-				
+
+				var data = p_getData('operation', 'mediaGroup');
+						data = data.feedData;
+
+				dumb	= { 'media': [],  'catalogs': [], 'images': []};
+				for(var loop=0; loop<data.length; loop++){
+					var ext1 = data[loop].file_1;
+					var ext2 = data[loop].file_2;
+
+					if(ext1 != "") ext1 = (ext1.substr(ext1.lastIndexOf('.') + 1)).toUpperCase();
+					if(ext2 != "") ext2 = (ext2.substr(ext2.lastIndexOf('.') + 1)).toUpperCase();
+
+					if(data[loop].type == "0") dumb['media'].push({ "title": data[loop].title, "file_1": data[loop].file_1, "file_2": data[loop].file_2, 'extension': ext1, 'extension2': ext2 });
+					else if(data[loop].type == "0") dumb['catalogs'].push({ "title": data[loop].title, "file_1": data[loop].file_1, "file_2": data[loop].file_2, 'extension': ext1, 'extension2': ext2 });
+					else if(data[loop].type == "0") dumb['images'].push({ "title": data[loop].title, "file_1": data[loop].file_1, "file_2": data[loop].file_2, 'extension': ext1, 'extension2': ext2 });
+				}
+
+				console.log(dumb);
+
 				html = '<div class="row"><div class="col-md-8 col-md-offset-2">';
 				html = html +
 					'<div class="media">'+
 						'<h2>Download</h2>'+
-						'<p>Just click to download </br> We provide our company logo for media resource.</p>'+
+						'<p>Just click to download </br> We provide our company logo for media resource.</p>';
+
+				html = html +
 						'<div><h3>MEDIA DOWNLOAD</h3></div>'+
 						'<div><p><span>Logo:</span><span><a href="#">ESP</a> | <a href="#">PNG</a></span></p></div>'+
 						'<div><p><span>Company Profile:</span><span><a href="#">PDF</a></span></p></div>'+
 						'<div><p><span>Melissa Sunjaya Biography:</span><span><a href="#">PDF</a></span></p></div>'+
-						'<div><p>Pick your images that you like or need in our gallery and just click download.</p></div>'+
-						
-						'<div class=plus><p><span>MELISSA\'S PROFILEVIEW</span><span><a href="#">ZIP </a></span><span><a href="#">FILE</a></span></p></div>'+
-						'<div class=plus><p><span>A LABOR OF LOVEVIEW</span><span><a href="#">ZIP </a></span><span><a href="#">FILE</a></span></p></div>'+
-						'<div class=plus><p><span>CELOSIA CRISTATAVIEW</span><span><a href="#">ZIP </a></span><span><a href="#">FILE</a></span></p></div>'+
-						'<div class=plus><p><span>MARIGOLDVIEW</span><span><a href="#">ZIP </a></span><span><a href="#">FILE</a></span></p></div>'+
-						'<div class=plus><p><span>TULISAN STOREVIEW</span><span><a href="#">ZIP </a></span><span><a href="#">FILE</a></span></p></div>'+
+						'<div><p>Pick your images that you like or need in our gallery and just click download.</p></div>';
 
-						'<div><h3>CATALOGS DOWNLOAD:</h3><div>'+
-						'<div><p>Our latest catalog,</p></div>'+
-						'<div><p><span>Luca</span><span><a href="#">ZIP</a></span></p></div>'+
-						'<div><p><span>Plume&Wonder</span><span><a href="#">ZIP</a></span></p></div>'+
-						'<div><p><span>Bio Fantasy</span><span><a href="#">ZIP</a></span></p></div>'+
-						'<div class="plus"><p><a href="#">Catalog archived download</a></p></div>'+
+				for(loop=0;loop<dumb['media'].length;loop++){
+					html = html + '<div class=plus><p><span>' + dumb['media'][loop].title + '</span><span><a href="../assets/media/' + dumb['media'][loop].file_1 + '" target="_blank">' + dumb['media'][loop].extension + ' </a></span><span><a href="../assets/media/' + dumb['media'][loop].file_2 + '" target="_blank">' + dumb['media'][loop].extension2 + '</a></span></p></div>';
+				}
 
-						'<div class="plus"><h3>IMAGES DOWNLOAD:</h3></div>'+
-						'<div><p><span>Bio Fantasy</span><span><a href="#">ZIP</a></span></p></div>'+
-						'<div class="plus"><p><a href="#">Catalog archived download</a></p></div>'+
-					'</div>';
+				if(dumb['catalogs'].length > 0){
+					html = html +
+							'<div><h3>CATALOGS DOWNLOAD:</h3><div>'+
+							'<div><p>Our latest catalog,</p></div>';
+
+					for(loop=0;loop<dumb['catalogs'].length;loop++){
+						html = html + '<div><p><span>' + dumb['catalogs'][loop].title + '</span><span><a href="../assets/media/' + dumb['catalogs'][loop].file_1 + '" target="_blank">' + dumb['catalogs'][loop].extension + ' </a></span><span><a href="../assets/media/' + dumb['catalogs'][loop].file_2 + '" target="_blank">' + dumb['catalogs'][loop].extension2 + '</a></span></p></div>';
+					}
+
+					html = html + '<!--div class="plus"><p><a href="#">Catalog archived download</a></p></div-->';
+				}
+
+				if(dumb['images'].length > 0){
+					html = html +
+							'<div class="plus"><h3>IMAGES DOWNLOAD:</h3></div>';
+
+					for(loop=0;loop<dumb['images'].length;loop++){
+						html = html + '<div><p><span>' + dumb['images'][loop].title + '</span><span><a href="../assets/media/' + dumb['images'][loop].file_1 + '" target="_blank">' + dumb['images'][loop].extension + ' </a></span><span><a href="../assets/media/' + dumb['images'][loop].file_2 + '" target="_blank">' + dumb['images'][loop].extension2 + '</a></span></p></div>';
+					}
+
+					html = html +
+							'<!--div class="plus"><p><a href="#">Catalog archived download</a></p></div-->'+
+						'</div>';
+				}
 
 				html = html + "</div><div class='clearfix'></div></div>";
 

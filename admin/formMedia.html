@@ -40,66 +40,80 @@
 				var html = '';
 
 				html = html +
-				'<form id="syncrom" f-group="operation" f-target="cms_video" enctype="multipart/form-data">'+
+				'<form id="syncrom" f-group="operation" f-target="media" enctype="multipart/form-data">'+
 					'<div class="input-frame col-md-6">'+
-						'<h3><b>Video</b></h3>'+
+						'<h3>Media</h3>'+
 						'<div class="form-group">'+
 							'<label>Title</label>'+
 							'<input name="title" type="text" class="form-control">'+
 							'<input name="idData" type="hidden">'+
 						'</div>'+
-						'<div class="form-group">'+
-							'<label>Description</label>'+
-							'<textarea name="description" class="form-control" rows="5" id="editor"></textarea>'+
+					'</div>'+
+					'<div class="input-frame col-md-6">'+
+						'<h3>&nbsp;</h3>'+
+						'<div class="form-group select-box">' +
+							'<label>Section</label>' +
+							'<select name="type" class="form-control">' +
+								'<option value="0">Media</option>' +
+								'<option value="1">Catalogs</option>' +
+								'<option value="2">Images</option>' +
+							'</select>' +
 						'</div>'+
-						'<div class="form-group">'+
-							'<label>Video</label>'+
-						'</div>'+
-						// '<div class="form-group">'+
-						// 	'<p><i name="fileName">&nbsp;</i></p>'+
-						// '</div>' +
-						// '<div class="form-group">'+
-						// 	'<input name="video" id="input-id" type="file" class="file form-control" data-preview-file-type="text">'+
-						// '</div>' +
-						'<div class="form-group">'+
-							'<input name="fileName" type="text" class="file form-control">'+
-						'</div>' +
-						'<div class="clearfix"></div>'+
-						'<div class="btn-group">'+
-							'<button class="btn btn-warning" type="submit">Create</button>'+
-							'<a href="videos.html" class="btn btn-warning" type="reset">Cancel</a>'+
-						'</div>'+
+					'</div>'+
+					'<div class="clearfix"></div><hr/>';
+
+				html = html +
+				'<div class="clearfix"></div>'+
+				'<hr/>' +
+				'<div class="input-frame col-md-6">'+
+					'<h3>&nbsp;</h3>'+
+					'<div class="form-group">'+
+						'<label>File 1</label>'+
+						'<input name="file_1" type="file" class="form-control">'+
+						'<input name="filename_1" name-tag="file_1" type="text" class="form-control" value="No file" disabled>'+
+					'</div>'+
+				'</div>' +
+				'<div class="input-frame col-md-6">'+
+					'<h3>&nbsp;</h3>'+
+					'<div class="form-group">'+
+						'<label>File 2 (optional)</label>'+
+						'<input name="file_2" type="file" class="form-control">'+
+						'<input name="filename_2" name-tag="file_2" type="text" class="form-control" value="No file" disabled>'+
+					'</div>'+
+				'</div>' +
+				'<div class="clearfix"></div>';
+
+				html = html +
+				'<div class="clearfix"></div>'+
+				'<hr/>' +
+				'<div class="input-frame col-md-6">'+
+					'<div class="btn-group">'+
+						'<button class="btn btn-warning" type="sumbit">Create</button>'+
+						'<a href="media.html" class="btn btn-warning" type="reset">Cancel</a>'+
+					'</div>'+
+				'</div>';
+
+				html = html +
 					'</div>' +
 				'</form>';
 
 				$('main.parent-admin .main-content').append(html);
 
-
 				/* data generator */
 				if(getParam('q') != "" && getParam('q') != null) dataGenerator(getParam('q'));
-				else p_formHandler('syncrom', 'addData', 'videos.html');
-
-				// //textarea editor
-				new nicEditor({iconsPath : '../assets/PICS/nicEditorIcons.gif'}).panelInstance('editor');
-
-				$(".nicEdit-main").on("blur",function(){
-					$("[name='description']").val($(this).html());
-				});
+				else p_formHandler('syncrom', 'addData', 'media.html');
 			}
 
 			function dataGenerator(idData){
-				var xData = p_getData('operation', 'cms_videoFetch', '', "idData=" + idData);
+				var xData = p_getData('operation', 'mediaFetch', '', "idData=" + idData);
 					xData = xData.feedData;
 
 				for (var key in xData) {
-					if(key != "description"){
 						if($("[name='" + key + "']").attr('type') != "file") $("[name=" + key + "]").val(xData[key]);
-					}else{
-						if(key == "description") $("[name=" + key + "]").val(Base64.decode(xData[key]));
-					}
+						else $("[name-tag='" + key +"']").val(xData[key]);
 				}
 
-				p_formHandler('syncrom', 'updateData', 'videos.html');
+				p_formHandler('syncrom', 'updateData', 'media.html');
 			}
 		</script>
 	</body>

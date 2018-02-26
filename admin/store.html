@@ -107,6 +107,7 @@
 						        '<th width="40%">Name</th>'+
 						        '<th>Address</th>'+
 						        '<th>Open hours</th>'+
+						        '<th>Category</th>'+
 					    	'</tr>'+
 					    '</thead>'+
 					    '<tbody></tbody>'+
@@ -212,6 +213,11 @@
 			function dataGenerator(data){
 				var html = "";
 				for(var loop =0; loop<data.length; loop++){
+						type = data[loop].type;
+
+						if(type == "0") type = "Store";
+						else if(type == "1") type = "Reseller";
+
 		    		html = html +
 		    		'<tr>'+
 		    			'<td><input type="checkbox" name="customerSelect" value="'+data[loop].idData+'" id="selectRecord' + loop + '"><label for="selectRecord' + loop + '"></label></td>'+
@@ -219,6 +225,7 @@
 							'<td>'+ data[loop].name +'</td>'+
 		    			'<td>'+ data[loop].address +'</td>'+
 		    			'<td>'+ data[loop].openHours +'</td>'+
+		    			'<td>'+ type +'</td>'+
 		    		'</tr>';
 		    	}
 

@@ -40,6 +40,7 @@
 
 				var tabHeader  = [
 					{"groupId": "store", "group": "Store" , "groupStyle": "italic", "state": "active"},
+					{"groupId": "reseller", "group": "Reseller" , "groupStyle": "italic", "state": "active"},
 				];
 
 				var tabContent = [
@@ -55,7 +56,12 @@
 											'to imagine how Tulisan products can be integrated into their own homes.' +
 											'\r\n\r\n'
 										],
-					}},
+					}},{ "groupId": "reseller", "content" : {
+						"title" : "Reseller",
+						"picture" : "",
+						"description" : ['_'],
+					}
+				},
 				];
 
 				html = '<div id="about-page" class="col-md-8 col-md-offset-2">';
@@ -88,7 +94,7 @@
 					for(var loopY=0; loopY<tabContent[loop].content.description.length; loopY++){
 						tabContent[loop].content.description[loopY] = tabContent[loop].content.description[loopY].replace(/(?:\r\n|\r|\n)/g, '<br />');
 						html = html +
-						"<div class='blog-description' id='descBox'>"+
+						"<div class='blog-description' id='" + tabHeader[loop].groupId + "_box'>"+
 							tabContent[loop].content.description[loopY] +
 						"</div>";
 					}
@@ -107,17 +113,31 @@
 				var data = p_getData('operation', 'store');
 					  data = data.feedData;
 				var dumb = "";
+				var dumb2 = "";
 				for(var loop=0;loop<data.length;loop++){
-					dumb = dumb +
-					'<img class="big-image" src="../assets/store/' + data[loop].picture + '"/>' +
-					'<p class="margin-top"><b>' + data[loop].name + '</b></p>' +
-					'<p>' + data[loop].address + '</p>' +
-					'<p>' + data[loop].phone + '</p>' +
-					'<p>Operation hours: ' + data[loop].openHours + '</p>' +
-					'<p class="margin-top">&nbsp;</p>';
+					if(data[loop].type == "0"){
+						dumb = dumb +
+						'<img class="big-image" src="../assets/store/' + data[loop].picture + '"/>' +
+						'<p class="margin-top"><b>' + data[loop].name + '</b></p>' +
+						'<p>' + data[loop].address + '</p>' +
+						'<p>' + data[loop].phone + '</p>' +
+						'<p>Operation hours: ' + data[loop].openHours + '</p>' +
+						'<p class="margin-top">&nbsp;</p>';
+					}
+
+					if(data[loop].type == "1"){
+						dumb2 = dumb2 +
+						'<img class="big-image" src="../assets/store/' + data[loop].picture + '"/>' +
+						'<p class="margin-top"><b>' + data[loop].name + '</b></p>' +
+						'<p>' + data[loop].address + '</p>' +
+						'<p>' + data[loop].phone + '</p>' +
+						'<p>Operation hours: ' + data[loop].openHours + '</p>' +
+						'<p class="margin-top">&nbsp;</p>';
+					}
 				}
 
-				$("#descBox").append(dumb);
+				$("#store_box").append(dumb);
+				$("#reseller_box").html(dumb2);
 
 				$(".tab-header .tab-button").unbind().on("click", function(){
 					tabChange($(this));

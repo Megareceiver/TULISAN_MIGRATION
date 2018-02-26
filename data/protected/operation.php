@@ -89,17 +89,21 @@
 				case "artWorkOption" 		: $resultList = $this->fetchAllRecord('cms_story_artwork', array("name as caption", "idData as value"), $post['keyword'], "ORDER BY name ASC"); break;
 				case "artWorkFetch" 		: $resultList = $this->fetchSingleRequest('cms_story_artwork', array("name", "idData", "idStory"), $post['keyword']); break;
 
-				case "cms_video" 		: $resultList = $this->fetchAllRequest('cms_video', array("idData","title", "SUBSTRING(description, 1, 300) as description", "fileName", "fileSize", "createdBy as publishedBy", "createdDate as publishedTime"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
+				case "cms_video" 		: $resultList = $this->fetchAllRequest('cms_video', array("idData","title", "description", "fileName", "fileSize", "createdBy as publishedBy", "createdDate as publishedTime"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
 				case "cms_videoFetch" 	: $resultList = $this->fetchSingleRequest('cms_video', array("idData","title", "description", "fileName", "createdDate as publish"), $post['keyword']); break;
 
-				case "store" 			: $resultList = $this->fetchAllRequest('store s LEFT JOIN countries y ON s.country = y.country_code', array("s.idData", "s.name", "s.picture","CONCAT(s.address, '</br>', s.city, ' ', s.zipCode, ', ', country_name) as address", "phone", "openHours"), $post['keyword'], "ORDER BY idData ASC", $post['page']); break;
-				case "storeFetch"			: $resultList = $this->fetchSingleRequest('store', array("idData", "name", "picture","address", "city", "zipCode", "country", "phone", "openHours"), $post['keyword']); break;
+				case "store" 			: $resultList = $this->fetchAllRequest('store s LEFT JOIN countries y ON s.country = y.country_code', array("s.idData", "s.name", "s.picture", "s.type","CONCAT(s.address, '</br>', s.city, ' ', s.zipCode, ', ', country_name) as address", "phone", "openHours"), $post['keyword'], "ORDER BY idData ASC", $post['page']); break;
+				case "storeFetch"			: $resultList = $this->fetchSingleRequest('store', array("idData", "name", "picture","address", "city", "zipCode", "country", "phone", "openHours", "s.type"), $post['keyword']); break;
 
 				case "user" 			: $resultList = $this->fetchAllRequest('users u LEFT JOIN departments d ON u.departmentId = d.idData', array("u.idData","u.name", "u.username", "u.type", "IFNULL(d.name,'') as department", "u.picture"), "u.idData <> '0'", "ORDER BY u.idData DESC", $post['page']); break;
 				case "userFetch" 		: $resultList = $this->fetchSingleRequest('users', array("idData","name", "username", "type", "departmentId", "picture"), $post['keyword']); break;
 
 				case "vendor" 			: $resultList = $this->fetchAllRequest('vendors', array("idData", "name", "company", "phone", "email", "CONCAT(address, '</br>', city, ' ', zipCode, '</br>', country) as address"), $post['keyword'], "ORDER BY name ASC", $post['page']); break;
 				case "vendorFetch" 		: $resultList = $this->fetchSingleRequest('vendors', array("idData", "name", "company", "phone", "email", "address", "city", "zipCode", "country"), $post['keyword'], "ORDER BY name ASC"); break;
+
+				case "media" 				: $resultList = $this->fetchAllRequest('media', array("idData","title", "type", "file_1", "file_2"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
+				case "mediaGroup" 	: $resultList = $this->fetchAllRequest('media', array("idData","title", "type", "file_1", "file_2"), $post['keyword'], "ORDER BY type ASC, idData DESC", $post['page']); break;
+				case "mediaFetch" 	: $resultList = $this->fetchSingleRequest('media', array("idData", "title", "type", "file_1", "file_2"), $post['keyword']); break;
 
 				default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
 			}
@@ -148,6 +152,7 @@
 				case "artWork" 		: $resultList = $this->deleteById('cms_story_artwork', $post['id']); break;
 				case "cms_video" 	: $resultList = $this->deleteById('cms_video', $post['id']); break;
 				case "store" 	: $resultList = $this->deleteById('store', $post['id']); break;
+				case "media" 	: $resultList = $this->deleteById('media', $post['id']); break;
 
 				default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
 			}
@@ -409,7 +414,7 @@
 				break;
 
 				case "store"  :
-					$fields = array("name","address", "city", "country", "zipCode", "phone", "openHours");
+					$fields = array("name","address", "city", "country", "zipCode", "phone", "openHours", "type");
 					$values = array();
 					foreach ($fields as $key) {
 						$value = (isset($post[$key]) && $post[$key] != "") ? str_replace("'", "\'", $post[$key]) : "";
@@ -514,6 +519,29 @@
 					}
 
 					$resultList = $this->insert('vendors', $fields, $values);
+				break;
+
+				case "media"  :
+					$fields = array("title", "type");
+					$values = array();
+					foreach ($fields as $key) {
+						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
+						array_push($values, $value);
+					}
+
+					$resultList = $this->insert('media', $fields, $values);
+
+					if($resultList["feedStatus"] == "success") {
+						if(isset($_FILES["file_1"])){
+							$upload = $this->uploadFile($_FILES["file_1"], "media", "media", "file_1", $resultList['feedId'], $post['title']."1");
+							$resultList["feedUploadFile1"] = $upload['feedMessage'];
+						}
+
+						if(isset($_FILES["file_2"])){
+							$upload = $this->uploadFile($_FILES["file_2"], "media", "media", "file_2", $resultList['feedId'], $post['title']."2");
+							$resultList["feedUploadFile2"] = $upload['feedMessage'];
+						}
+					}
 				break;
 
 				default	   		: $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
@@ -816,7 +844,7 @@
 				break;
 
 				case "store"  :
-					$fields = array("name","address", "city", "country", "zipCode", "phone", "openHours");
+					$fields = array("name","address", "city", "country", "zipCode", "phone", "openHours", "store", "type");
 					$values = array();
 					foreach ($fields as $key) {
 						$value = (isset($post[$key]) && $post[$key] != "") ? str_replace("'", "\'", $post[$key]) : "";
@@ -949,6 +977,31 @@
 				case "keepVariant"  :
 					$values = array("status = '0'");
 					$resultList = $this->updateMultiData('products_variant', $values, $post['pId']);
+				break;
+
+				case "media"  :
+					$fields = array("title", "type");
+					$values = array();
+					foreach ($fields as $key) {
+						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
+						$values[$key] = $key." = '".str_replace(',','',$value)."'";
+					}
+
+					$resultList = $this->update('media', $values, $post['idData']);
+
+					if($resultList["feedStatus"] == "success" && isset($post['idData']) && $post['idData']!="") {
+						if(isset($_FILES["file_1"])){
+							$upload = $this->uploadFile($_FILES["file_1"], "media", "media", "file_1", $post['idData'], $post['title']."1");
+							$resultList["feedUploadFile"] = $upload['feedMessage'];
+						}
+
+						if(isset($_FILES["file_2"])){
+							$upload = $this->uploadFile($_FILES["file_2"], "media", "media", "file_2", $post['idData'], $post['title']."2");
+							$resultList["feedUploadFile"] = $upload['feedMessage'];
+						}
+
+					}
+
 				break;
 
 				default	   		: $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
@@ -1195,7 +1248,7 @@
 
 
 		// DELETE DATA
-		public function deleteById($table, $conditions, $image){
+		public function deleteById($table, $conditions, $image = null){
 			/* initial condition */
 			$resultList = array();
 			$feedStatus	= "failed";
@@ -1784,7 +1837,7 @@
 
 			}
 
-			$resultList = array( "feedStatus" => $feedStatus, "feedType" => $feedType, "feedMessage" => $feedMessage, "feedData" => $feedData);
+			$resultList = array( "feedStatus" => $feedStatus, "feedType" => $feedType, "feedMessage" => $feedMessage." - ".$saveAs, "feedData" => $feedData);
 
 			/* result fetch */
 			$json = $resultList;

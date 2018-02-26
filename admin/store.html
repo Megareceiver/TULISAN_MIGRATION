@@ -104,8 +104,8 @@
 					    	'<tr>'+
 						    		'<th width="5%"><input type="checkbox" value="1" id="selectRecord" onclick="checkboxToggle(this, \'customerSelect\')" /><label for="selectRecord"></label></th>'+
 						        '<th width="10%" class="text-center"><span class="fa fa-picture-o"></span></th>'+
-						        '<th width="40%">Name</th>'+
-						        '<th>Address</th>'+
+						        '<th width="30%">Name</th>'+
+						        '<th width="30%">Address</th>'+
 						        '<th>Open hours</th>'+
 						        '<th>Category</th>'+
 					    	'</tr>'+
@@ -218,12 +218,16 @@
 						if(type == "0") type = "Store";
 						else if(type == "1") type = "Reseller";
 
+						var address = (Base64.decode(data[loop].address));
+							  address = address.replace(/\\/g, '');
+								address = address + "<br/>" + data[loop].city + " " + data[loop].zipCode + ", " + data[loop].country_name;
+
 		    		html = html +
 		    		'<tr>'+
 		    			'<td><input type="checkbox" name="customerSelect" value="'+data[loop].idData+'" id="selectRecord' + loop + '"><label for="selectRecord' + loop + '"></label></td>'+
 		    			'<td><img class="big-image" src="../assets/store/'+ data[loop].picture +'"></td>'+
 							'<td>'+ data[loop].name +'</td>'+
-		    			'<td>'+ data[loop].address +'</td>'+
+		    			'<td><section style="max-height: 197px; overflow-y: auto">'+ address +'</section></td>'+
 		    			'<td>'+ data[loop].openHours +'</td>'+
 		    			'<td>'+ type +'</td>'+
 		    		'</tr>';

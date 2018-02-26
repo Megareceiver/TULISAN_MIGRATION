@@ -6,6 +6,10 @@ body {
   font-family: Georgia, Times, "Times New Roman", serif !important;
 }
 
+body p {
+  font-family: Georgia, Times, "Times New Roman", serif !important;
+}
+
 .form-control,.btn{
   border-radius: 0px;
 }

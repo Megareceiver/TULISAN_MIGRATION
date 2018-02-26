@@ -92,8 +92,8 @@
 				case "cms_video" 		: $resultList = $this->fetchAllRequest('cms_video', array("idData","title", "description", "fileName", "fileSize", "createdBy as publishedBy", "createdDate as publishedTime"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
 				case "cms_videoFetch" 	: $resultList = $this->fetchSingleRequest('cms_video', array("idData","title", "description", "fileName", "createdDate as publish"), $post['keyword']); break;
 
-				case "store" 			: $resultList = $this->fetchAllRequest('store s LEFT JOIN countries y ON s.country = y.country_code', array("s.idData", "s.name", "s.picture", "s.type","CONCAT(s.address, '</br>', s.city, ' ', s.zipCode, ', ', country_name) as address", "phone", "openHours"), $post['keyword'], "ORDER BY idData ASC", $post['page']); break;
-				case "storeFetch"			: $resultList = $this->fetchSingleRequest('store', array("idData", "name", "picture","address", "city", "zipCode", "country", "phone", "openHours", "s.type"), $post['keyword']); break;
+				case "store" 			: $resultList = $this->fetchAllRequest('store s LEFT JOIN countries y ON s.country = y.country_code', array("s.idData", "s.name", "s.picture", "s.type","s.address", "s.city", "s.zipCode", "country_name", "phone", "openHours"), $post['keyword'], "ORDER BY idData ASC", $post['page']); break;
+				case "storeFetch"			: $resultList = $this->fetchSingleRequest('store', array("idData", "name", "picture","address", "city", "zipCode", "country", "phone", "openHours", "type"), $post['keyword']); break;
 
 				case "user" 			: $resultList = $this->fetchAllRequest('users u LEFT JOIN departments d ON u.departmentId = d.idData', array("u.idData","u.name", "u.username", "u.type", "IFNULL(d.name,'') as department", "u.picture"), "u.idData <> '0'", "ORDER BY u.idData DESC", $post['page']); break;
 				case "userFetch" 		: $resultList = $this->fetchSingleRequest('users', array("idData","name", "username", "type", "departmentId", "picture"), $post['keyword']); break;
@@ -414,11 +414,16 @@
 				break;
 
 				case "store"  :
-					$fields = array("name","address", "city", "country", "zipCode", "phone", "openHours", "type");
+					$fields = array("name", "city", "country", "zipCode", "phone", "openHours", "type");
 					$values = array();
 					foreach ($fields as $key) {
 						$value = (isset($post[$key]) && $post[$key] != "") ? str_replace("'", "\'", $post[$key]) : "";
 						array_push($values,$value);
+					}
+
+					if(isset($post['address'])) {
+						array_push($fields, "address");
+						array_push($values, htmlspecialchars($post['address']));
 					}
 
 					$resultList = $this->insert('store', $fields, $values);
@@ -844,11 +849,15 @@
 				break;
 
 				case "store"  :
-					$fields = array("name","address", "city", "country", "zipCode", "phone", "openHours", "store", "type");
+					$fields = array("name", "city", "country", "zipCode", "phone", "openHours", "type");
 					$values = array();
 					foreach ($fields as $key) {
 						$value = (isset($post[$key]) && $post[$key] != "") ? str_replace("'", "\'", $post[$key]) : "";
 						$values[$key] = $key." = '".str_replace(',','',$value)."'";
+					}
+
+					if(isset($post['address'])) {
+						$values['address'] = "address = '".base64_encode($post['address'])."'";
 					}
 
 					$resultList = $this->update('store', $values, $post['idData']);

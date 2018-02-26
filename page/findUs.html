@@ -115,11 +115,18 @@
 				var dumb = "";
 				var dumb2 = "";
 				for(var loop=0;loop<data.length;loop++){
+					var address = "";
+					if(data[loop].address != ""){
+						address = (Base64.decode(data[loop].address));
+						address = address.replace(/\\/g, '');
+						address = address + "<br/>" + data[loop].city + " " + data[loop].zipCode + ", " + data[loop].country_name;
+					}
+
 					if(data[loop].type == "0"){
 						dumb = dumb +
 						'<img class="big-image" src="../assets/store/' + data[loop].picture + '"/>' +
 						'<p class="margin-top"><b>' + data[loop].name + '</b></p>' +
-						'<p>' + data[loop].address + '</p>' +
+						'<p>' + address + '</p>' +
 						'<p>' + data[loop].phone + '</p>' +
 						'<p>Operation hours: ' + data[loop].openHours + '</p>' +
 						'<p class="margin-top">&nbsp;</p>';

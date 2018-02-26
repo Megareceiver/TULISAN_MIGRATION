@@ -29,6 +29,7 @@
 		<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="../assets/js/syncard.js"></script>
 		<script type="text/javascript" src="../assets/js/public.js"></script>
+		<script type="text/javascript" src="../assets/js/nicEdit.js"></script>
 
 		<!-- page script -->
 		<script type="text/javascript">
@@ -58,7 +59,7 @@
 						'</div>' +
 						'<div class="form-group">' +
 								'<label for="address">Address</label>' +
-								'<textarea class="form-control" rows="5" id="address" name="address"></textarea>' +
+								'<textarea name="address" class="form-control" rows="13" id="address"></textarea>'+
 						'</div>' +
 						'<div class="form-group">' +
 							'<div class="col-xs-8 syn-clear">' +
@@ -93,7 +94,7 @@
 						'<div class="clearfix"></div>'+
 						'<div class="btn-group">'+
 							'<button class="btn btn-warning" type="submit">Create</button>'+
-							'<button class="btn btn-warning" type="button">Cancel</button>'+
+							'<a href="store.html" class="btn btn-warning" type="reset">Cancel</a>'+
 						'</div>'+
 					'</form>'+
 				'</div>';
@@ -111,6 +112,13 @@
 				else p_formHandler('syncrom', 'addData', 'store.html');
 
 				imagePreviewActivator('[name="picture"]');
+
+				// //textarea editor
+				new nicEditor({iconsPath : '../assets/PICS/nicEditorIcons.gif', maxHeight : 800}).panelInstance('address');
+
+				$(".nicEdit-main").on("blur",function(){
+					$("[name='address']").val($(this).html());
+				});
 			}
 
 			function dataGenerator(idData){
@@ -118,10 +126,16 @@
 					xData = xData.feedData;
 
 				for (var key in xData) {
-					if($("[name='" + key + "']").attr('type') != "file") $("[name=" + key + "]").val(xData[key]);
-					else{
-						if(xData[key]!="") $("[name-tag=" + key + "]").attr('src', '../assets/store/' + xData[key]);
-						else $("[name-tag='" + key + "']").attr('src', '../assets/default/store.gif');
+					if(key != "address"){
+						if($("[name='" + key + "']").attr('type') != "file") $("[name=" + key + "]").val(xData[key]);
+						else{
+							if(xData[key]!="") $("[name-tag=" + key + "]").attr('src', '../assets/store/' + xData[key]);
+							else $("[name-tag='" + key + "']").attr('src', '../assets/default/store.gif');
+						}
+					}else{
+						desc = Base64.decode(xData[key]);
+						desc = desc.replace(/\\/g, '');
+						$("[name=" + key + "]").val(desc);
 					}
 				}
 

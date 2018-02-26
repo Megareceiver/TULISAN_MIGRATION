@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Standard Meta -->
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+		<link rel="icon" type="image/x-icon" href="../assets/PICS/TL_Favicon.png">
+		<!-- Site Properities -->
+		<title>Tulisan</title>
+
+		<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
+		<link href="../assets/css/font-awesome.min.css" rel="stylesheet">
+		<link href="../assets/css/syncard-inject.css" rel="stylesheet">
+	</head>
+	<body>
+
+		<div class="container">
+			<header class="parent"></header>
+
+			<main class="parent clear default-flex"></main>
+
+			<footer class="parent clear"></footer>
+		</div>
+
+		<!-- Script collection -->
+		<script type="text/javascript" src="../assets/js/jquery-3.2.1.min.js"></script>
+		<script type="text/javascript" src="../assets/js/jquery-ui-1.10.0.custom.min.js"></script>
+		<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="../assets/js/imagesloaded.pkgd.min.js"></script>
+		<script type="text/javascript" src="../assets/js/partial.js"></script>
+		<script type="text/javascript" src="../assets/js/public.js"></script>
+
+		<!-- page script -->
+		<script type="text/javascript">
+			loadShop();
+
+			function loadShop(){
+				var html = '';
+				var counter = 0;
+				var paging = 0;
+				var pagingLink = "";
+				var pagingLinkBefore = "";
+				var pagingState = 1;
+				var paramState = "";
+
+				var data = [];
+				var product = [];
+
+				if(getParam('page') != "" && getParam('page') != null){
+					pagingState = eval(getParam('page'));
+				}
+
+				filter = [];
+
+				keyword = "";
+				keyword2= "";
+				keywordSearch = "";
+				if(getParam('story') != "" && getParam('story') != null){
+					keyword = "v.storyId =" + getParam('story');
+					keyword2= "x.storyId =" + getParam('story');
+					paramState = paramState + "&story=" + getParam('story');
+					data = p_getData('operation', 'cms_storyFetch', "1", " idData = '" + getParam('story') + "'");
+					filter = data.feedData;
+				}
+
+				if(getParam('color') != "" && getParam('color') != null){
+					keyword = "colorId =" + getParam('color');
+					paramState = paramState + "&color=" + getParam('color');
+					data = p_getData('operation', 'color', "1", " idData = '" + getParam('color') + "'");
+					filter = data.feedData[0];
+				}
+
+				if(getParam('keyword') != "" && getParam('keyword') != null){
+					keyword = '(p.name LIKE "%' + getParam('keyword') + '%" OR v.sku LIKE "%' + getParam('keyword') + '%")';
+					keywordSearch = getParam('keyword');
+					paramState = paramState + "&keyword=" + getParam('keyword');
+				}
+
+				if(keyword != "") { keyword = keyword + " AND "; }
+				keyword = keyword + "qty > 0 AND p.status != 0 AND v.status != 0";
+
+				if(keyword2 != ""){
+					keyword = keyword + ";" + keyword2;
+				}
+
+				data = p_getData('operation', 'productGroup', pagingState, keyword);
+				product = data.feedData;
+
+				data = p_getData('operation', 'color');
+				color = data.feedData;
+
+				data = p_getData('operation', 'cms_story');
+				story = data.feedData;
+
+				html = '<div class="col-md-12">';
+
+				html = html +
+				'<div class="shop row">'+
+					'<div class="col-md-3 left-menu">'+
+						'<h5 class="fontserif title">SHOP BY PRODUCT <span toggle-target="#productList" class="left-menu-toggle fa fa-chevron-up syn-fixed-right "></span></h5>';
+
+				html = html + '<div id="productList" class="active">';
+				html = html + '<ul>';
+
+				if(product.length > 0){
+					var maxItem	 	 = 15;
+					var stateItem  = 1;
+					var caption    = [];
+					var category   = "";
+					var counter		 = 0;
+					var index 		 = 0;
+					var categories = [];
+					var items			 = [];
+
+					for(var loop   = 0; loop < product.length; loop++){
+						item = "";
+						dumb = "";
+
+						category 	 = (product[loop].category) != null ? product[loop].category : "Not Categorized";
+						dumb			 = category;
+						category 	 = category.replace(/&/g,'').replace(/\s/g, "");
+						item = item + '<p class="action-list"><a href="shopDetail.html?q=' + product[loop].idData + '">' + product[loop].name + '</a></p>';
+
+						if(categories.indexOf(category) == -1){
+							caption[counter] 	  = dumb;
+							categories[counter] = category;
+							counter++;
+						}
+
+						index = categories.indexOf(category);
+						if (items[index] == undefined) { items[index] = ""; }
+						items[index] = items[index] + item;
+
+					}
+
+					for(var loop = 0; loop < categories.length; loop++){
+						html = html +
+						'<li>' +
+							'<h5>' + caption[loop] + ' <span toggle-target="#productList' + loop + '" class="left-menu-toggle fa fa-chevron-up syn-fixed-right "></span></h5>' +
+							'<div id="productList' + loop + '" style="display:none">' + items[loop] + '</div>' +
+						'</li>';
+					}
+				}
+
+				html = html + '</ul>';
+				html = html + '</div><hr/>';
+				html = html +
+				'<h5 class="fontserif title">SHOP BY COLOR <span toggle-target="#colorList" class="left-menu-toggle fa fa-chevron-up syn-fixed-right "></span></h5>' +
+				'<ul id="colorList" class="active">';
+
+				for(var loop = 0; loop < color.length; loop++){
+					html = html + '<li><a href="shop.html?color=' + color[loop].idData + '">' + color[loop].name + '</a></li>';
+				}
+
+				html = html + '</ul><hr/>';
+				html = html +
+				'<h5 class="fontserif title">SHOP BY STORY <span toggle-target="#storyList" class="left-menu-toggle fa fa-chevron-up syn-fixed-right "></span></h5>' +
+				'<ul id="storyList" class="active">';
+				// '<ul id="storyList" style="display: none">'; if wanna initial hide
+
+				for(var loop = 0; loop < story.length; loop++){
+					html = html + '<li><a href="shop.html?story=' + story[loop].idData + '">' + story[loop].title + '</a></li>';
+				}
+
+				html = html + '</ul></div>';
+
+				html = html + '<div class="col-md-9 col-md-offset-3 product-list">';
+
+				if(keywordSearch != "") { html = html + '<h5><i>Search : </i>' + keywordSearch + '</h5><hr/>'; }
+				if(filter.name != undefined) { html = html + '<h5><i>Color : </i>' + filter.name + '</h5><hr/>'; }
+				if(filter.title != undefined) { html = html + '<h5>' + filter.title + '</h5>'; }
+				if(filter.title != undefined) { html = html + '<h6>' + filter.subtitle + '</h6>'; }
+				if(filter.title != undefined) { html = html + '<p>' + Base64.decode(filter.description).substring(0, 500) + '... <a href="storydetail.html?q=' + filter.idData + '" class="btn-link">view story</a>' + '</p><hr/>'; }
+
+				if(product.length > 0){
+					for(var loop = 0; loop < product.length; loop++)
+					{
+						price = "Rp. 0";
+						if(product[loop].price !="" && product[loop].price != null){
+							temp = normalFormatChanger(product[loop].price);
+							price = currencyFormat(String(temp));
+						}
+						html = html +
+						'<div class="col-md-4" page-target=' + stateItem + ' style="display:none">'+
+							'<a href="shopDetail.html?q=' + product[loop].idData + '">' +
+								'<img class="big-image" src="../assets/products/large/'+product[loop].frontPicture+'">'+
+								'<hr/>' +
+								'<h5 class="center-div"><b class="fontserif">' + product[loop].name +'</b></h5>'+
+								'<h5 class="center-div">'+ price + '</h5>'+
+								'<button type="button" class="btn btn-warning form-control">Buy</button>' +
+								'<hr/>' +
+							'</a>' +
+						'</div>';
+
+						if((loop + 1) % 3 == 0) html = html + '<div class="clearfix"></div>';
+						dtemp = (loop + 1) % 15;
+						if(dtemp == 0){ stateItem++; }
+					}
+
+					/*paging*/
+					paging = Math.ceil(product.length / maxItem);
+					dtemp  = pagingState - 3;
+					pageStart = (dtemp <= 0) ? 1 : dtemp;
+					for(var loop=pageStart; loop<=paging; loop++){
+						if((paging - pageStart) > 5){
+							if(counter == 4){
+								pagingLink = pagingLink + "..." + "<a href='?page=" + paging + paramState + "' class='data-paging'>" + paging + "</a>";
+								break;
+							}
+						}
+						pagingLink = pagingLink + "<a href='?page=" + loop + paramState + "' class='data-paging'>" + loop + "</a>";
+						counter++;
+					}
+
+					html = html + '<div class="clearfix"></div>';
+					html = html + '<div class="row">';
+					html = html + "<div class='data-paging center'>- " + pagingLink + " -</div>";
+					html = html + "</div>";
+				}else{
+					html = html + '<p>Sorry there is no product</p>';
+				}
+
+				html = html +
+					'</div>'+
+				'</div>';
+
+				html = html + "</div><div class='clearfix'></div>";
+
+				$("main").html(html);
+				//active page
+				$("[page-target=" + pagingState + "]").attr('style','display: inline-block');
+
+
+				$(".left-menu-toggle").on('click', function(){
+					if($($(this).attr('toggle-target')).is(":hidden")){
+						$(this).switchClass('fa-chevron-down', 'fa-chevron-up');
+					}else{
+						$(this).switchClass('fa-chevron-up', 'fa-chevron-down');
+					}
+
+					$($(this).attr('toggle-target')).slideToggle();
+
+				});
+
+				//paging
+				$('.pagging-text .pagging-right').on("click", function(){
+					var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
+					page = parseInt(page) + 1;
+
+					var keyword = $("[placeholder='Search']").val();
+					var alpha = (r_getCookie('adminAlphaFilter') != "" ? '(name LIKE "' + r_getCookie('adminAlphaFilter') + '%") AND ': "");
+
+					var data = p_getData('operation', 'color', page, alpha + '(name LIKE "%' + keyword + '%")');
+					data = data.feedData;
+
+					if(data.length > 0){ dataGenerator(data); } else { page = parseInt(page) - 1; }
+
+					r_setCookie('adminPageFilter', page);
+				});
+
+				$('.pagging-text .pagging-left').on("click", function(){
+					var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
+					if(page > 1){
+						page = parseInt(page) - 1;
+
+						var keyword = $("[placeholder='Search']").val();
+						var data = p_getData('operation', 'color', page, '(name LIKE "%' + keyword + '%")');
+						data = data.feedData;
+						dataGenerator(data);
+
+						r_setCookie('adminPageFilter', page);
+					}
+				});
+				//paging end
+			}
+		</script>
+	</body>
+</html>

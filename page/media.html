@@ -41,6 +41,11 @@
 				var data = p_getData('operation', 'mediaGroup');
 						data = data.feedData;
 
+				var syst = getData('support', 'systemFetch');
+				    syst = syst.feedData;
+
+						console.log(syst);
+
 				dumb	= { 'media': [],  'catalogs': [], 'images': []};
 				for(var loop=0; loop<data.length; loop++){
 					var ext1 = data[loop].file_1;
@@ -54,20 +59,27 @@
 					else if(data[loop].type == "0") dumb['images'].push({ "title": data[loop].title, "file_1": data[loop].file_1, "file_2": data[loop].file_2, 'extension': ext1, 'extension2': ext2 });
 				}
 
-				console.log(dumb);
-
 				html = '<div class="row"><div class="col-md-8 col-md-offset-2">';
 				html = html +
 					'<div class="media">'+
 						'<h2>Download</h2>'+
 						'<p>Just click to download </br> We provide our company logo for media resource.</p>';
 
-				html = html +
+				if(syst != null && syst != undefined){
+					var sysext1 = syst.companyLogo;
+					var sysext2 = syst.companyProfile;
+					var sysext3 = syst.biography;
+
+					if(sysext1 != "") sysext1 = (sysext1.substr(sysext1.lastIndexOf('.') + 1)).toUpperCase();
+					if(sysext2 != "") sysext2 = (sysext2.substr(sysext2.lastIndexOf('.') + 1)).toUpperCase();
+					if(sysext3 != "") sysext3 = (sysext3.substr(sysext3.lastIndexOf('.') + 1)).toUpperCase();
+					html = html +
 						'<div><h3>MEDIA DOWNLOAD</h3></div>'+
-						'<div><p><span>Logo:</span><span><a href="#">ESP</a> | <a href="#">PNG</a></span></p></div>'+
-						'<div><p><span>Company Profile:</span><span><a href="#">PDF</a></span></p></div>'+
-						'<div><p><span>Melissa Sunjaya Biography:</span><span><a href="#">PDF</a></span></p></div>'+
+						'<div><p><span>Logo:</span><span><a href="../assets/system/' + syst.companyLogo + '" target="_blank">' + sysext1 + '</a></span></p></div>'+
+						'<div><p><span>Company Profile:</span><span><a href="../assets/system/' + syst.companyProfile + '" target="_blank">' + sysext2 + '</a></span></p></div>'+
+						'<div><p><span>Melissa Sunjaya Biography:</span><span><a href="../assets/system/' + syst.biography + '" target="_blank">' + sysext3 + '</a></span></p></div>'+
 						'<div><p>Pick your images that you like or need in our gallery and just click download.</p></div>';
+				}
 
 				for(loop=0;loop<dumb['media'].length;loop++){
 					html = html + '<div class=plus><p><span>' + dumb['media'][loop].title + '</span><span><a href="../assets/media/' + dumb['media'][loop].file_1 + '" target="_blank">' + dumb['media'][loop].extension + ' </a></span><span><a href="../assets/media/' + dumb['media'][loop].file_2 + '" target="_blank">' + dumb['media'][loop].extension2 + '</a></span></p></div>';

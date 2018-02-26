@@ -11,7 +11,7 @@
 		public function requestData($post, $target){
 			switch($target){
 				case "feedback" 		: $resultList = $this->fetchAllRequest('feedback', array("idData", "name", "email", "category", "subject", "message"), $post['keyword'], "ORDER BY idData ASC", $post['page']); break;
-				case "systemFetch" 	: $resultList = $this->fetchSingleRequest('system', array("idData", "acc_number", "bank", "instagram", "facebook", "twitter", "pinterest", "youtube"), $post['keyword'], "ORDER BY idData ASC"); break;
+				case "systemFetch" 	: $resultList = $this->fetchSingleRequest('system', array("idData", "acc_number", "bank", "instagram", "facebook", "twitter", "pinterest", "youtube", "companyLogo", "companyProfile", "biography"), $post['keyword'], "ORDER BY idData ASC"); break;
 				default	   					: $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
 			}
 
@@ -68,6 +68,24 @@
 					}
 
 					$resultList = $this->update('system', $values, $post['idData']);
+
+					if($resultList["feedStatus"] == "success" && isset($post['idData']) && $post['idData']!="") {
+						if(isset($_FILES["companyLogo"])){
+							$upload = $this->uploadFile($_FILES["companyLogo"], "system", "system", "companyLogo", $post['idData'], "logo");
+							$resultList["feedUploadFile"] = $upload['feedMessage'];
+						}
+
+						if(isset($_FILES["companyProfile"])){
+							$upload = $this->uploadFile($_FILES["companyProfile"], "system", "system", "companyProfile", $post['idData'], "cprofile");
+							$resultList["feedUploadFile2"] = $upload['feedMessage'];
+						}
+
+						if(isset($_FILES["biography"])){
+							$upload = $this->uploadFile($_FILES["biography"], "system", "system", "biography", $post['idData'], "biography");
+							$resultList["feedUploadFile3"] = $upload['feedMessage'];
+						}
+
+					}
 
 				break;
 				default	   		: $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
@@ -406,6 +424,58 @@
 
 		}
 
+
+		//UPLOAD FILE
+		public function uploadFile($image, $dir, $table, $field, $id, $custom_name = ""){
+			error_reporting(E_ALL);
+			/* initial condition */
+			$resultList = array();
+			$feedStatus	= "failed";
+			$feedType   = "danger";
+			$feedMessage= "Something went wrong, failed to upload data!";
+			$feedData	= array();
+
+			$temp		= "";
+
+			/* open connection */
+			$gate = $this->db;
+			if($gate){
+
+				/*upload image*/
+				if(isset($image)){
+
+					$file_name = $image['name'];
+			    $file_size = $image['size'];
+			    $file_tmp  = $image['tmp_name'];
+			    $file_type = $image['type'];
+
+					$temporary 		 = explode(".", $file_name);
+					$fileExtension = end($temporary);
+					$newFileName 	 = (($custom_name != "") ? (str_replace(' ', '', $custom_name)).".".$fileExtension : "file_".$id.".".$fileExtension);
+					$saveAs 		   = "../assets/".$dir."/".$newFileName;
+
+					if(move_uploaded_file($file_tmp, $saveAs)){
+						$sql = "UPDATE ".$table." SET ".$field."='".$newFileName."' WHERE idData ='".$id."'";
+						$result = $this->db->query($sql);
+						if($result){
+							$feedStatus	= "success";
+							$feedType   = "success".is_dir($saveAs);
+							$feedMessage= "The process has been successful";
+						}
+					}
+				}
+				/*upload end*/
+
+			}
+
+			$resultList = array( "feedStatus" => $feedStatus, "feedType" => $feedType, "feedMessage" => $feedMessage." - ".$saveAs, "feedData" => $feedData);
+
+			/* result fetch */
+			$json = $resultList;
+
+			return $json;
+
+		}
 	}
 
 ?>

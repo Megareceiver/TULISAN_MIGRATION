@@ -121,7 +121,7 @@ function header(){
 					        '<li><a id="home-route" href="' + base_url + '"><span>HOME</span></a></li>' +
 					        '<li><a id="shop-route" href="' + base_url + '/page/shop.html"><span>SHOP</span></a></li>' +
 					        '<li><a id="story-route" href="' + base_url + '/page/story.html"><span>STORIES</span></a></li>' +
-					        '<li><a id="blog-route" href="' + base_url + '/page/blog.html"><span>BLOG</span></a></li>' +
+					        '<li><a id="blog-route" href="' + base_url + '/page/blog.html" target="_blank"><span>BLOG</span></a></li>' +
 					        '<li><a id="video-route" href="' + base_url + '/page/videos.html"><span>VIDEOS</span></a></li>' +
 					        '<li><a id="chatter-route" href="' + base_url + '/page/chatter.html"><span>CHATTER</span></a></li>' +
 					        '<li><a id="about-route" href="' + base_url + '/page/about.html"><span>ABOUT</span></a></li>' +

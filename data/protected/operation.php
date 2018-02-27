@@ -49,6 +49,7 @@
 
 				case "countryOption" 	: $resultList = $this->fetchAllRecord('countries', array("DISTINCT country_name as caption", "country_code as value"), $post['keyword'], "ORDER BY country_name ASC"); break;
 
+				case "colorFilter" 		: $resultList = $this->fetchAllRecord('colors c JOIN products_variant v ON c.idData = v.colorId', array("DISTINCT c.name", "c.idData"), 'v.qty > 0 and v.price is not null and v.price  <> "NaN"', "ORDER BY name ASC"); break;
 				case "color" 					: $resultList = $this->fetchAllRequest('colors', array("name", "idData"), $post['keyword'], "ORDER BY name ASC", $post['page']); break;
 				case "colorOption" 		: $resultList = $this->fetchAllRecord('colors', array("name as caption", "idData as value"), $post['keyword'], "ORDER BY name ASC"); break;
 				case "colorFetch" 		: $resultList = $this->fetchSingleRequest('colors', array("name", "idData"), $post['keyword']); break;
@@ -105,6 +106,9 @@
 				case "mediaGroup" 	: $resultList = $this->fetchAllRequest('media', array("idData","title", "type", "file_1", "file_2"), $post['keyword'], "ORDER BY type ASC, idData DESC", $post['page']); break;
 				case "mediaFetch" 	: $resultList = $this->fetchSingleRequest('media', array("idData", "title", "type", "file_1", "file_2"), $post['keyword']); break;
 
+				case "about" 				: $resultList = $this->fetchAllRequest('about', array("idData","title", "description", "type", "picture"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
+				case "aboutFetch" 	: $resultList = $this->fetchSingleRequest('about', array("idData","title", "description", "type", "picture"), $post['keyword']); break;
+
 				default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
 			}
 
@@ -153,6 +157,7 @@
 				case "cms_video" 	: $resultList = $this->deleteById('cms_video', $post['id']); break;
 				case "store" 	: $resultList = $this->deleteById('store', $post['id']); break;
 				case "media" 	: $resultList = $this->deleteById('media', $post['id']); break;
+				case "about" 	: $resultList = $this->deleteById('about', $post['id']); break;
 
 				default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
 			}
@@ -423,7 +428,7 @@
 
 					if(isset($post['address'])) {
 						array_push($fields, "address");
-						array_push($values, htmlspecialchars($post['address']));
+						array_push($values, base64_encode($post['address']));
 					}
 
 					$resultList = $this->insert('store', $fields, $values);
@@ -545,6 +550,29 @@
 						if(isset($_FILES["file_2"])){
 							$upload = $this->uploadFile($_FILES["file_2"], "media", "media", "file_2", $resultList['feedId'], $post['title']."2");
 							$resultList["feedUploadFile2"] = $upload['feedMessage'];
+						}
+					}
+				break;
+
+				case "about"  :
+					$fields = array("title", "type");
+					$values = array();
+					foreach ($fields as $key) {
+						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
+						array_push($values, $value);
+					}
+
+					if(isset($post['description'])) {
+						array_push($fields, "description");
+						array_push($values, base64_encode($post['description']));
+					}
+
+					$resultList = $this->insert('about', $fields, $values);
+
+					if($resultList["feedStatus"] == "success") {
+						if(isset($_FILES["picture"])){
+							$upload = $this->uploadSingleImage($_FILES["picture"], "about", "about", "picture", $resultList["feedId"]);
+							array_push($resultList, array("feedUpload" => $upload['feedMessage']));
 						}
 					}
 				break;
@@ -1009,6 +1037,29 @@
 							$resultList["feedUploadFile"] = $upload['feedMessage'];
 						}
 
+					}
+
+				break;
+
+				case "about"  :
+					$fields = array("title", "type");
+					$values = array();
+					foreach ($fields as $key) {
+						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
+						$values[$key] = $key." = '".str_replace(',','',$value)."'";
+					}
+
+					if(isset($post['description'])) {
+						$values['description'] = "description = '".base64_encode($post['description'])."'";
+					}
+
+					$resultList = $this->update('about', $values, $post['idData']);
+
+					if($resultList["feedStatus"] == "success" && isset($post['idData']) && $post['idData']!="") {
+						if(isset($_FILES["picture"])){
+							$upload = $this->uploadSingleImage($_FILES["picture"], "about", "about", "picture", $post['idData']);
+							$resultList["feedUpload"] = $upload['feedMessage'];
+						}
 					}
 
 				break;

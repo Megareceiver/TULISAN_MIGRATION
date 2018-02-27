@@ -159,6 +159,8 @@ function pageAdmin(){
 			case "formArtWork.html":
 			case "videos.html":
 			case "formVideo.html":
+			case "about.html":
+			case "formAbout.html":
 			case "chatter.html":
 			case "formChatter.html": $(".cms-route").addClass('active'); break;
 			case "formBlog.html":

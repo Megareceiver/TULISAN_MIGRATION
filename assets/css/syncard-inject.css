@@ -1306,7 +1306,7 @@ img,
 /*=============================================================================================*/
 /*BOOTSTRAP*/
 .modal-content { border-radius: 0 }
-.modal-header { background-color: #E9E2DB }
+.modal-header, .modal-footer { border: none }
 .text-warning { color: #ec971f; }
 .input-group-addon {
     border-radius: 0 ;

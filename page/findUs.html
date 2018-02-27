@@ -123,8 +123,10 @@
 					}
 
 					if(data[loop].type == "0"){
+					  if(data[loop].picture != "" && data[loop].picture != null)
+						dumb = dumb + '<img class="big-image" src="../assets/store/' + data[loop].picture + '"/>' ;
+
 						dumb = dumb +
-						'<img class="big-image" src="../assets/store/' + data[loop].picture + '"/>' +
 						'<p class="margin-top"><b>' + data[loop].name + '</b></p>' +
 						'<p>' + address + '</p>' +
 						'<p>' + data[loop].phone + '</p>' +
@@ -133,10 +135,12 @@
 					}
 
 					if(data[loop].type == "1"){
+					  if(data[loop].picture != "" && data[loop].picture != null)
+						dumb2 = dumb2 + '<img class="big-image" src="../assets/store/' + data[loop].picture + '"/>' ;
+						
 						dumb2 = dumb2 +
-						'<img class="big-image" src="../assets/store/' + data[loop].picture + '"/>' +
 						'<p class="margin-top"><b>' + data[loop].name + '</b></p>' +
-						'<p>' + data[loop].address + '</p>' +
+						'<p>' + address + '</p>' +
 						'<p>' + data[loop].phone + '</p>' +
 						'<p>Operation hours: ' + data[loop].openHours + '</p>' +
 						'<p class="margin-top">&nbsp;</p>';

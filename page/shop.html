@@ -83,9 +83,10 @@
 				}
 
 				if(getParam('keyword') != "" && getParam('keyword') != null){
-					keyword = '(p.name LIKE "%' + getParam('keyword') + '%" OR v.sku LIKE "%' + getParam('keyword') + '%")';
 					keywordSearch = getParam('keyword');
-					paramState = paramState + "&keyword=" + getParam('keyword');
+					keywordSearch = decodeURI(keywordSearch);
+					keyword = '(p.name LIKE "%' + keywordSearch + '%" OR v.sku LIKE "%' + keywordSearch + '%")';
+					paramState = paramState + "&keyword=" + keywordSearch;
 				}
 
 				if(keyword != "") { keyword = keyword + " AND "; }

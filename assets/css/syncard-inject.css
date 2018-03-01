@@ -1422,6 +1422,7 @@ img,
   }
 
   .left-menu ul { display: none }
+  .left-menu div.active ul { display: block }
   .left-menu ul li a { padding: 20px 0; }
   .left-menu ul.active { display: block; }
 

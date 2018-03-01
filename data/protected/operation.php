@@ -17,6 +17,7 @@
 																array("DISTINCT p.idData", "p.highlight",
 																"(SELECT x.frontPicture FROM products_variant x WHERE x.productId = p.idData AND x.status != '0' AND ".str_replace("\\",'', $post['keyword'])." ORDER BY x.idData DESC LIMIT 1) as frontPicture",
 																"p.name",
+																"c.idData as categoryId",
 																"c.name as category",
 																"(SELECT x.price FROM products_variant x WHERE x.productId = p.idData ORDER BY x.idData ASC LIMIT 1) as price"), str_replace("\\",'', $post['keyword']), "ORDER BY p.highlight DESC, c.name ASC, p.name ASC"); break;
 				case "productFetch" 	: $resultList = $this->fetchSingleRequest('products', array("idData", "name", "description", "material", "categoryId", "status", "lookBook1", "lookBook2"), $post['keyword']); break;
@@ -36,6 +37,12 @@
 																"substring_index(group_concat(v.dimension SEPARATOR ','), ',', 1) as dimension",
 																"substring_index(group_concat(v.sku SEPARATOR ','), ',', 1) as sku",
 																"p.name", "p.description", "p.material", "p.lookBook1", "p.lookBook2", "s.title", "s.subtitle"), $post['keyword']); break;
+
+				case "productList" 		: $resultList = $this->fetchAllRecord('products p LEFT JOIN products_variant v ON p.idData = v.productId LEFT JOIN categories c ON p.categoryId = c.idData',
+																array("DISTINCT p.idData", "p.highlight",
+																"p.name",
+																"c.idData as categoryId",
+																"c.name as category"), str_replace("\\",'', $post['keyword']), "ORDER BY c.name ASC, p.name ASC"); break;
 
 				case "productCart" 	: $resultList = $this->fetchAllRequest('products p JOIN products_variant v ON p.idData = v.productId',array("DISTINCT v.idData", "v.qty", "v.frontPicture","p.name", "v.price", "p.sku"), $post['keyword'], "ORDER BY v.idData", $post['page']); break;
 
@@ -171,11 +178,16 @@
 		public function addData($post, $target){
 			switch($target){
 				case "product"  :
-					$fields = array("name", "sku", "description", "material", "categoryId", "status");
+					$fields = array("name", "material", "categoryId", "status");
 					$values = array();
 					foreach ($fields as $key) {
 						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
 						array_push($values, $value);
+					}
+
+					if(isset($post['description'])) {
+						array_push($fields, "description");
+						array_push($values, str_replace("'","\'",$post['description']));
 					}
 
 					$resultList = $this->insert('products', $fields, $values);
@@ -589,11 +601,15 @@
 		public function updateData($post, $target){
 			switch($target){
 				case "product"  :
-					$fields = array("name", "sku", "description", "material", "categoryId", "status");
+					$fields = array("name", "material", "categoryId", "status");
 					$values = array();
 					foreach ($fields as $key) {
 						$value = (isset($post[$key]) && $post[$key] != "") ? $post[$key] : "";
 						$values[$key] = $key." = '".str_replace(',','',$value)."'";
+					}
+
+					if(isset($post['description'])) {
+						$values['description'] = "description = '".str_replace("'","\'",$post['description'])."'";
 					}
 
 					if(isset($post['lookBook1_removed']) && $post['lookBook1_removed'] == "yes"){

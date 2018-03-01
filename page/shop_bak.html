@@ -96,10 +96,7 @@
 				}
 
 				data = p_getData('operation', 'productGroup', pagingState, keyword);
-				product = data.feedData;
-
-				data = p_getData('operation', 'productList', 1, "qty > 0 AND p.status != 0 AND v.status != 0");
-				productList = data.feedData; console.log('here'); console.log(productList);
+				product = data.feedData; console.log('here');console.log(product);
 
 				data = p_getData('operation', 'colorFilter');
 				color = data.feedData;
@@ -128,18 +125,18 @@
 					var categories = [];
 					var items			 = [];
 
-					for(var loop   = 0; loop < productList.length; loop++){
+					for(var loop   = 0; loop < product.length; loop++){
 						item = "";
 						dumb = "";
 
-						category 	 = (productList[loop].category) != null ? productList[loop].category : "Not Categorized";
+						category 	 = (product[loop].category) != null ? product[loop].category : "Not Categorized";
 						dumb			 = category;
 						category 	 = category.replace(/&/g,'').replace(/\s/g, "");
-						item = item + '<p class="action-list"><a href="shopDetail.html?q=' + productList[loop].idData + '">' + productList[loop].name + '</a></p>';
+						item = item + '<p class="action-list"><a href="shopDetail.html?q=' + product[loop].idData + '">' + product[loop].name + '</a></p>';
 
 						if(categories.indexOf(category) == -1){
 							caption[counter] 	  = dumb;
-							ids[counter] 	  		= productList[loop].categoryId;
+							ids[counter] 	  		= product[loop].categoryId;
 							categories[counter] = category;
 							counter++;
 						}

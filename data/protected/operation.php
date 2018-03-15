@@ -76,7 +76,7 @@
 				case "customer" 		: $resultList = $this->fetchAllRequest('customers c LEFT JOIN countries y ON c.country = y.country_code', array("idData", "name", "company", "phone", "email", "CONCAT(address, '</br>', city, ' ', zipCode, '</br>', country_name) as address", "COALESCE(userId,'guest')"), $post['keyword'], "ORDER BY name ASC", $post['page']); break;
 				case "customerFetch" 	: $resultList = $this->fetchSingleRequest('customers c LEFT JOIN users u ON c.userId = u.idData', array("c.idData", "c.name", "c.company", "c.phone", "c.email", "c.address", "c.city", "c.zipCode", "c.country, u.picture"), $post['keyword']); break;
 
-				case "cms_blog" 		: $resultList = $this->fetchAllRequest('cms_blog', array("idData","title", "date", "subtitle", "SUBSTRING(description, 1, 300) as description", "photoBy", "pictures", "link", "caption", "publishDate"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
+				case "cms_blog" 		: $resultList = $this->fetchAllRequest('cms_blog', array("idData","title", "date", "subtitle", "description", "photoBy", "pictures", "link", "caption", "publishDate"), $post['keyword'], "ORDER BY idData DESC", $post['page']); break;
 				case "cms_blogFetch" 	: $resultList = $this->fetchSingleRequest('cms_blog', array("idData","title", "date", "subtitle", "description", "photoBy", "pictures as `pictures[]`", "link as filename", "caption", "publishDate"), $post['keyword']); break;
 				case "cms_blogDetail" 	: $resultList = $this->fetchSingleRequest('cms_blog', array("idData","title", "date", "subtitle", "description", "photoBy", "pictures as pictures", "link", "caption", "publishDate"), $post['keyword']); break;
 

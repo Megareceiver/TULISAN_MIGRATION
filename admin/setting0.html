@@ -8,7 +8,7 @@
 		<link rel="icon" type="image/x-icon" href="../assets/PICS/TL_Favicon.png">
 		<!-- Site Properities -->
 		<title>Tulisan</title>
-
+	  
 		<link href="../assets/css/bootstrap.min.css" rel="stylesheet">
 		<link href="../assets/css/font-awesome.min.css" rel="stylesheet">
 		<link href="../assets/css/syncard-inject.css" rel="stylesheet">
@@ -19,16 +19,16 @@
 			<header class="parent-admin"></header>
 
 			<main class="parent-admin"></main>
-
+					
 			<footer class="parent-admin"></footer>
 		</div>
 
 		<!-- Script collection -->
 		<script type="text/javascript" src="../assets/js/jquery-3.2.1.min.js"></script>
 		<script type="text/javascript" src="../assets/js/jquery-ui-1.10.0.custom.min.js"></script>
-		<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>
-		<script type="text/javascript" src="../assets/js/syncard.js"></script>
-		<script type="text/javascript" src="../assets/js/public.js"></script>
+		<script type="text/javascript" src="../assets/js/bootstrap.min.js"></script>	
+		<script type="text/javascript" src="../assets/js/syncard.js"></script>	
+		<script type="text/javascript" src="../assets/js/public.js"></script>	
 
 		<!-- page script -->
 		<script type="text/javascript">
@@ -42,53 +42,36 @@
 				'<div class="header-option">' +
 					'<div class="operation-group">'+
 						'<form class="form-inline">' +
-							// '<div class="input-group operation-button">' +
-							// 	'<a href="#" id="deleteButton"><i class="fa fa-minus-circle text-warning">&nbsp;</i> Delete Orders</a>'+
-							// '</div>' +
 							'<div class="input-group operation-button">' +
-								'<a href="#" id="detailButton"><i class="fa fa-search text-warning">&nbsp;</i> Detail orders</a>'+
+								'<a href="formUser.html"><i class="fa fa-plus-circle text-warning">&nbsp;</i> Create User</a>'+
 							'</div>' +
 							'<div class="input-group operation-button">' +
-								'<a href="#" id="processButton"><i class="fa fa-check-circle text-warning">&nbsp;</i> Process orders</a>'+
+								'<a href="#" id="deleteButton"><i class="fa fa-minus-circle text-warning">&nbsp;</i> Delete User</a>'+
 							'</div>' +
 							'<div class="input-group operation-button">' +
-								'<a href="#" id="completeButton"><i class="fa fa-check-circle text-warning">&nbsp;</i> Complete the orders</a>'+
+								'<a href="#" id="manageButton"><i class="fa fa-bars text-warning">&nbsp;</i> Manage User</a>'+
 							'</div>' +
-							'<div class="input-group operation-button">' +
-								'<a href="#" id="cancelButton"><i class="fa fa-times-circle text-warning">&nbsp;</i> Cancel orders</a>'+
-							'</div>' +
-							'<div class="input-group operation-button">' +
-								'<a href="formReport.html"><i class="fa fa-file-text text-warning">&nbsp;</i> Report</a>'+
-							'</div>' +
-							'<div class="input-group pull-right">' +
-								'<input type="text" class="form-control" placeholder="Search">' +
-								'<span class="input-group-btn">' +
-									'<button type="button" class="search btn btn-default">SEARCH</button>' +
-								'</span>' +
-							'</div>' +
-						'</form>' +
-			   		'<div class="clearfix"></div>' +
+				        	'<div class="input-group pull-right">' +
+				        		'<input type="text" class="form-control" placeholder="Search">' +
+					        	'<span class="input-group-btn">' +
+					        		'<button type="button" class="search btn btn-default">SEARCH</button>' +
+					        	'</span>' +
+				        	'</div>' +
+				   		'</form>' +
+				   		'<div class="clearfix"></div>' +
 					'</div>' +
 					'<div class="summary-group">'+
 						'<div class="summary-text">'+
-							'<p>Total number of orders</p>'+
+							'<p>Total number of Users</p>'+
 							'<p class="number" id="totalRecord">0</p>'+
 						'</div>'+
 						'<div class="summary-text">'+
-							'<p>Unpaid</p>'+
-							'<p class="number" id="totalUnpaid">0</p>'+
+							'<p>Admins</p>'+
+							'<p class="number" id="totalAdmin">0</p>'+
 						'</div>'+
 						'<div class="summary-text">'+
-							'<p>Shipping</p>'+
-							'<p class="number" id="totalShipping">0</p>'+
-						'</div>'+
-						'<div class="summary-text">'+
-							'<p>Complete</p>'+
-							'<p class="number" id="totalComplete">0</p>'+
-						'</div>'+
-						'<div class="summary-text">'+
-							'<p>Cancel</p>'+
-							'<p class="number" id="totalCancel">0</p>'+
+							'<p>Customers</p>'+
+							'<p class="number" id="totalCustomer">0</p>'+
 						'</div>'+
 						'<div class="alpha">'+
 							'<ul>' +
@@ -129,11 +112,11 @@
 					    '<thead>'+
 					    	'<tr>'+
 						    	'<th width="5%"><input type="checkbox" name="customerSelect" id="selectRecord" value="0" onclick="checkboxToggle(this, \'customerSelect\')" /><label for="selectRecord"></label></th>'+
-									'<th>Order #</th>'+
-						      '<th>Customer</th>'+
-						      '<th>Status</th>'+
-						      '<th class="text-center">Total</th>'+
-						      '<th class="text-center">Order time</th>'+
+						    	'<th width="5%" class="text-center"><span class="fa fa-picture-o"></span></th>'+
+						    	'<th>Name</th>'+
+						        '<th>Username</th>'+
+						        '<th>Type</th>'+
+						        '<th>Departement</th>'+
 					    	'</tr>'+
 					    '</thead>'+
 					    '<tbody></tbody>'+
@@ -179,15 +162,15 @@
 				r_setCookie('adminPageFilter', '1');
 				r_setCookie('adminAlphaFilter', '');
 				var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
-				var data = p_getData('order', 'orders', page);
-					  data = data.feedData;
+				var data = p_getData('operation', 'user', page);
+					data = data.feedData;
 
 				dataGenerator(data);
-
+				
 				//filter
 				$('.alpha a').on("click", function(){
 					var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
-					var data = p_getData('order', 'orders', page, '(name LIKE "' + $(this).html() + '%")');
+					var data = p_getData('operation', 'user', page, '(title LIKE "' + $(this).html() + '%")');
 					data = data.feedData;
 					dataGenerator(data);
 
@@ -197,7 +180,7 @@
 
 				$('button.search').on("click", function(){
 					var keyword = $("[placeholder='Search']").val();
-					var data = p_getData('order', 'orders', '1', '(name LIKE "%' + keyword + '%")');
+					var data = p_getData('operation', 'user', '1', '(name LIKE "%' + keyword + '%")');
 					data = data.feedData;
 					dataGenerator(data);
 				});
@@ -212,7 +195,7 @@
 					var keyword = $("[placeholder='Search']").val();
 					var alpha = (r_getCookie('adminAlphaFilter') != "" ? '(name LIKE "' + r_getCookie('adminAlphaFilter') + '%") AND ': "");
 
-					var data = p_getData('order', 'orders', page, alpha + '(name LIKE "%' + keyword + '%")');
+					var data = p_getData('operation', 'user', page, alpha + '(name LIKE "%' + keyword + '%")');
 					data = data.feedData;
 
 					if(data.length > 0){ dataGenerator(data); } else { page = parseInt(page) - 1; }
@@ -226,7 +209,7 @@
 						page = parseInt(page) - 1;
 
 						var keyword = $("[placeholder='Search']").val();
-						var data = p_getData('order', 'orders', page, '(name LIKE "%' + keyword + '%")');
+						var data = p_getData('operation', 'user', page, '(name LIKE "%' + keyword + '%")');
 						data = data.feedData;
 						dataGenerator(data);
 
@@ -235,36 +218,30 @@
 				});
 				//paging end
 			}
-
+			
 			function dataGenerator(data){
 				var html = "";
-				var unpaidCounter = 0;
-				var shippingCounter = 0;
-				var completeCounter = 0;
-				var cancelCounter = 0;
+				var adminCounter = 0;
+				var customerCounter = 0;
 				for(var loop =0; loop<data.length; loop++){
 		    		html = html +
 		    		'<tr>'+
 		    			'<td><input type="checkbox" name="customerSelect" value="'+data[loop].idData+'" id="selectRecord' + loop + '"><label for="selectRecord' + loop + '"></label></td>'+
-		    			'<td class="syn-nowrap">#'+ data[loop].idData +'</td>'+
-		    			'<td class="syn-nowrap">'+ data[loop].name +'</td>'+
-		    			'<td>'+ data[loop].status +'</td>'+
-		    			'<td class="text-right">'+ currencyFormat(String(data[loop].total)) +'</td>'+
-		    			'<td class="text-center">'+ data[loop].createdDate +'</td>'+
+		    			'<td class="text-center"><img class="img-product" src="../assets/users/' + data[loop].picture + '"></td>'+
+		    			'<td>'+ data[loop].name +'</td>'+
+		    			'<td>'+ data[loop].username +'</td>'+
+		    			'<td>'+ data[loop].type +'</td>'+
+		    			'<td>'+ data[loop].department +'</td>'+
 		    		'</tr>';
 
-		    		if(data[loop].status == "Waiting for payment") unpaidCounter++;
-		    		if(data[loop].status == "Shipping") shippingCounter++;
-		    		if(data[loop].status == "Complete") completeCounter++;
-		    		if(data[loop].status == "Cancel") cancelCounter++;
+		    		if(data[loop].type == "admin") adminCounter++;
+		    		if(data[loop].type == "customer") customerCounter++;
 		    	}
 
 				$('main.parent-admin table tbody').html('').append(html);
 				$('main.parent-admin #totalRecord').html(data.length);
-				$('main.parent-admin #totalUnpaid').html(unpaidCounter);
-				$('main.parent-admin #totalShipping').html(shippingCounter);
-				$('main.parent-admin #totalComplete').html(completeCounter);
-				$('main.parent-admin #totalCancel').html(cancelCounter);
+				$('main.parent-admin #totalAdmin').html(adminCounter);
+				$('main.parent-admin #totalCustomer').html(customerCounter);
 
 				//activator
 				checkboxActivator();
@@ -272,16 +249,16 @@
 			}
 
 			function operationActivator(){
-				$('#deleteButton').unbind().on("click", function(){
+				$('#deleteButton').unbind().on("click", function(){ 
 					if(checkedArray.length > 0){
 						var confirmation = confirm("Are you sure you want to delete the selected data?");
 						if (confirmation == true) {
-							p_removeData('order', 'orders', checkedArray);
-
+							p_removeData('operation', 'user', checkedArray);
+							
 							r_setCookie('adminPageFilter', '1');
 							r_setCookie('adminAlphaFilter', '');
 							var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
-							var data = p_getData('order', 'orders', page);
+							var data = p_getData('operation', 'user', page);
 								data = data.feedData;
 
 							dataGenerator(data);
@@ -291,59 +268,9 @@
 					}
 				});
 
-				$('#detailButton').unbind().on("click", function(){
+				$('#manageButton').unbind().on("click", function(){ 
 					if(checkedArray.length == 1 && checkedArray[0] != "0"){
-						window.location.href = base_url + "/admin/orderItems.html?q=" + checkedArray[0];
-					}else{
-						alert("Please choose only one record!");
-					}
-				});
-
-				$('#processButton').unbind().on("click", function(){
-					if (checkedArray.length == 1 && checkedArray[0] != "0") {
-						window.location.href = base_url + "/admin/formProcessOrder.html?q=" + checkedArray[0];
-					} else {
-						alert("Please choose only one record!");
-					}
-				});
-
-				$('#completeButton').unbind().on("click", function(){
-					if(checkedArray.length > 0){
-						var confirmation = confirm("Are you sure you want change status to complete for the selected order?");
-						if (confirmation == true) {
-							var res = p_changeData('order', 'completeOrder', checkedArray);
-
-							if(res.feedStatus == "success"){
-								r_setCookie('adminPageFilter', '1');
-								r_setCookie('adminAlphaFilter', '');
-								var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
-								var data = p_getData('order', 'orders', page);
-									  data = data.feedData;
-
-								dataGenerator(data);
-							}
-						}
-					}else{
-						alert("Please choose record first!");
-					}
-				});
-
-				$('#cancelButton').unbind().on("click", function(){
-					if(checkedArray.length == 1 && checkedArray[0] != "0"){
-						var confirmation = confirm("Are you sure you want to cancel the selected order?");
-						if (confirmation == true) {
-							var res = p_changeData('order', 'cancelOrder', checkedArray[0]);
-
-							if(res.feedStatus == "success"){
-								r_setCookie('adminPageFilter', '1');
-								r_setCookie('adminAlphaFilter', '');
-								var page = (r_getCookie('adminPageFilter') != "" ? r_getCookie('adminPageFilter'): "1");
-								var data = p_getData('order', 'orders', page);
-										data = data.feedData;
-
-								dataGenerator(data);
-							}
-						}
+						window.location.href = base_url + "/admin/formUser.html?q=" + checkedArray[0];
 					}else{
 						alert("Please choose only one record!");
 					}

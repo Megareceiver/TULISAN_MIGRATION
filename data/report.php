@@ -40,12 +40,13 @@
 		}elseif ($type == "ordersItem") {
 			$sql = "SELECT
 							o.idData,o.total, o.name, o.address, o.city, o.zipCode, c.country_name as country, o.phone, o.email, o.status,
-	            p.name as productName, v.sku, i.qty, i.price
+	            p.name as productName, v.sku, i.qty, i.price, co.name as color, v.size
 							FROM
 							orders o JOIN countries c ON o.country = c.country_code JOIN
 	            orders_item i ON o.idData = i.orderId JOIN
 	            products_variant v ON i.variantId = v.idData JOIN
-							products p ON v.productId = p.idData
+							products p ON v.productId = p.idData JOIN
+							colors co ON v.colorId = co.idData
 							WHERE
 							DATE(o.createdDate) >= '".$from."' AND DATE(o.createdDate) <='".$to."'
 	            ORDER BY o.idData DESC
@@ -56,7 +57,7 @@
 		if($result){
 ?>
 
-		<table border='1'>
+		<table>
 			<tr>
 				<td colspan="2">ORDER REPORT</td>
 				<td colspan="2">From : <?=$from?></td>
@@ -70,6 +71,8 @@
 
 				<?php if ($type == "ordersItem") { ?>
 					<td>&nbsp; &nbsp;</td>
+					<td></td>
+					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -93,6 +96,8 @@
 					<td>&nbsp; &nbsp;</td>
 					<td>Item</td>
 					<td>SKU</td>
+					<td>Color</td>
+					<td>Size</td>
 					<td>QTY</td>
 					<td>Price</td>
 				<?php } ?>
@@ -101,27 +106,55 @@
 
 <?php
 			$data = $result->fetchAll(PDO::FETCH_ASSOC);
+			$temp = "";
+			$back = "";
+			$stat = 0;
 			for($loop=0; $loop < count($data); $loop++){
+				if($temp != $data[$loop]['idData']) {
+					$temp = $data[$loop]['idData']; $stat = 0;
+					$back = "style='border-top: 1px solid #000'";
+				}
+				else { $stat = 1; $back = ""; }
 ?>
-			<tr>
-				<td>#<?=$data[$loop]['idData']?></td>
-				<td><?=$data[$loop]['status']?></td>
-				<td>Rp.</td>
-				<td align="right"><?=number_format($data[$loop]['total'])?></td>
-				<td><?=$data[$loop]['name']?></td>
-				<td><?=$data[$loop]['address']?></td>
-				<td><?=$data[$loop]['city']?></td>
-				<td><?=$data[$loop]['zipCode']?></td>
-				<td><?=$data[$loop]['country']?></td>
-				<td><?=$data[$loop]['phone']?></td>
-				<td><?=$data[$loop]['email']?></td>
-
+			<?php /* if($stat != 1 && $loop > 0){ ?>
+				<tr style="background-color: #DDD"><td colspan="11"></td></tr>
+			<?php } */ ?>
+			<tr <?=$back?>>
+				<?php if($stat != 1){ ?>
+					<td valign="top">#<?=$data[$loop]['idData']?></td>
+					<td valign="top"><?=$data[$loop]['status']?></td>
+					<td valign="top">Rp.</td>
+					<td valign="top" align="right"><?=($data[$loop]['total'])?></td>
+					<?php /*<td align="right"><?=number_format($data[$loop]['total'])?></td> */ ?>
+					<td valign="top"><?=$data[$loop]['name']?></td>
+					<td valign="top"><?=$data[$loop]['address']?></td>
+					<td valign="top"><?=$data[$loop]['city']?></td>
+					<td valign="top"><?=$data[$loop]['zipCode']?></td>
+					<td valign="top"><?=$data[$loop]['country']?></td>
+					<td valign="top">'<?=$data[$loop]['phone']?></td>
+					<td valign="top"><?=$data[$loop]['email']?></td>
+				<?php } else { ?>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				<?php } ?>
 				<?php if ($type == "ordersItem") { ?>
 					<td>&nbsp; &nbsp;</td>
-					<td><?=$data[$loop]['productName']?></td>
-					<td><?=$data[$loop]['sku']?></td>
-					<td align="center"><?=$data[$loop]['qty']?></td>
-					<td align="right"><?=number_format($data[$loop]['price'])?></td>
+					<td valign="top"><?=$data[$loop]['productName']?></td>
+					<td valign="top"><?=$data[$loop]['sku']?></td>
+					<td valign="top"><?=$data[$loop]['color']?></td>
+					<td valign="top"><?=$data[$loop]['size']?></td>
+					<td valign="top" align="center"><?=$data[$loop]['qty']?></td>
+					<td valign="top" align="right"><?=($data[$loop]['price'])?></td>
+					<?php /*<td align="right"><?=number_format($data[$loop]['price'])?></td>*/ ?>
 				<?php } ?>
 
 			</tr>

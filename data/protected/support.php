@@ -10,7 +10,7 @@
 
 		public function requestData($post, $target){
 			switch($target){
-				case "feedback" 		: $resultList = $this->fetchAllRequest('feedback', array("idData", "name", "email", "category", "subject", "message"), $post['keyword'], "ORDER BY idData ASC", $post['page']); break;
+				case "feedback" 		: $resultList = $this->fetchAllRequest('feedback', array("idData", "name", "email", "category", "subject", "message", "createdDate"), $post['keyword'], "ORDER BY idData ASC", $post['page']); break;
 				case "systemFetch" 	: $resultList = $this->fetchSingleRequest('system', array("idData", "acc_number", "bank", "instagram", "facebook", "twitter", "pinterest", "youtube", "companyLogo", "companyProfile", "biography"), $post['keyword'], "ORDER BY idData ASC"); break;
 				default	   					: $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Something went wrong, failed to collect data!", "feedData" => array()); break;
 			}

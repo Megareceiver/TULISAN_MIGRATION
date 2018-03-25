@@ -267,7 +267,7 @@
 				var countries = p_getData('operation', 'countryOption');
 						countries = countries.feedData;
 				$("#country").html(listOption(countries));
-				$("#alternativeShipping").unbind().on("click", function(){ keepAlternative(); placeOrder(); });
+				$("#alternativeShipping").unbind().on("click", function(){ keepAlternative(); });
 
 				if(r_getCookie('checkOutTab') == "placeTab") {
 					$("[t-target]").unbind();
@@ -397,7 +397,7 @@
 
 				var country  = $('#alternativeShippingForm #country option:selected').text();
 
-				if(fullName != "" && address != "" && city != "" && zipCode != "" && country != "" && phone != "" && email != ""){
+				if(fullName.trim() != "" && address.trim() != "" && city.trim() != "" && zipCode.trim() != "" && country.trim() != "" && phone.trim() != "" && email.trim() != ""){
 					r_setCookie('user_name_alternative', 		fullName);
 					r_setCookie('user_address_alternative', address);
 					r_setCookie('user_city_alternative', 		city);
@@ -415,8 +415,10 @@
 
 					keepTabPosition("#2");
 					tabWizardChange($("#paymentTab"));
+					placeOrder();
 				}else{
 					alert('Please complete your shipping information!');
+					return false;
 				}
 			}
 

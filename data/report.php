@@ -30,7 +30,7 @@
 
 		if($type == "orders"){
 			$sql = "SELECT
-							o.idData,o.total, o.name, o.address, o.city, o.zipCode, c.country_name as country, o.phone, o.email, o.status
+							o.idData,o.total, o.name, o.address, o.city, o.zipCode, c.country_name as country, o.phone, o.email, o.status, o.createdDate
 							FROM
 							orders o JOIN countries c ON o.country = c.country_code
 							WHERE
@@ -40,7 +40,7 @@
 		}elseif ($type == "ordersItem") {
 			$sql = "SELECT
 							o.idData,o.total, o.name, o.address, o.city, o.zipCode, c.country_name as country, o.phone, o.email, o.status,
-	            p.name as productName, v.sku, i.qty, i.price, co.name as color, v.size
+	            p.name as productName, v.sku, i.qty, i.price, co.name as color, v.size, o.createdDate
 							FROM
 							orders o JOIN countries c ON o.country = c.country_code JOIN
 	            orders_item i ON o.idData = i.orderId JOIN
@@ -84,6 +84,7 @@
 				<td>Order Numb.</td>
 				<td>Status</td>
 				<td colspan="2">TOTAL</td>
+				<td>Date and Time</td>
 				<td>Customer</td>
 				<td>Address</td>
 				<td>City</td>
@@ -125,6 +126,7 @@
 					<td valign="top"><?=$data[$loop]['status']?></td>
 					<td valign="top">Rp.</td>
 					<td valign="top" align="right"><?=($data[$loop]['total'])?></td>
+					<td valign="top" align="center"><?=($data[$loop]['createdDate'])?></td>
 					<?php /*<td align="right"><?=number_format($data[$loop]['total'])?></td> */ ?>
 					<td valign="top"><?=$data[$loop]['name']?></td>
 					<td valign="top"><?=$data[$loop]['address']?></td>
@@ -134,6 +136,7 @@
 					<td valign="top">'<?=$data[$loop]['phone']?></td>
 					<td valign="top"><?=$data[$loop]['email']?></td>
 				<?php } else { ?>
+					<td></td>
 					<td></td>
 					<td></td>
 					<td></td>
